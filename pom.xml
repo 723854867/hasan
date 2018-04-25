@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>org.hasan</groupId>
+	<artifactId>hasan</artifactId>
+	<version>1.0</version>
+	<packaging>pom</packaging>
+
+	<name>hasan</name>
+	<url>http://maven.apache.org</url>
+	
+	<properties>
+		<java.version>1.8</java.version>
+		<maven-assembly.version>3.1.0</maven-assembly.version>
+		<maven-jar-plugin.version>3.0.2</maven-jar-plugin.version>
+		<maven-war-plugin.version>3.2.0</maven-war-plugin.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven-compiler-plugin.version>3.7.0</maven-compiler-plugin.version>
+		<maven-surefire-plugin.version>2.21.0</maven-surefire-plugin.version>
+
+		<gatlin.version>1.0</gatlin.version>
+	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.gatlin</groupId>
+				<artifactId>gatlin</artifactId>
+				<version>${gatlin.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>${maven-compiler-plugin.version}</version>
+					<configuration>
+						<source>${java.version}</source>
+						<target>${java.version}</target>
+						<encoding>${project.build.sourceEncoding}</encoding>
+					</configuration>
+				</plugin>
+
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<version>${maven-surefire-plugin.version}</version>
+					<configuration>
+						<skipTests>true</skipTests>
+					</configuration>
+				</plugin>
+
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-jar-plugin</artifactId>
+					<version>${maven-jar-plugin.version}</version>
+				</plugin>
+
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-assembly-plugin</artifactId>
+					<version>${maven-assembly.version}</version>
+					<configuration>
+						<appendAssemblyId>false</appendAssemblyId>
+						<descriptors>
+							<descriptor>src/main/assembly/assembly.xml</descriptor>
+						</descriptors>
+					</configuration>
+					<executions>
+						<execution>
+							<id>make-assembly</id>
+							<phase>package</phase>
+							<goals>
+								<goal>single</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+  <modules>
+    <module>hasan-bean</module>
+    <module>hasan-service</module>
+    <module>hasan-web</module>
+  </modules>
+</project>
