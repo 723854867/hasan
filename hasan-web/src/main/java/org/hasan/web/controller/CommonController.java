@@ -1,11 +1,17 @@
 package org.hasan.web.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import javax.annotation.Resource;
 import javax.validation.Valid;
 
 import org.gatlin.dao.bean.model.Query;
 import org.gatlin.soa.bean.param.SoaParam;
 import org.gatlin.soa.config.api.ConfigService;
+import org.gatlin.soa.config.bean.entity.CfgGlobal;
+import org.gatlin.soa.config.bean.model.Configs;
 import org.gatlin.soa.user.bean.param.LoginParam;
 import org.gatlin.soa.user.bean.param.RegisterParam;
 import org.gatlin.soa.user.bean.param.UsernameParam;
@@ -51,6 +57,10 @@ public class CommonController {
 	@ResponseBody
 	@RequestMapping("configs")
 	public Object configs(@RequestBody @Valid SoaParam param) {
-		return configService.configs(new Query().eq("visible", 1));
+		Configs configs = configService.configs(new Query().eq("visible", 1));
+		Map<String, String> map = new HashMap<String, String>();
+		for (Entry<String, CfgGlobal> entry : configs.getGlobals().entrySet()) 
+			map.put(entry.getKey(), entry.getValue().getValue());
+		return map;
 	}
 }

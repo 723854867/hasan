@@ -25,5 +25,10 @@
 			<artifactId>gatlin-web-util</artifactId>
 			<version>${gatlin.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.gatlin</groupId>
+			<artifactId>gatlin-soa-resource-bean</artifactId>
+			<version>${gatlin.version}</version>
+		</dependency>
 	</dependencies>
 </project>

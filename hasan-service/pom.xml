@@ -23,11 +23,6 @@
 
 		<dependency>
 			<groupId>org.gatlin</groupId>
-			<artifactId>gatlin-soa-log-api</artifactId>
-			<version>${gatlin.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.gatlin</groupId>
 			<artifactId>gatlin-soa-user-service</artifactId>
 			<version>${gatlin.version}</version>
 		</dependency>
@@ -39,6 +34,11 @@
 		<dependency>
 			<groupId>org.gatlin</groupId>
 			<artifactId>gatlin-soa-config-service</artifactId>
+			<version>${gatlin.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.gatlin</groupId>
+			<artifactId>gatlin-soa-resource-service</artifactId>
 			<version>${gatlin.version}</version>
 		</dependency>
 

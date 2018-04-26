@@ -4,6 +4,7 @@ import javax.annotation.Resource;
 
 import org.gatlin.core.CoreCode;
 import org.gatlin.core.bean.exceptions.CodeException;
+import org.gatlin.soa.courier.api.EmailService;
 import org.gatlin.soa.courier.api.SmsService;
 import org.gatlin.soa.user.api.UserService;
 import org.gatlin.soa.user.bean.entity.UserDevice;
@@ -24,6 +25,8 @@ public class CommonService {
 	private SmsService smsService;
 	@Resource
 	private UserService userService;
+	@Resource	
+	private EmailService emailService;
 	
 	public LoginInfo login(LoginParam param) {
 		LoginModel model = userService.login(param);
@@ -35,6 +38,16 @@ public class CommonService {
 	}
 	
 	public long register(RegisterParam param) { 
+		switch (param.getUsernameType()) {
+		case EMAIL:
+			emailService.captchaVerify(param.getUsername(), param.getCaptcha());
+			break;
+		case MOBILE:
+			smsService.captchaVerify(param.getUsername(), param.getCaptcha());
+			break;
+		default:
+			break;
+		}
 		RegisterModel model = userService.register(param);
 		UserInvitation invitation = model.getInvitation();
 		if (null != invitation) {
@@ -49,6 +62,8 @@ public class CommonService {
 	
 	public String captchaObtain(String username, UsernameType type) { 
 		switch (type) {
+		case EMAIL:
+			return emailService.captchaAcquire(username);
 		case MOBILE:
 			return smsService.captchaAcquire(username);
 		default:
