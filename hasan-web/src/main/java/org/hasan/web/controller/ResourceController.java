@@ -1,24 +1,22 @@
 package org.hasan.web.controller;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
-import javax.annotation.Resource;
 import javax.validation.Valid;
 
 import org.gatlin.core.CoreCode;
 import org.gatlin.core.bean.model.message.Response;
 import org.gatlin.core.util.Assert;
-import org.gatlin.soa.bean.param.SoaLidParam;
+import org.gatlin.dao.bean.model.Query;
+import org.gatlin.soa.bean.param.SoaIdParam;
 import org.gatlin.soa.resource.api.ResourceService;
-import org.gatlin.soa.resource.bean.entity.CfgResource;
-import org.gatlin.soa.resource.bean.entity.PubResource;
-import org.gatlin.soa.resource.bean.enums.UploadType;
+import org.gatlin.soa.resource.bean.entity.Resource;
+import org.gatlin.soa.resource.bean.param.ResourceModifyParam;
 import org.gatlin.web.util.Uploader;
-import org.gatlin.web.util.param.UploadParam;
-import org.hasan.bean.enums.HasanUploadType;
+import org.gatlin.web.util.bean.param.ResourceSearcher;
+import org.gatlin.web.util.bean.param.ResourceUploadParam;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -26,37 +24,53 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping("resource")
 public class ResourceController {
 	
-	@Resource
+	@javax.annotation.Resource
 	private Uploader uploader;
-	@Resource
+	@javax.annotation.Resource
 	private ResourceService resourceService;
+	
+	
+	@ResponseBody
+	@RequestMapping("list")
+	public Object pictures(@RequestBody @Valid ResourceSearcher param) {
+		Query query = new Query().page(param.getPage()).pageSize(param.getPageSize());
+		query.eq("type", param.getType()).orderByAsc("priority");
+		return resourceService.pictures(query);
+	}
 
+	// banner 上传
 	@ResponseBody
 	@RequestMapping("upload")
-	public Object upload(@Valid UploadParam param) {
-		UploadType type = HasanUploadType.match(param.getUploadType());
-		Assert.notNull(CoreCode.PARAM_ERR, type);
-		return _upload(type, param);
+	public Object upload(@Valid ResourceUploadParam param) {
+		Assert.hasText(CoreCode.PARAM_ERR, param.getName());
+		Assert.notNull(CoreCode.PARAM_ERR, param.getSource(), param.getPriority());
+		return uploader.upload(param.getSource(), "banner", resource -> {
+			resource.setName(param.getName());
+			resource.setOwner(param.getOwner());
+			resource.setPriority(param.getPriority());
+			resource.setCfgId(param.getCfgResourceId());
+			resourceService.upload(resource);
+			return resource;
+		});
 	}
 	
 	@ResponseBody
-	@RequestMapping("unload")
-	public Object unload(@Valid SoaLidParam param) {
-		List<PubResource> resources = resourceService.unload(param.getId());
-		for (PubResource resource : resources) {
-			File file = new File(resource.getPath());
-			file.delete();
-		}
+	@RequestMapping("modify")
+	public Object modify(@RequestBody @Valid ResourceModifyParam param) {
+		resourceService.modify(param);
 		return Response.ok();
 	}
 	
-	private List<PubResource> _upload(UploadType type, UploadParam param) {
-		List<PubResource> list = new ArrayList<PubResource>();
-		CfgResource source = resourceService.uploadVerify(type.key(), param.getResourceId(), param.getSource().getSize(), param.getMajor());
-		uploader.upload(param.getSource(), type.directory(), pair -> {
-			PubResource resource = resourceService.upload(pair.getValue(), pair.getKey(), source, type.key(), param.getPriority(), param.getMajor());
-			list.add(resource);
-		});
-		return list;
+	@ResponseBody
+	@RequestMapping("delete")
+	public Object delete(@RequestBody @Valid SoaIdParam param) {
+		Resource resource = resourceService.delete(param.getId());
+		_deleteResource(resource);
+		return Response.ok();
+	}
+	
+	private void _deleteResource(Resource resource) {
+		File file = new File(resource.getPath());
+		file.delete();
 	}
 }
