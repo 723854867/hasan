@@ -7,7 +7,6 @@ import javax.validation.Valid;
 import org.gatlin.core.CoreCode;
 import org.gatlin.core.bean.model.message.Response;
 import org.gatlin.core.util.Assert;
-import org.gatlin.dao.bean.model.Query;
 import org.gatlin.soa.bean.param.SoaIdParam;
 import org.gatlin.soa.resource.api.ResourceService;
 import org.gatlin.soa.resource.bean.entity.Resource;
@@ -29,16 +28,12 @@ public class ResourceController {
 	@javax.annotation.Resource
 	private ResourceService resourceService;
 	
-	
 	@ResponseBody
 	@RequestMapping("list")
 	public Object pictures(@RequestBody @Valid ResourceSearcher param) {
-		Query query = new Query().page(param.getPage()).pageSize(param.getPageSize());
-		query.eq("type", param.getType()).orderByAsc("priority");
-		return resourceService.pictures(query);
+		return resourceService.resources(param.query());
 	}
 
-	// banner 上传
 	@ResponseBody
 	@RequestMapping("upload")
 	public Object upload(@Valid ResourceUploadParam param) {
