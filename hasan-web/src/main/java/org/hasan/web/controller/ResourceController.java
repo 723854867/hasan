@@ -7,14 +7,17 @@ import javax.validation.Valid;
 import org.gatlin.core.CoreCode;
 import org.gatlin.core.bean.model.message.Response;
 import org.gatlin.core.util.Assert;
-import org.gatlin.dao.bean.model.Query;
-import org.gatlin.soa.bean.param.SoaIdParam;
+import org.gatlin.soa.bean.param.SoaSidParam;
 import org.gatlin.soa.resource.api.ResourceService;
+import org.gatlin.soa.resource.bean.entity.CfgResource;
 import org.gatlin.soa.resource.bean.entity.Resource;
+import org.gatlin.soa.resource.bean.param.ResourceLinkParam;
 import org.gatlin.soa.resource.bean.param.ResourceModifyParam;
 import org.gatlin.web.util.Uploader;
 import org.gatlin.web.util.bean.param.ResourceSearcher;
 import org.gatlin.web.util.bean.param.ResourceUploadParam;
+import org.gatlin.web.util.hook.ResourceHook;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,16 +29,15 @@ public class ResourceController {
 	
 	@javax.annotation.Resource
 	private Uploader uploader;
+	@Autowired(required = false)
+	private ResourceHook resourceHook;
 	@javax.annotation.Resource
 	private ResourceService resourceService;
-	
 	
 	@ResponseBody
 	@RequestMapping("list")
 	public Object pictures(@RequestBody @Valid ResourceSearcher param) {
-		Query query = new Query().page(param.getPage()).pageSize(param.getPageSize());
-		query.eq("type", param.getType()).orderByAsc("priority");
-		return resourceService.pictures(query);
+		return resourceService.resources(param.query());
 	}
 
 	// banner 上传
@@ -44,7 +46,10 @@ public class ResourceController {
 	public Object upload(@Valid ResourceUploadParam param) {
 		Assert.hasText(CoreCode.PARAM_ERR, param.getName());
 		Assert.notNull(CoreCode.PARAM_ERR, param.getSource(), param.getPriority());
-		return uploader.upload(param.getSource(), "banner", resource -> {
+		CfgResource cfgResource = resourceService.uploadVerify(param.getCfgResourceId(), param.getOwner(), param.getSource().getSize());
+		if (null != resourceHook)
+			resourceHook.uploadVerify(cfgResource, param);
+		return uploader.upload(param.getSource(), cfgResource.getDirectory(), resource -> {
 			resource.setName(param.getName());
 			resource.setOwner(param.getOwner());
 			resource.setPriority(param.getPriority());
@@ -63,14 +68,17 @@ public class ResourceController {
 	
 	@ResponseBody
 	@RequestMapping("delete")
-	public Object delete(@RequestBody @Valid SoaIdParam param) {
+	public Object delete(@RequestBody @Valid SoaSidParam param) {
 		Resource resource = resourceService.delete(param.getId());
-		_deleteResource(resource);
+		File file = new File(resource.getPath());
+		file.delete();
 		return Response.ok();
 	}
 	
-	private void _deleteResource(Resource resource) {
-		File file = new File(resource.getPath());
-		file.delete();
+	@ResponseBody
+	@RequestMapping("link")
+	public Object link(@RequestBody @Valid ResourceLinkParam param) {
+		resourceService.link(param.getId(), param.getLink());
+		return Response.ok();
 	}
 }
