@@ -40,7 +40,6 @@ public class ResourceController {
 		return resourceService.resources(param.query());
 	}
 
-	// banner 上传
 	@ResponseBody
 	@RequestMapping("upload")
 	public Object upload(@Valid ResourceUploadParam param) {
