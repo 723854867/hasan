@@ -9,6 +9,7 @@ import org.gatlin.soa.authority.bean.param.ApiAddParam;
 import org.gatlin.soa.authority.bean.param.ApiModifyParam;
 import org.gatlin.soa.authority.bean.param.ApisParam;
 import org.gatlin.soa.authority.bean.param.ModularAddParam;
+import org.gatlin.soa.authority.bean.param.ModularModifyParam;
 import org.gatlin.soa.authority.bean.param.NameIdParam;
 import org.gatlin.soa.bean.param.SoaIdParam;
 import org.gatlin.soa.bean.param.SoaParam;
@@ -59,7 +60,7 @@ public class AuthorityController {
 	
 	@ResponseBody
 	@RequestMapping("modular/modify")
-	public Object modularModify(@RequestBody @Valid NameIdParam param) {
+	public Object modularModify(@RequestBody @Valid ModularModifyParam param) {
 		authService.modularModify(param);
 		return Response.ok();
 	}
