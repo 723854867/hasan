@@ -7,9 +7,11 @@ import org.gatlin.core.bean.model.message.Response;
 import org.gatlin.soa.authority.api.AuthService;
 import org.gatlin.soa.authority.bean.param.ApiAddParam;
 import org.gatlin.soa.authority.bean.param.ApiModifyParam;
+import org.gatlin.soa.authority.bean.param.ApisParam;
 import org.gatlin.soa.authority.bean.param.ModularAddParam;
 import org.gatlin.soa.authority.bean.param.NameIdParam;
 import org.gatlin.soa.bean.param.SoaIdParam;
+import org.gatlin.soa.bean.param.SoaParam;
 import org.gatlin.soa.bean.param.SoaSidParam;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,6 +24,12 @@ public class AuthorityController {
 	
 	@Resource
 	private AuthService authService;
+	
+	@ResponseBody
+	@RequestMapping("api/list")
+	public Object apis(ApisParam param) {
+		return authService.apis(param.query());
+	}
 
 	@ResponseBody
 	@RequestMapping("api/add")
@@ -60,6 +68,12 @@ public class AuthorityController {
 	@RequestMapping("modular/delete")
 	public Object modularDelete(@RequestBody @Valid SoaIdParam param) {
 		return authService.modularDelete(param);
+	}
+	
+	@ResponseBody
+	@RequestMapping("role/list")
+	public Object roles(@RequestBody @Valid SoaParam param) {
+		return authService.roles(param.query());
 	}
 	
 	@ResponseBody
