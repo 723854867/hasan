@@ -12,6 +12,7 @@ import org.gatlin.soa.authority.bean.param.ModularAddParam;
 import org.gatlin.soa.authority.bean.param.ModularModifyParam;
 import org.gatlin.soa.authority.bean.param.NameIdParam;
 import org.gatlin.soa.bean.param.SoaIdParam;
+import org.gatlin.soa.bean.param.SoaIdsParam;
 import org.gatlin.soa.bean.param.SoaParam;
 import org.gatlin.soa.bean.param.SoaSidParam;
 import org.springframework.stereotype.Controller;
@@ -67,8 +68,9 @@ public class AuthorityController {
 	
 	@ResponseBody
 	@RequestMapping("modular/delete")
-	public Object modularDelete(@RequestBody @Valid SoaIdParam param) {
-		return authService.modularDelete(param);
+	public Object modularDelete(@RequestBody @Valid SoaIdsParam param) {
+		authService.modularDelete(param);
+		return Response.ok();
 	}
 	
 	@ResponseBody
