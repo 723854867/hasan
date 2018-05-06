@@ -3,11 +3,12 @@ package org.hasan.service;
 import javax.annotation.Resource;
 
 import org.gatlin.core.CoreCode;
+import org.gatlin.core.Gatlin;
+import org.gatlin.core.GatlinConfigration;
 import org.gatlin.core.bean.exceptions.CodeException;
 import org.gatlin.core.util.Assert;
 import org.gatlin.soa.account.api.AccountService;
 import org.gatlin.soa.bean.User;
-import org.gatlin.soa.config.api.ConfigService;
 import org.gatlin.soa.courier.api.EmailService;
 import org.gatlin.soa.courier.api.SmsService;
 import org.gatlin.soa.user.api.UserService;
@@ -31,13 +32,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class CommonService {
 
 	@Resource
+	private Gatlin gatlin;
+	@Resource
 	private SmsService smsService;
 	@Resource
 	private UserService userService;
 	@Resource	
 	private EmailService emailService;
-	@Resource
-	private ConfigService configService;
 	@Resource
 	private AccountService accountService;
 	
@@ -63,7 +64,7 @@ public class CommonService {
 			break;
 		}
 		RegisterModel model = userService.register(param);
-		int accountMod = configService.config(WebConsts.Options.ACCOUNT_MOD);
+		int accountMod = GatlinConfigration.get(WebConsts.Options.ACCOUNT_MOD);
 		if (0 != accountMod)
 			accountService.init(model.getUid(), accountMod);
 		UserInvitation invitation = model.getInvitation();

@@ -14,10 +14,11 @@ public class CfgGoods implements Entity<Integer> {
 	@Id
 	@GeneratedValue
 	private int id;
-	private int type;
 	private int sold;
+	private int state;
 	private String name;
 	private String desc;
+	private int priority;
 	private int inventory;
 	private BigDecimal VIPPrice;
 	private BigDecimal generalPrice;
@@ -33,14 +34,6 @@ public class CfgGoods implements Entity<Integer> {
 		this.id = id;
 	}
 
-	public int getType() {
-		return type;
-	}
-
-	public void setType(int type) {
-		this.type = type;
-	}
-
 	public int getSold() {
 		return sold;
 	}
@@ -48,7 +41,15 @@ public class CfgGoods implements Entity<Integer> {
 	public void setSold(int sold) {
 		this.sold = sold;
 	}
+	
+	public int getState() {
+		return state;
+	}
 
+	public void setState(int state) {
+		this.state = state;
+	}
+	
 	public String getName() {
 		return name;
 	}
@@ -63,6 +64,14 @@ public class CfgGoods implements Entity<Integer> {
 	
 	public void setDesc(String desc) {
 		this.desc = desc;
+	}
+	
+	public int getPriority() {
+		return priority;
+	}
+	
+	public void setPriority(int priority) {
+		this.priority = priority;
 	}
 
 	public int getInventory() {
