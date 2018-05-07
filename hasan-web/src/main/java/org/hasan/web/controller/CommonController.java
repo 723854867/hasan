@@ -15,6 +15,7 @@ import org.gatlin.soa.config.api.ConfigService;
 import org.gatlin.soa.config.bean.entity.CfgGlobal;
 import org.gatlin.soa.config.bean.model.Configs;
 import org.gatlin.soa.resource.api.ResourceService;
+import org.gatlin.soa.resource.bean.enums.ResourceType;
 import org.gatlin.soa.user.api.UserService;
 import org.gatlin.soa.user.bean.enums.UserMod;
 import org.gatlin.soa.user.bean.param.LoginParam;
@@ -22,7 +23,7 @@ import org.gatlin.soa.user.bean.param.PwdModifyParam;
 import org.gatlin.soa.user.bean.param.PwdResetParam;
 import org.gatlin.soa.user.bean.param.RegisterParam;
 import org.gatlin.soa.user.bean.param.UsernameParam;
-import org.gatlin.web.util.bean.info.UserTips;
+import org.gatlin.web.bean.model.UserTips;
 import org.hasan.service.CommonService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -69,7 +70,7 @@ public class CommonController {
 	@RequestMapping("user/tips")
 	public Object userTips(@RequestBody @Valid SoaParam param) {
 		User user = param.getUser();
-		Query query = new Query().eq("cfg_id", 50).eq("owner", user.getId());
+		Query query = new Query().eq("cfg_id", ResourceType.AVATAR.mark()).eq("owner", user.getId());
 		return new UserTips(user, resourceService.resource(query));
 	}
 	

@@ -17,7 +17,7 @@ import org.gatlin.soa.user.bean.UserUtil;
 import org.gatlin.soa.user.bean.entity.UserDevice;
 import org.gatlin.soa.user.bean.entity.UserInvitation;
 import org.gatlin.soa.user.bean.enums.UsernameType;
-import org.gatlin.soa.user.bean.info.LoginInfo;
+import org.gatlin.soa.user.bean.model.LoginInfo;
 import org.gatlin.soa.user.bean.model.LoginModel;
 import org.gatlin.soa.user.bean.model.RegisterModel;
 import org.gatlin.soa.user.bean.param.LoginParam;

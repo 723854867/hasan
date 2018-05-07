@@ -4,7 +4,7 @@ import javax.annotation.Resource;
 
 import org.gatlin.soa.config.api.ConfigService;
 import org.gatlin.soa.resource.bean.entity.CfgResource;
-import org.gatlin.web.util.bean.param.ResourceUploadParam;
+import org.gatlin.web.bean.param.ResourceUploadParam;
 import org.springframework.stereotype.Component;
 
 @Component("resourceHook")
