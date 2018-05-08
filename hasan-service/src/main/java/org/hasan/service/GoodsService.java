@@ -63,6 +63,8 @@ public class GoodsService {
 		if (null != query.getPage())
 			PageHelper.startPage(query.getPage(), query.getPageSize());
 		List<CfgGoods> goods = goodsManager.goods(query);
+		if(goods.isEmpty())
+			return Pager.empty();
 		Set<Integer> ids = new HashSet<Integer>();
 		goods.forEach(item -> ids.add(item.getId()));
 		query = new Query().in("owner", ids).in("cfg_id", HasanResourceType.goodsResourceTypes());

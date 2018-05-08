@@ -2,6 +2,7 @@ package org.hasan.bean.entity;
 
 import java.math.BigDecimal;
 
+import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
@@ -20,6 +21,7 @@ public class CfgGoods implements Entity<Integer> {
 	private String desc;
 	private int priority;
 	private int inventory;
+	@Column(name = "VIP_price")
 	private BigDecimal VIPPrice;
 	private BigDecimal generalPrice;
 	private BigDecimal originalPrice;
