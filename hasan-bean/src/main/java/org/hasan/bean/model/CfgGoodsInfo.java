@@ -1,4 +1,4 @@
-package org.hasan.bean.info;
+package org.hasan.bean.model;
 
 import java.io.Serializable;
 import java.math.BigDecimal;

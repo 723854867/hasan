@@ -19,7 +19,7 @@ import org.hasan.bean.EntityGenerator;
 import org.hasan.bean.HasanCode;
 import org.hasan.bean.entity.CfgGoods;
 import org.hasan.bean.enums.HasanResourceType;
-import org.hasan.bean.info.CfgGoodsInfo;
+import org.hasan.bean.model.CfgGoodsInfo;
 import org.hasan.bean.param.GoodsAddParam;
 import org.hasan.bean.param.GoodsModifyParam;
 import org.hasan.manager.GoodsManager;

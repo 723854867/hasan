@@ -2,9 +2,11 @@ package org.hasan.bean;
 
 import org.gatlin.util.DateUtil;
 import org.hasan.bean.entity.CfgGoods;
+import org.hasan.bean.entity.CfgMember;
 import org.hasan.bean.entity.CfgScheduler;
 import org.hasan.bean.enums.GoodsState;
 import org.hasan.bean.param.GoodsAddParam;
+import org.hasan.bean.param.MemberAddParam;
 import org.hasan.bean.param.SchedulerAddParam;
 
 public class EntityGenerator {
@@ -31,6 +33,20 @@ public class EntityGenerator {
 		instance.setStop(param.getStop());
 		instance.setStart(param.getStart());
 		instance.setType(param.getType().mark());
+		int time = DateUtil.current();
+		instance.setCreated(time);
+		instance.setUpdated(time);
+		return instance;
+	}
+	
+	public static final CfgMember newCfgMember(MemberAddParam param) {
+		CfgMember instance = new CfgMember();
+		instance.setName(param.getName());
+		instance.setSale(param.isSale());
+		instance.setPrice(param.getPrice());
+		instance.setExpiry(param.getExpiry());
+		instance.setMemberType(param.getMemberType().mark());
+		instance.setTimeUnit(param.getTimeUnit().mark());
 		int time = DateUtil.current();
 		instance.setCreated(time);
 		instance.setUpdated(time);
