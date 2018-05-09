@@ -18,6 +18,10 @@ public class OrderManager {
 	public void make(OrderMakeParam param) {
 	}
 	
+	public void update(Order order) { 
+		orderDao.update(order);
+	}
+	
 	public Order order(String id) {
 		return orderDao.getByKey(id);
 	}

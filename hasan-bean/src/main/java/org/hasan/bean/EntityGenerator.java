@@ -4,12 +4,25 @@ import org.gatlin.util.DateUtil;
 import org.hasan.bean.entity.CfgGoods;
 import org.hasan.bean.entity.CfgMember;
 import org.hasan.bean.entity.CfgScheduler;
+import org.hasan.bean.entity.UserCustom;
 import org.hasan.bean.enums.GoodsState;
+import org.hasan.bean.enums.MemberType;
 import org.hasan.bean.param.GoodsAddParam;
 import org.hasan.bean.param.MemberAddParam;
 import org.hasan.bean.param.SchedulerAddParam;
 
 public class EntityGenerator {
+	
+	public static final UserCustom newUserCustom(long uid, String memberTitle) {
+		UserCustom instance = new UserCustom();
+		instance.setUid(uid);
+		instance.setMemberTitle(memberTitle);
+		instance.setMemberType(MemberType.ORIGINAL.mark());
+		int time = DateUtil.current();
+		instance.setCreated(time);
+		instance.setUpdated(time);
+		return instance;
+	}
 
 	public static final CfgGoods newCfgGoods(GoodsAddParam param) {
 		CfgGoods instance = new CfgGoods();

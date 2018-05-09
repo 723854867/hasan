@@ -1,4 +1,4 @@
-package org.hasan.hook;
+package org.hasan.hook.recharge;
 
 import javax.annotation.Resource;
 
@@ -10,7 +10,7 @@ import org.gatlin.soa.account.bean.param.RechargeParam;
 import org.hasan.bean.HasanCode;
 import org.hasan.bean.entity.CfgMember;
 import org.hasan.bean.entity.Order;
-import org.hasan.manager.CommonManager;
+import org.hasan.manager.HasanManager;
 import org.hasan.manager.OrderManager;
 import org.springframework.stereotype.Component;
 
@@ -18,15 +18,15 @@ import org.springframework.stereotype.Component;
 public class RechargeHook extends org.gatlin.web.util.hook.RechargeHook {
 	
 	@Resource
-	private OrderManager orderManager;
+	private HasanManager hasanManager;
 	@Resource
-	private CommonManager commonManager;
+	private OrderManager orderManager;
 
 	@Override
 	protected UserRecharge verify(RechargeParam param) {
 		switch (param.getGoodsType()) {
 		case 100:					// 购买会员
-			CfgMember member = commonManager.member(Integer.valueOf(param.getGoodsId()));
+			CfgMember member = hasanManager.member(Integer.valueOf(param.getGoodsId()));
 			Assert.notNull(HasanCode.MEMBER_NOT_EXIST, member);
 			Assert.isTrue(CoreCode.PARAM_ERR, member.isSale());
 			return _userRecharge(param);

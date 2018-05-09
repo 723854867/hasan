@@ -16,7 +16,7 @@ import org.gatlin.web.util.WebConsts;
 import org.hasan.bean.entity.CfgMember;
 import org.hasan.bean.param.MemberAddParam;
 import org.hasan.bean.param.MemberModifyParam;
-import org.hasan.manager.CommonManager;
+import org.hasan.manager.HasanManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,7 +32,7 @@ public class CommonService {
 	@Resource	
 	private EmailService emailService;
 	@Resource
-	private CommonManager commonManager;
+	private HasanManager hasanManager;
 	@Resource
 	private AccountService accountService;
 	
@@ -49,6 +49,7 @@ public class CommonService {
 			break;
 		}
 		RegisterModel model = userService.register(param);
+		hasanManager.register(model.getUid());
 		int accountMod = GatlinConfigration.get(WebConsts.Options.ACCOUNT_MOD);
 		if (0 != accountMod)
 			accountService.init(model.getUid(), accountMod);
@@ -60,16 +61,16 @@ public class CommonService {
 	}
 	
 	public int memberAdd(MemberAddParam param) {
-		return commonManager.memberAdd(param);
+		return hasanManager.memberAdd(param);
 	}
 	
 	public void memberModify(MemberModifyParam param) {
-		commonManager.memberModify(param);
+		hasanManager.memberModify(param);
 	}
 	
 	public Pager<CfgMember> members(Query query) {
 		if (null != query.getPage())
 			PageHelper.startPage(query.getPage(), query.getPageSize());
-		return new Pager<CfgMember>(commonManager.members(query));
+		return new Pager<CfgMember>(hasanManager.members(query));
 	}
 }
