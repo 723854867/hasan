@@ -4,14 +4,16 @@ public enum OrderState {
 
 	// 待支付
 	INIT(1),
+	// 支付中
+	PAYING(2),
 	// 待发货
-	PAID(2),
+	PAID(3),
 	// 待收货
 	DELIVERED(4),
 	// 待评价;
-	RECEIVED(8),
+	RECEIVED(5),
 	// 已完结
-	FINISH(16);
+	FINISH(6);
 	
 	private int mark;
 	
@@ -21,5 +23,13 @@ public enum OrderState {
 	
 	public int mark() {
 		return mark;
+	}
+	
+	public static final OrderState match(int state) {
+		for (OrderState temp : OrderState.values()) {
+			if (temp.mark == state)
+				return temp;
+		}
+		return null;
 	}
 }

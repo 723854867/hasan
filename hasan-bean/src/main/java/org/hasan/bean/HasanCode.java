@@ -4,7 +4,7 @@ import org.gatlin.core.bean.model.code.Code;
 
 public interface HasanCode {
 
-	final Code ORDER_STATE_ERR			= new Code("code.hasan.order.state.err", "订单状态错误");
+	final Code ORDER_STATE_ERR			= new Code("code.hasan.order.state.err", "订单状态已改变");
 	final Code ORDER_NOT_EXIST 			= new Code("code.hasan.order.not.exist", "订单不存在");
 	final Code GOODS_NOT_EXIST 			= new Code("code.hasan.goods.not.exist", "商品不存在");
 	final Code GOODS_INVENTORY_LACK		= new Code("code.hasan.goods.inventory.lack", "商品库存不足");

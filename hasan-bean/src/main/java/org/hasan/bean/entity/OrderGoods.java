@@ -15,13 +15,12 @@ public class OrderGoods implements Entity<Long> {
 	@GeneratedValue
 	private long id;
 	private int goodsId;
-	private String name;
-	private String desc;
-	private BigDecimal unitPrice;
-	private int number;
+	private int goodsNum;
 	private String orderId;
+	private String goodsName;
+	private String goodsDesc;
+	private BigDecimal unitPrice;
 	private int created;
-	private int updated;
 
 	public long getId() {
 		return id;
@@ -39,36 +38,12 @@ public class OrderGoods implements Entity<Long> {
 		this.goodsId = goodsId;
 	}
 
-	public String getName() {
-		return name;
+	public int getGoodsNum() {
+		return goodsNum;
 	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getDesc() {
-		return desc;
-	}
-
-	public void setDesc(String desc) {
-		this.desc = desc;
-	}
-
-	public BigDecimal getUnitPrice() {
-		return unitPrice;
-	}
-
-	public void setUnitPrice(BigDecimal unitPrice) {
-		this.unitPrice = unitPrice;
-	}
-
-	public int getNumber() {
-		return number;
-	}
-
-	public void setNumber(int number) {
-		this.number = number;
+	public void setGoodsNum(int goodsNum) {
+		this.goodsNum = goodsNum;
 	}
 
 	public String getOrderId() {
@@ -79,20 +54,36 @@ public class OrderGoods implements Entity<Long> {
 		this.orderId = orderId;
 	}
 
+	public String getGoodsName() {
+		return goodsName;
+	}
+
+	public void setGoodsName(String goodsName) {
+		this.goodsName = goodsName;
+	}
+
+	public String getGoodsDesc() {
+		return goodsDesc;
+	}
+
+	public void setGoodsDesc(String goodsDesc) {
+		this.goodsDesc = goodsDesc;
+	}
+
+	public BigDecimal getUnitPrice() {
+		return unitPrice;
+	}
+
+	public void setUnitPrice(BigDecimal unitPrice) {
+		this.unitPrice = unitPrice;
+	}
+
 	public int getCreated() {
 		return created;
 	}
 
 	public void setCreated(int created) {
 		this.created = created;
-	}
-
-	public int getUpdated() {
-		return updated;
-	}
-
-	public void setUpdated(int updated) {
-		this.updated = updated;
 	}
 
 	@Override

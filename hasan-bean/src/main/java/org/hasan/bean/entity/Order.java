@@ -19,6 +19,8 @@ public class Order implements Entity<String> {
 	private String recipients;
 	private String recipientsAddr;
 	private String recipientsMobile;
+	private int deliverStart;
+	private int deliverStop;
 	private int created;
 	private int updated;
 
@@ -84,6 +86,22 @@ public class Order implements Entity<String> {
 
 	public void setRecipientsMobile(String recipientsMobile) {
 		this.recipientsMobile = recipientsMobile;
+	}
+	
+	public int getDeliverStart() {
+		return deliverStart;
+	}
+	
+	public void setDeliverStart(int deliverStart) {
+		this.deliverStart = deliverStart;
+	}
+	
+	public int getDeliverStop() {
+		return deliverStop;
+	}
+	
+	public void setDeliverStop(int deliverStop) {
+		this.deliverStop = deliverStop;
 	}
 
 	public int getCreated() {

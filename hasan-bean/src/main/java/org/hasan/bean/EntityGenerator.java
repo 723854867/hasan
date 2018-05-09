@@ -1,14 +1,19 @@
 package org.hasan.bean;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
+import org.gatlin.core.bean.exceptions.CodeException;
 import org.gatlin.soa.user.bean.entity.UserAddress;
 import org.gatlin.util.DateUtil;
-import org.gatlin.util.IDWorker;
 import org.hasan.bean.entity.CfgGoods;
 import org.hasan.bean.entity.CfgMember;
 import org.hasan.bean.entity.CfgScheduler;
 import org.hasan.bean.entity.Order;
+import org.hasan.bean.entity.OrderGoods;
 import org.hasan.bean.entity.UserCustom;
 import org.hasan.bean.enums.GoodsState;
 import org.hasan.bean.enums.MemberType;
@@ -73,9 +78,9 @@ public class EntityGenerator {
 		return instance;
 	}
 	
-	public static final Order newOrder(OrderMakeParam param, BigDecimal price, UserAddress address) {
+	public static final Order newOrder(String orderId, OrderMakeParam param, BigDecimal price, UserAddress address) {
 		Order instance = new Order();
-		instance.setId(IDWorker.INSTANCE.nextSid());
+		instance.setId(orderId);
 		instance.setUid(param.getUser().getId());
 		instance.setIp(param.meta().getIp());
 		instance.setState(OrderState.INIT.mark());
@@ -87,5 +92,35 @@ public class EntityGenerator {
 		instance.setCreated(time);
 		instance.setUpdated(time);
 		return instance;
+	}
+	
+	public static final List<OrderGoods> newOrderGoods(String orderId, Map<Integer, Integer> buys, Map<Integer, CfgGoods> goods, UserCustom custom) {
+		List<OrderGoods> list = new ArrayList<OrderGoods>();
+		for (Entry<Integer, Integer> entry : buys.entrySet()) {
+			CfgGoods temp = goods.get(entry.getKey());
+			OrderGoods instance = new OrderGoods();
+			instance.setOrderId(orderId);
+			instance.setGoodsId(temp.getId());
+			instance.setGoodsName(temp.getName());
+			instance.setGoodsDesc(temp.getDesc());
+			instance.setGoodsNum(entry.getValue());
+			MemberType memberType = MemberType.match(custom.getMemberType());
+			switch (memberType) {
+			case ORIGINAL:
+				instance.setUnitPrice(temp.getOriginalPrice());
+				break;
+			case GENERAL:
+				instance.setUnitPrice(temp.getGeneralPrice());
+				break;
+			case VIP:
+				instance.setUnitPrice(temp.getVIPPrice());
+				break;
+			default:
+				throw new CodeException();
+			}
+			instance.setCreated(DateUtil.current());
+			list.add(instance);
+		}
+		return list;
 	}
 }

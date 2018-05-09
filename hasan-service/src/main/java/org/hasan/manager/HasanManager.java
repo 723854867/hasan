@@ -10,6 +10,7 @@ import org.gatlin.soa.account.api.AccountService;
 import org.gatlin.soa.account.bean.AccountUtil;
 import org.gatlin.soa.account.bean.entity.LogUserAccount;
 import org.gatlin.soa.account.bean.entity.UserAccount;
+import org.gatlin.soa.account.bean.entity.UserRecharge;
 import org.gatlin.soa.config.api.ConfigService;
 import org.gatlin.util.DateUtil;
 import org.gatlin.util.bean.enums.TimeUnit;
@@ -73,9 +74,9 @@ public class HasanManager {
 	
 	// 购买会员成功
 	@Transactional
-	public void memberBuy(long uid, int cfgId) {
-		CfgMember member = member(cfgId);
-		Query query = new Query().eq("uid", uid).forUpdate();
+	public void memberBuy(UserRecharge recharge) {
+		CfgMember member = member(Integer.valueOf(recharge.getGoodsId()));
+		Query query = new Query().eq("uid", recharge.getRechargee()).forUpdate();
 		UserCustom custom = userCustomDao.queryUnique(query);
 		custom.setMemberType(member.getMemberType());
 		custom.setMemberTitle(member.getName());
@@ -84,6 +85,8 @@ public class HasanManager {
 		long duration = unit.millis() * member.getExpiry();
 		custom.setMemberExpiry(System.currentTimeMillis() + duration);
 		userCustomDao.update(custom);
+		LogUserAccount log = AccountUtil.log(recharge.getRechargee(), member.getPrice(), HasanBizType.MEMBER_BUY_OK.mark(), recharge.getId());
+		accountService.process(log);
 	}
 	
 	@Transactional
