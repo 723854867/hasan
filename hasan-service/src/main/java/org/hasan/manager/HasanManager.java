@@ -6,6 +6,10 @@ import javax.annotation.Resource;
 
 import org.gatlin.core.util.Assert;
 import org.gatlin.dao.bean.model.Query;
+import org.gatlin.soa.account.api.AccountService;
+import org.gatlin.soa.account.bean.AccountUtil;
+import org.gatlin.soa.account.bean.entity.LogUserAccount;
+import org.gatlin.soa.account.bean.entity.UserAccount;
 import org.gatlin.soa.config.api.ConfigService;
 import org.gatlin.util.DateUtil;
 import org.gatlin.util.bean.enums.TimeUnit;
@@ -15,11 +19,14 @@ import org.hasan.bean.HasanCode;
 import org.hasan.bean.HasanConsts;
 import org.hasan.bean.entity.CfgMember;
 import org.hasan.bean.entity.UserCustom;
+import org.hasan.bean.enums.HasanBizType;
+import org.hasan.bean.enums.MemberType;
 import org.hasan.bean.param.MemberAddParam;
 import org.hasan.bean.param.MemberModifyParam;
 import org.hasan.mybatis.dao.CfgMemberDao;
 import org.hasan.mybatis.dao.UserCustomDao;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 public class HasanManager {
@@ -30,6 +37,8 @@ public class HasanManager {
 	private UserCustomDao userCustomDao;
 	@Resource
 	private ConfigService configService;
+	@Resource
+	private AccountService accountService;
 	
 	public void register(long uid) {
 		String memberTitle = configService.config(HasanConsts.DEFAULT_MEMBER_TITLE);
@@ -63,9 +72,11 @@ public class HasanManager {
 	}
 	
 	// 购买会员成功
+	@Transactional
 	public void memberBuy(long uid, int cfgId) {
 		CfgMember member = member(cfgId);
-		UserCustom custom = userCustomDao.getByKey(uid);
+		Query query = new Query().eq("uid", uid).forUpdate();
+		UserCustom custom = userCustomDao.queryUnique(query);
 		custom.setMemberType(member.getMemberType());
 		custom.setMemberTitle(member.getName());
 		custom.setUpdated(DateUtil.current());
@@ -73,6 +84,21 @@ public class HasanManager {
 		long duration = unit.millis() * member.getExpiry();
 		custom.setMemberExpiry(System.currentTimeMillis() + duration);
 		userCustomDao.update(custom);
+	}
+	
+	@Transactional
+	public UserCustom userCustom(long uid) {
+		Query query = new Query().eq("uid", uid).forUpdate();
+		UserCustom custom = userCustomDao.queryUnique(query);
+		if (custom.getMemberExpiry() <= System.currentTimeMillis()) {
+			custom.setMemberType(MemberType.ORIGINAL.mark());
+			custom.setUpdated(DateUtil.current());
+			userCustomDao.update(custom);
+			UserAccount account = accountService.account(new Query().eq("uid", uid));
+			LogUserAccount log = AccountUtil.log(uid, account.getUsable().negate(), HasanBizType.MEMBER_EXPIRY.mark(), custom.getMemberType());
+			accountService.process(log);
+		}
+		return custom;
 	}
 	
 	public CfgMember member(int id) {

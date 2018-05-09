@@ -15,4 +15,12 @@ public enum MemberType {
 	public int mark() {
 		return mark;
 	}
+	
+	public static final MemberType match(int type) { 
+		for (MemberType temp : MemberType.values()) {
+			if (temp.mark == type)
+				return temp;
+		}
+		return null;
+	}
 }

@@ -1,14 +1,21 @@
 package org.hasan.bean;
 
+import java.math.BigDecimal;
+
+import org.gatlin.soa.user.bean.entity.UserAddress;
 import org.gatlin.util.DateUtil;
+import org.gatlin.util.IDWorker;
 import org.hasan.bean.entity.CfgGoods;
 import org.hasan.bean.entity.CfgMember;
 import org.hasan.bean.entity.CfgScheduler;
+import org.hasan.bean.entity.Order;
 import org.hasan.bean.entity.UserCustom;
 import org.hasan.bean.enums.GoodsState;
 import org.hasan.bean.enums.MemberType;
+import org.hasan.bean.enums.OrderState;
 import org.hasan.bean.param.GoodsAddParam;
 import org.hasan.bean.param.MemberAddParam;
+import org.hasan.bean.param.OrderMakeParam;
 import org.hasan.bean.param.SchedulerAddParam;
 
 public class EntityGenerator {
@@ -60,6 +67,22 @@ public class EntityGenerator {
 		instance.setExpiry(param.getExpiry());
 		instance.setMemberType(param.getMemberType().mark());
 		instance.setTimeUnit(param.getTimeUnit().mark());
+		int time = DateUtil.current();
+		instance.setCreated(time);
+		instance.setUpdated(time);
+		return instance;
+	}
+	
+	public static final Order newOrder(OrderMakeParam param, BigDecimal price, UserAddress address) {
+		Order instance = new Order();
+		instance.setId(IDWorker.INSTANCE.nextSid());
+		instance.setUid(param.getUser().getId());
+		instance.setIp(param.meta().getIp());
+		instance.setState(OrderState.INIT.mark());
+		instance.setPrice(price);
+		instance.setRecipients(address.getContacts());
+		instance.setRecipients(address.getProvince() + address.getCity() + address.getCounty() + address.getDetail());
+		instance.setRecipientsMobile(address.getContactsMobile());
 		int time = DateUtil.current();
 		instance.setCreated(time);
 		instance.setUpdated(time);

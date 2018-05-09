@@ -1,5 +1,7 @@
 package org.hasan.bean.entity;
 
+import java.math.BigDecimal;
+
 import javax.persistence.Id;
 
 import org.gatlin.core.bean.Entity;
@@ -10,9 +12,10 @@ public class Order implements Entity<String> {
 
 	@Id
 	private String id;
+	private long uid;
 	private String ip;
 	private int state;
-	private String price;
+	private BigDecimal price;
 	private String recipients;
 	private String recipientsAddr;
 	private String recipientsMobile;
@@ -25,6 +28,14 @@ public class Order implements Entity<String> {
 
 	public void setId(String id) {
 		this.id = id;
+	}
+	
+	public long getUid() {
+		return uid;
+	}
+	
+	public void setUid(long uid) {
+		this.uid = uid;
 	}
 	
 	public String getIp() {
@@ -43,11 +54,11 @@ public class Order implements Entity<String> {
 		this.state = state;
 	}
 
-	public String getPrice() {
+	public BigDecimal getPrice() {
 		return price;
 	}
-
-	public void setPrice(String price) {
+	
+	public void setPrice(BigDecimal price) {
 		this.price = price;
 	}
 

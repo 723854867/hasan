@@ -26,6 +26,7 @@ public class RechargeHook extends org.gatlin.web.util.hook.RechargeHook {
 	protected UserRecharge verify(RechargeParam param) {
 		switch (param.getGoodsType()) {
 		case 100:					// 购买会员
+			rechargeeVerify(param);
 			CfgMember member = hasanManager.member(Integer.valueOf(param.getGoodsId()));
 			Assert.notNull(HasanCode.MEMBER_NOT_EXIST, member);
 			Assert.isTrue(CoreCode.PARAM_ERR, member.isSale());
@@ -33,6 +34,8 @@ public class RechargeHook extends org.gatlin.web.util.hook.RechargeHook {
 		case 101:					// 支付订单
 			Order order = orderManager.order(param.getGoodsId());
 			Assert.notNull(HasanCode.ORDER_NOT_EXIST, order);
+			Assert.isTrue(CoreCode.PARAM_ERR, null == param.getRechargee());
+			param.setRechargee(order.getUid());
 			return _userRecharge(param);
 		default:
 			throw new CodeException(CoreCode.PARAM_ERR);
