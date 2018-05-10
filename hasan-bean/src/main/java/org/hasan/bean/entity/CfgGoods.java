@@ -21,6 +21,7 @@ public class CfgGoods implements Entity<Integer> {
 	private String desc;
 	private int priority;
 	private int inventory;
+	private int cookbookId;
 	@Column(name = "VIP_price")
 	private BigDecimal VIPPrice;
 	private BigDecimal generalPrice;
@@ -82,6 +83,14 @@ public class CfgGoods implements Entity<Integer> {
 
 	public void setInventory(int inventory) {
 		this.inventory = inventory;
+	}
+	
+	public int getCookbookId() {
+		return cookbookId;
+	}
+	
+	public void setCookbookId(int cookbookId) {
+		this.cookbookId = cookbookId;
 	}
 
 	public BigDecimal getVIPPrice() {

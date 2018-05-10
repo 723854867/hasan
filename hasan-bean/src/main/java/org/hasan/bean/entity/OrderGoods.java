@@ -14,11 +14,13 @@ public class OrderGoods implements Entity<Long> {
 	@Id
 	@GeneratedValue
 	private long id;
+	private String icon;
 	private int goodsId;
 	private int goodsNum;
 	private String orderId;
 	private String goodsName;
 	private String goodsDesc;
+	private String evaluationId;
 	private BigDecimal unitPrice;
 	private int created;
 
@@ -28,6 +30,14 @@ public class OrderGoods implements Entity<Long> {
 
 	public void setId(long id) {
 		this.id = id;
+	}
+	
+	public String getIcon() {
+		return icon;
+	}
+	
+	public void setIcon(String icon) {
+		this.icon = icon;
 	}
 
 	public int getGoodsId() {
@@ -68,6 +78,14 @@ public class OrderGoods implements Entity<Long> {
 
 	public void setGoodsDesc(String goodsDesc) {
 		this.goodsDesc = goodsDesc;
+	}
+	
+	public String getEvaluationId() {
+		return evaluationId;
+	}
+	
+	public void setEvaluationId(String evaluationId) {
+		this.evaluationId = evaluationId;
 	}
 
 	public BigDecimal getUnitPrice() {

@@ -8,7 +8,9 @@ public enum HasanResourceType {
 	GOODS_ICON(1000),
 	GOODS_IMAGE(1001),
 	GOODS_DISH(1002),
-	GOODS_COOKBOOK(1003);
+	
+	COOKBOOK_ICON(1010),
+	COOKBOOK_IMAGE(1011);
 	
 	private int mark;
 	
@@ -35,7 +37,6 @@ public enum HasanResourceType {
 				add(GOODS_ICON.mark);
 				add(GOODS_IMAGE.mark);
 				add(GOODS_DISH.mark);
-				add(GOODS_COOKBOOK.mark);
 			}
 		};
 	}

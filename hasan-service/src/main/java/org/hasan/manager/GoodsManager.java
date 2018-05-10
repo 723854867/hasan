@@ -10,10 +10,15 @@ import org.gatlin.core.CoreCode;
 import org.gatlin.core.util.Assert;
 import org.gatlin.dao.bean.model.Query;
 import org.gatlin.util.DateUtil;
+import org.hasan.bean.EntityGenerator;
 import org.hasan.bean.HasanCode;
 import org.hasan.bean.entity.CfgGoods;
+import org.hasan.bean.entity.OrderGoods;
+import org.hasan.bean.entity.UserEvaluation;
 import org.hasan.bean.enums.GoodsState;
+import org.hasan.bean.param.EvaluateParam;
 import org.hasan.mybatis.dao.CfgGoodsDao;
+import org.hasan.mybatis.dao.UserEvaluationDao;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -21,6 +26,8 @@ public class GoodsManager {
 
 	@Resource
 	private CfgGoodsDao cfgGoodsDao;
+	@Resource
+	private UserEvaluationDao userEvaluationDao;
 	
 	Map<Integer, CfgGoods> buy(Map<Integer, Integer> map) {
 		Query query = new Query().in("id", map.keySet()).forUpdate();
@@ -40,6 +47,12 @@ public class GoodsManager {
 		return m;
 	}
 	
+	UserEvaluation evaluate(EvaluateParam param, OrderGoods orderGoods) {
+		UserEvaluation evaluation = EntityGenerator.newUserEvaluation(param, orderGoods);
+		userEvaluationDao.insert(evaluation);
+		return evaluation;
+	}
+	
 	public void insert(CfgGoods goods)  {
 		cfgGoodsDao.insert(goods);
 	}
@@ -54,5 +67,9 @@ public class GoodsManager {
 	
 	public List<CfgGoods> goods(Query query) {
 		return cfgGoodsDao.queryList(query);
+	}
+	
+	public List<UserEvaluation> evaluations(Query query) {
+		return userEvaluationDao.queryList(query);
 	}
 }

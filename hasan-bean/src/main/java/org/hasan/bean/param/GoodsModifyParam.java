@@ -23,6 +23,8 @@ public class GoodsModifyParam extends SoaIdParam {
 	private int priority;
 	@Min(0)
 	private int inventory;
+	@Min(0)
+	private Integer cookbookId;
 	@NotNull
 	private GoodsState state;
 	@NotNull
@@ -73,6 +75,14 @@ public class GoodsModifyParam extends SoaIdParam {
 	
 	public void setInventory(int inventory) {
 		this.inventory = inventory;
+	}
+	
+	public Integer getCookbookId() {
+		return cookbookId;
+	}
+	
+	public void setCookbookId(Integer cookbookId) {
+		this.cookbookId = cookbookId;
 	}
 
 	public BigDecimal getVIPPrice() {

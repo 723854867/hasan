@@ -22,6 +22,8 @@ public class GoodsAddParam extends SoaParam {
 	private int priority;
 	@Min(0)
 	private int inventory;
+	@Min(1)
+	private int cookbookId;
 	@NotNull
 	@DecimalMin("0.01")
 	private BigDecimal VIPPrice;
@@ -62,6 +64,14 @@ public class GoodsAddParam extends SoaParam {
 	
 	public void setInventory(int inventory) {
 		this.inventory = inventory;
+	}
+	
+	public int getCookbookId() {
+		return cookbookId;
+	}
+	
+	public void setCookbookId(int cookbookId) {
+		this.cookbookId = cookbookId;
 	}
 
 	public BigDecimal getVIPPrice() {

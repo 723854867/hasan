@@ -5,6 +5,7 @@ import javax.validation.Valid;
 
 import org.gatlin.core.bean.model.message.Response;
 import org.gatlin.soa.bean.param.SoaIdParam;
+import org.gatlin.soa.bean.param.SoaSidParam;
 import org.hasan.bean.param.GoodsAddParam;
 import org.hasan.bean.param.GoodsModifyParam;
 import org.hasan.bean.param.GoodsParam;
@@ -31,6 +32,12 @@ public class GoodsController {
 	@RequestMapping("detail")
 	public Object detail(@RequestBody @Valid SoaIdParam param) {
 		return goodsService.goodsDetail(param.getId());
+	}
+	
+	@ResponseBody
+	@RequestMapping("evaluations")
+	public Object evaluations(@RequestBody @Valid SoaSidParam param) {
+		return goodsService.evaluations(param.query());
 	}
 	
 	@ResponseBody

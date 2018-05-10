@@ -11,7 +11,7 @@ import org.hasan.bean.entity.CfgGoods;
 import org.hasan.bean.enums.GoodsState;
 import org.hasan.bean.enums.HasanResourceType;
 
-public class CfgGoodsInfo implements Serializable {
+public class GoodsInfo implements Serializable {
 
 	private static final long serialVersionUID = -5212597522523888585L;
 
@@ -28,13 +28,13 @@ public class CfgGoodsInfo implements Serializable {
 	private Map<HasanResourceType, List<ResourceInfo>> resources;
 	private int created;
 	
-	public CfgGoodsInfo() {}
+	public GoodsInfo() {}
 	
-	public CfgGoodsInfo(CfgGoods goods) {
+	public GoodsInfo(CfgGoods goods) {
 		this(goods, new HashMap<HasanResourceType, List<ResourceInfo>>());
 	}
 	
-	public CfgGoodsInfo(CfgGoods goods, Map<HasanResourceType, List<ResourceInfo>> resources) {
+	public GoodsInfo(CfgGoods goods, Map<HasanResourceType, List<ResourceInfo>> resources) {
 		this.id = goods.getId();
 		this.sold = goods.getSold();
 		this.name = goods.getName();
