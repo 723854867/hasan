@@ -14,6 +14,7 @@ public interface HasanCode {
 	final Code SCHEDULER_NOT_EXIST 				= new Code("code.scheduler.not.exist", "日程配置不存在");
 	final Code CUISINE_NOT_EXIST 				= new Code("code.hasan.cuisine.not.exist", "食材不存在");
 	final Code COOKBOOK_NOT_EXIST 				= new Code("code.hasan.cookbook.not.exist", "菜谱不存在");
+	final Code CUISINE_CATEGORY_DUPLICATED		= new Code("code.hasan.cuisine.category.duplicated", "食材分类序号重复");
 	final Code COOKBOOK_STEP_NOT_EXIST 			= new Code("code.hasan.cookbook.step.not.exist", "菜谱步骤不存在");
 	final Code CUISINE_DELETE_CATEGORY_LINKED	= new Code("code.hasan.cuisine.delete.category.linked", "食材类型已经绑定食材，请先将食材解绑再删除");
 	final Code CUISINE_CATEGORY_NOT_EXIST 		= new Code("code.hasan.cuisine.category.not.exist", "食材类型不存在");

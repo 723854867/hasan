@@ -1,21 +1,14 @@
-package org.hasan.bean.param;
+package org.hasan.bean.model;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotEmpty;
+public class CookbookText implements Serializable {
 
-import org.gatlin.soa.bean.param.SoaNameIdParam;
-import org.hasan.bean.model.CuisineGroup;
+	private static final long serialVersionUID = -2679317372720501310L;
 
-public class CookbookModifyParam extends SoaNameIdParam {
-
-	private static final long serialVersionUID = -2899957209581676782L;
-	
 	private Set<Integer> goods;
-	@Valid
-	@NotEmpty
 	private List<CuisineGroup> cuisineGroups;
 	
 	public Set<Integer> getGoods() {
@@ -25,7 +18,7 @@ public class CookbookModifyParam extends SoaNameIdParam {
 	public void setGoods(Set<Integer> goods) {
 		this.goods = goods;
 	}
-
+	
 	public List<CuisineGroup> getCuisineGroups() {
 		return cuisineGroups;
 	}

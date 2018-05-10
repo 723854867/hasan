@@ -6,8 +6,6 @@ import java.util.List;
 import org.gatlin.soa.resource.bean.model.ResourceInfo;
 import org.hasan.bean.entity.CfgCookbook;
 import org.hasan.bean.entity.CfgCookbookStep;
-import org.hasan.bean.entity.CfgCuisine;
-import org.hasan.bean.entity.CfgCuisineCategory;
 import org.hasan.bean.entity.CfgGoods;
 
 public class CookbookDetail implements Serializable {
@@ -18,17 +16,16 @@ public class CookbookDetail implements Serializable {
 	private String name;
 	private List<Step> steps;
 	private List<Goods> goods;
-	private List<Cuisine> cuisines;
 	private List<ResourceInfo> images;
+	private List<CuisineGroup> cuisineGroups;
 	
 	public CookbookDetail() {}
 
-	public CookbookDetail(CfgCookbook cookbook, List<Step> steps, List<Goods> goods, List<Cuisine> cuisines,List<ResourceInfo> images) {
+	public CookbookDetail(CfgCookbook cookbook, List<Step> steps, List<Goods> goods, List<ResourceInfo> images) {
 		this.id = cookbook.getId();
 		this.name = cookbook.getName();
 		this.steps = steps;
 		this.goods = goods;
-		this.cuisines = cuisines;
 		this.images = images;
 	}
 
@@ -64,14 +61,6 @@ public class CookbookDetail implements Serializable {
 		this.goods = goods;
 	}
 
-	public List<Cuisine> getCuisines() {
-		return cuisines;
-	}
-
-	public void setCuisines(List<Cuisine> cuisines) {
-		this.cuisines = cuisines;
-	}
-
 	public List<ResourceInfo> getImages() {
 		return images;
 	}
@@ -79,47 +68,13 @@ public class CookbookDetail implements Serializable {
 	public void setImages(List<ResourceInfo> images) {
 		this.images = images;
 	}
-
-	public static class Cuisine implements Serializable {
-
-		private static final long serialVersionUID = 494554426087951841L;
-
-		private int categoryId;
-		private String category;
-		private List<CfgCuisine> list;
-
-		public Cuisine() {
-		}
-
-		public Cuisine(CfgCuisineCategory category, List<CfgCuisine> list) {
-			this.list = list;
-			this.categoryId = category.getId();
-			this.category = category.getName();
-		}
-
-		public int getCategoryId() {
-			return categoryId;
-		}
-
-		public void setCategoryId(int categoryId) {
-			this.categoryId = categoryId;
-		}
-
-		public String getCategory() {
-			return category;
-		}
-
-		public void setCategory(String category) {
-			this.category = category;
-		}
-
-		public List<CfgCuisine> getList() {
-			return list;
-		}
-
-		public void setList(List<CfgCuisine> list) {
-			this.list = list;
-		}
+	
+	public List<CuisineGroup> getCuisineGroups() {
+		return cuisineGroups;
+	}
+	
+	public void setCuisineGroups(List<CuisineGroup> cuisineGroups) {
+		this.cuisineGroups = cuisineGroups;
 	}
 
 	public static class Step implements Serializable {

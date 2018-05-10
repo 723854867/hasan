@@ -13,6 +13,7 @@ public class CfgCookbook implements Entity<Integer> {
 	@GeneratedValue
 	private int id;
 	private String name;
+	private String text;
 	private int created;
 	private int updated;
 
@@ -31,7 +32,15 @@ public class CfgCookbook implements Entity<Integer> {
 	public void setName(String name) {
 		this.name = name;
 	}
-
+	
+	public String getText() {
+		return text;
+	}
+	
+	public void setText(String text) {
+		this.text = text;
+	}
+	
 	public int getCreated() {
 		return created;
 	}

@@ -6,11 +6,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import org.gatlin.core.bean.exceptions.CodeException;
-import org.gatlin.soa.bean.param.SoaNameIdParam;
-import org.gatlin.soa.bean.param.SoaNameParam;
 import org.gatlin.soa.resource.bean.model.ResourceInfo;
 import org.gatlin.soa.user.bean.entity.UserAddress;
 import org.gatlin.util.DateUtil;
@@ -18,10 +15,7 @@ import org.gatlin.util.IDWorker;
 import org.gatlin.util.lang.CollectionUtil;
 import org.gatlin.util.lang.StringUtil;
 import org.hasan.bean.entity.CfgCookbook;
-import org.hasan.bean.entity.CfgCookbookMapping;
 import org.hasan.bean.entity.CfgCookbookStep;
-import org.hasan.bean.entity.CfgCuisine;
-import org.hasan.bean.entity.CfgCuisineCategory;
 import org.hasan.bean.entity.CfgGoods;
 import org.hasan.bean.entity.CfgMember;
 import org.hasan.bean.entity.CfgScheduler;
@@ -29,12 +23,10 @@ import org.hasan.bean.entity.Order;
 import org.hasan.bean.entity.OrderGoods;
 import org.hasan.bean.entity.UserCustom;
 import org.hasan.bean.entity.UserEvaluation;
-import org.hasan.bean.enums.CookbookMappingType;
 import org.hasan.bean.enums.GoodsState;
 import org.hasan.bean.enums.MemberType;
 import org.hasan.bean.enums.OrderState;
 import org.hasan.bean.param.CookbookStepAddParam;
-import org.hasan.bean.param.CuisineAddParam;
 import org.hasan.bean.param.EvaluateParam;
 import org.hasan.bean.param.GoodsAddParam;
 import org.hasan.bean.param.MemberAddParam;
@@ -169,30 +161,10 @@ public class EntityGenerator {
 		return instance;
 	}
 	
-	public static final CfgCuisineCategory newCfgCuisineCategory(SoaNameIdParam param) {
-		CfgCuisineCategory instance = new CfgCuisineCategory();
-		instance.setId(param.getId());
-		instance.setName(param.getName());
-		int time = DateUtil.current();
-		instance.setCreated(time);
-		instance.setUpdated(time);
-		return instance;
-	}
-	
-	public static final CfgCuisine newCfgCuisine(CuisineAddParam param) {
-		CfgCuisine instance = new CfgCuisine();
-		instance.setCategory(param.getCategory());
-		instance.setName(param.getName());
-		instance.setDosage(param.getDosage());
-		int time = DateUtil.current();
-		instance.setCreated(time);
-		instance.setUpdated(time);
-		return instance;
-	}
-	
-	public static final CfgCookbook newCfgCookbook(SoaNameParam param) {
+	public static final CfgCookbook newCfgCookbook(String name, String text) {
 		CfgCookbook instance = new CfgCookbook();
-		instance.setName(param.getName());
+		instance.setText(text);
+		instance.setName(name);
 		int time = DateUtil.current();
 		instance.setCreated(time);
 		instance.setUpdated(time);
@@ -208,19 +180,5 @@ public class EntityGenerator {
 		instance.setCreated(time);
 		instance.setUpdated(time);
 		return instance;
-	}
-	
-	public static final List<CfgCookbookMapping> newCfgCookbookMapping(CfgCookbook cookbook, Set<Integer> tids, CookbookMappingType type) {
-		List<CfgCookbookMapping> list = new ArrayList<CfgCookbookMapping>();
-		tids.forEach(tid -> {
-			CfgCookbookMapping instance = new CfgCookbookMapping();
-			instance.setTid(tid);
-			instance.setType(type.mark());
-			instance.setCookbookId(cookbook.getId());
-			instance.setCreated(DateUtil.current());
-			list.add(instance);
-		});
-		return list;
-		
 	}
 }
