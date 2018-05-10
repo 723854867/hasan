@@ -3,9 +3,11 @@ package org.hasan.bean.entity;
 import java.math.BigDecimal;
 
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 import org.gatlin.core.bean.Entity;
 
+@Table(name="`order`")
 public class Order implements Entity<String> {
 
 	private static final long serialVersionUID = 2327138052108096069L;
