@@ -8,9 +8,18 @@ public class CookbookStepModifyParam extends SoaIdParam {
 
 	private static final long serialVersionUID = 7968430014952615741L;
 
+	private String name;
 	private String content;
 	@Min(1)
 	private Integer priority;
+	
+	public String getName() {
+		return name;
+	}
+	
+	public void setName(String name) {
+		this.name = name;
+	}
 
 	public String getContent() {
 		return content;

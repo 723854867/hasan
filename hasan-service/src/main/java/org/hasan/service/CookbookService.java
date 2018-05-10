@@ -96,8 +96,8 @@ public class CookbookService {
 							break;
 						}
 					}
-					steps.add(new Step(step, resource));
 				}
+				steps.add(new Step(step, resource));
 			});
 		}
 		CookbookDetail detail = new CookbookDetail(cookbook, steps, goods, images);

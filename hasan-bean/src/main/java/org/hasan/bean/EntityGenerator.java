@@ -173,6 +173,7 @@ public class EntityGenerator {
 	
 	public static final CfgCookbookStep newCfgCookbookStep(CookbookStepAddParam param) {
 		CfgCookbookStep instance = new CfgCookbookStep();
+		instance.setName(param.getName());
 		instance.setPriority(param.getPriority());
 		instance.setContent(param.getContent());
 		instance.setCookbookId(param.getCookbookId());

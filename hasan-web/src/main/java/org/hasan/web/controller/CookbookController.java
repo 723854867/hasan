@@ -56,20 +56,20 @@ public class CookbookController {
 	}
 
 	@ResponseBody
-	@RequestMapping("cookbook/step/add")
+	@RequestMapping("step/add")
 	public Object cookbookStepAdd(@RequestBody @Valid CookbookStepAddParam param) {
 		return cookbookService.cookbookStepAdd(param);
 	}
 	
 	@ResponseBody
-	@RequestMapping("cookbook/step/modify")
+	@RequestMapping("step/modify")
 	public Object cookbooStepkModify(@RequestBody @Valid CookbookStepModifyParam param) {
 		cookbookService.cookbooStepkModify(param);
 		return Response.ok();
 	}
 	
 	@ResponseBody
-	@RequestMapping("cookbook/step/delete")
+	@RequestMapping("step/delete")
 	public Object cookbookStepDelete(@RequestBody @Valid SoaIdParam param) {
 		cookbookService.cookbookStepDelete(param);
 		return Response.ok();
