@@ -10,7 +10,8 @@ public enum HasanResourceType {
 	GOODS_DISH(1002),
 	
 	COOKBOOK_ICON(1010),
-	COOKBOOK_IMAGE(1011);
+	COOKBOOK_IMAGE(1011),
+	COOKBOOK_STEP(1020);
 	
 	private int mark;
 	

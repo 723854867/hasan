@@ -2,12 +2,14 @@ package org.hasan.manager;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Resource;
 
 import org.gatlin.core.util.Assert;
 import org.gatlin.dao.bean.model.Query;
 import org.gatlin.soa.bean.param.SoaIdParam;
+import org.gatlin.soa.bean.param.SoaNameIdParam;
 import org.gatlin.util.DateUtil;
 import org.gatlin.util.lang.CollectionUtil;
 import org.gatlin.util.lang.StringUtil;
@@ -25,8 +27,6 @@ import org.hasan.bean.param.CookbookModifyParam;
 import org.hasan.bean.param.CookbookStepAddParam;
 import org.hasan.bean.param.CookbookStepModifyParam;
 import org.hasan.bean.param.CuisineAddParam;
-import org.hasan.bean.param.CuisineCategoryAddParam;
-import org.hasan.bean.param.CuisineCategoryModifyParam;
 import org.hasan.bean.param.CuisineModifyParam;
 import org.hasan.mybatis.dao.CfgCookbookDao;
 import org.hasan.mybatis.dao.CfgCookbookMappingDao;
@@ -52,17 +52,16 @@ public class CookbookManager {
 	@Resource
 	private CfgCuisineCategoryDao cfgCuisineCategoryDao;
 	
-	public int cuisineCategoryAdd(CuisineCategoryAddParam param) {
+	public int cuisineCategoryAdd(SoaNameIdParam param) {
 		CfgCuisineCategory category = EntityGenerator.newCfgCuisineCategory(param);
 		cfgCuisineCategoryDao.insert(category);
 		return category.getId();
 	}
 	
-	public void cuisineCategoryModify(CuisineCategoryModifyParam param) {
+	public void cuisineCategoryModify(SoaNameIdParam param) {
 		CfgCuisineCategory category = cfgCuisineCategoryDao.getByKey(param.getId());
 		Assert.notNull(HasanCode.CUISINE_CATEGORY_NOT_EXIST, category);
 		category.setName(param.getName());
-		category.setPriority(param.getPriority());
 		category.setUpdated(DateUtil.current());
 		cfgCuisineCategoryDao.update(category);
 	}
@@ -174,6 +173,10 @@ public class CookbookManager {
 		return cfgCookbookDao.getByKey(cookbookId);
 	}
 	
+	public List<CfgCookbookStep> steps(int cookbookId) {
+		return cfgCookbookStepDao.queryList(new Query().eq("cookbook_id", cookbookId));
+	}
+	
 	public List<CfgCuisine> cuisines(Query query) {
 		return cfgCuisineDao.queryList(query);
 	}
@@ -184,5 +187,9 @@ public class CookbookManager {
 	
 	public Map<Integer, CfgCuisineCategory> cuisineCategories() {
 		return cfgCuisineCategoryDao.getAll();
+	}
+	
+	public Set<Integer> cookbookMapps(CookbookMappingType type, int cookbookId) {
+		return cfgCookbookMappingDao.tids(type.mark(), cookbookId);
 	}
 }

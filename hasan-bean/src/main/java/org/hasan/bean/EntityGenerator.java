@@ -9,6 +9,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.gatlin.core.bean.exceptions.CodeException;
+import org.gatlin.soa.bean.param.SoaNameIdParam;
 import org.gatlin.soa.bean.param.SoaNameParam;
 import org.gatlin.soa.resource.bean.model.ResourceInfo;
 import org.gatlin.soa.user.bean.entity.UserAddress;
@@ -34,7 +35,6 @@ import org.hasan.bean.enums.MemberType;
 import org.hasan.bean.enums.OrderState;
 import org.hasan.bean.param.CookbookStepAddParam;
 import org.hasan.bean.param.CuisineAddParam;
-import org.hasan.bean.param.CuisineCategoryAddParam;
 import org.hasan.bean.param.EvaluateParam;
 import org.hasan.bean.param.GoodsAddParam;
 import org.hasan.bean.param.MemberAddParam;
@@ -169,10 +169,10 @@ public class EntityGenerator {
 		return instance;
 	}
 	
-	public static final CfgCuisineCategory newCfgCuisineCategory(CuisineCategoryAddParam param) {
+	public static final CfgCuisineCategory newCfgCuisineCategory(SoaNameIdParam param) {
 		CfgCuisineCategory instance = new CfgCuisineCategory();
+		instance.setId(param.getId());
 		instance.setName(param.getName());
-		instance.setPriority(param.getPriority());
 		int time = DateUtil.current();
 		instance.setCreated(time);
 		instance.setUpdated(time);

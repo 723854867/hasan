@@ -1,6 +1,5 @@
 package org.hasan.bean.entity;
 
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 import org.gatlin.core.bean.Entity;
@@ -10,17 +9,15 @@ public class CfgCuisineCategory implements Entity<Integer> {
 	private static final long serialVersionUID = 1841694795186836083L;
 
 	@Id
-	@GeneratedValue
 	private int id;
 	private String name;
-	private int priority;
 	private int created;
 	private int updated;
-
+	
 	public int getId() {
 		return id;
 	}
-
+	
 	public void setId(int id) {
 		this.id = id;
 	}
@@ -33,14 +30,6 @@ public class CfgCuisineCategory implements Entity<Integer> {
 		this.name = name;
 	}
 	
-	public int getPriority() {
-		return priority;
-	}
-	
-	public void setPriority(int priority) {
-		this.priority = priority;
-	}
-
 	public int getCreated() {
 		return created;
 	}

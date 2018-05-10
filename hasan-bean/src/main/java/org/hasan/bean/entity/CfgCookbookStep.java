@@ -12,6 +12,7 @@ public class CfgCookbookStep implements Entity<Integer> {
 	@Id
 	@GeneratedValue
 	private int id;
+	private String name;
 	private int priority;
 	private int cookbookId;
 	private String content;
@@ -24,6 +25,14 @@ public class CfgCookbookStep implements Entity<Integer> {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+	
+	public String getName() {
+		return name;
+	}
+	
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public int getPriority() {

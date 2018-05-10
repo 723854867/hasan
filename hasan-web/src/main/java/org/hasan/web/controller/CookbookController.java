@@ -5,14 +5,13 @@ import javax.validation.Valid;
 
 import org.gatlin.core.bean.model.message.Response;
 import org.gatlin.soa.bean.param.SoaIdParam;
+import org.gatlin.soa.bean.param.SoaNameIdParam;
 import org.gatlin.soa.bean.param.SoaParam;
 import org.hasan.bean.param.CookbookAddParam;
 import org.hasan.bean.param.CookbookModifyParam;
 import org.hasan.bean.param.CookbookStepAddParam;
 import org.hasan.bean.param.CookbookStepModifyParam;
 import org.hasan.bean.param.CuisineAddParam;
-import org.hasan.bean.param.CuisineCategoryAddParam;
-import org.hasan.bean.param.CuisineCategoryModifyParam;
 import org.hasan.bean.param.CuisineModifyParam;
 import org.hasan.bean.param.CuisinesParam;
 import org.hasan.service.CookbookService;
@@ -29,6 +28,38 @@ public class CookbookController {
 	private CookbookService cookbookService;
 	
 	@ResponseBody
+	@RequestMapping("list")
+	public Object list(@RequestBody @Valid SoaParam param) {
+		return cookbookService.cookbooks(param.query());
+	}
+	
+	@ResponseBody
+	@RequestMapping("detail")
+	public Object detail(@RequestBody @Valid SoaIdParam param) {
+		return cookbookService.cookbookDetail(param.getId());
+	}
+	
+	@ResponseBody
+	@RequestMapping("add")
+	public Object cookbookAdd(@RequestBody @Valid CookbookAddParam param) {
+		return cookbookService.cookbookAdd(param);
+	}
+	
+	@ResponseBody
+	@RequestMapping("modify")
+	public Object cookbookModify(@RequestBody @Valid CookbookModifyParam param) {
+		cookbookService.cookbookModify(param);
+		return Response.ok();
+	}
+	
+	@ResponseBody
+	@RequestMapping("delete")
+	public Object cookbookDelete(@RequestBody @Valid SoaIdParam param) {
+		cookbookService.cuisineDelete(param);
+		return Response.ok();
+	}
+	
+	@ResponseBody
 	@RequestMapping("cuisine/categories")
 	public Object cuisineCategories(@RequestBody @Valid SoaParam param) {
 		return cookbookService.cuisineCategories();
@@ -36,13 +67,13 @@ public class CookbookController {
 
 	@ResponseBody
 	@RequestMapping("cuisine/category/add")
-	public Object cuisineCategoryAdd(@RequestBody @Valid CuisineCategoryAddParam param) {
+	public Object cuisineCategoryAdd(@RequestBody @Valid SoaNameIdParam param) {
 		return cookbookService.cuisineCategoryAdd(param);
 	}
 	
 	@ResponseBody
 	@RequestMapping("cuisine/category/modify")
-	public Object cuisineCategoryModify(@RequestBody @Valid CuisineCategoryModifyParam param) {
+	public Object cuisineCategoryModify(@RequestBody @Valid SoaNameIdParam param) {
 		cookbookService.cuisineCategoryModify(param);
 		return Response.ok();
 	}
@@ -76,32 +107,6 @@ public class CookbookController {
 	@ResponseBody
 	@RequestMapping("cuisine/delete")
 	public Object cuisineDelete(@RequestBody @Valid SoaIdParam param) {
-		cookbookService.cuisineDelete(param);
-		return Response.ok();
-	}
-	
-	@ResponseBody
-	@RequestMapping("cookbooks")
-	public Object cookbooks(@RequestBody @Valid SoaParam param) {
-		return cookbookService.cookbooks(param.query());
-	}
-	
-	@ResponseBody
-	@RequestMapping("cookbook/add")
-	public Object cookbookAdd(@RequestBody @Valid CookbookAddParam param) {
-		return cookbookService.cookbookAdd(param);
-	}
-	
-	@ResponseBody
-	@RequestMapping("cookbook/modify")
-	public Object cookbookModify(@RequestBody @Valid CookbookModifyParam param) {
-		cookbookService.cookbookModify(param);
-		return Response.ok();
-	}
-	
-	@ResponseBody
-	@RequestMapping("cookbook/delete")
-	public Object cookbookDelete(@RequestBody @Valid SoaIdParam param) {
 		cookbookService.cuisineDelete(param);
 		return Response.ok();
 	}
