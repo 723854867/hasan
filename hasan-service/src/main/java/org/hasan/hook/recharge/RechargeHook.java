@@ -37,9 +37,11 @@ public class RechargeHook extends org.gatlin.web.util.hook.RechargeHook {
 			Assert.isTrue(CoreCode.PARAM_ERR, null == param.getAmount());
 			Assert.isTrue(CoreCode.PARAM_ERR, null == param.getRechargee());
 			Order order = orderManager.pay(param);
-			param.setRechargee(order.getUid());
-			param.setAmount(order.getPrice());
-			return _userRecharge(param);
+			UserRecharge recharge = _userRecharge(param, order.getExpressFee());
+			// 算上快递费
+			recharge.setFee(order.getExpressFee());
+			recharge.setAmount(recharge.getAmount().add(recharge.getFee()));
+			return recharge;
 		default:
 			throw new CodeException(CoreCode.PARAM_ERR);
 		}

@@ -6,14 +6,18 @@ import org.gatlin.core.GatlinConfigration;
 import org.gatlin.core.bean.info.Pager;
 import org.gatlin.dao.bean.model.Query;
 import org.gatlin.soa.account.api.AccountService;
+import org.gatlin.soa.bean.param.SoaLidParam;
 import org.gatlin.soa.courier.api.EmailService;
 import org.gatlin.soa.courier.api.SmsService;
 import org.gatlin.soa.user.api.UserService;
 import org.gatlin.soa.user.bean.entity.UserInvitation;
 import org.gatlin.soa.user.bean.model.RegisterModel;
+import org.gatlin.soa.user.bean.model.UserListInfo;
 import org.gatlin.soa.user.bean.param.RegisterParam;
 import org.gatlin.web.util.WebConsts;
 import org.hasan.bean.entity.CfgMember;
+import org.hasan.bean.param.AssistantAllocateParam;
+import org.hasan.bean.param.AssistantUserListParam;
 import org.hasan.bean.param.MemberAddParam;
 import org.hasan.bean.param.MemberModifyParam;
 import org.hasan.manager.HasanManager;
@@ -72,5 +76,19 @@ public class CommonService {
 		if (null != query.getPage())
 			PageHelper.startPage(query.getPage(), query.getPageSize());
 		return new Pager<CfgMember>(hasanManager.members(query));
+	}
+	
+	public void assistantAllocate(AssistantAllocateParam param) {
+		hasanManager.assistantAllocate(param);
+	}
+	
+	public void assistantDelete(SoaLidParam param) {
+		hasanManager.assistantDelete(param);
+	}
+	
+	public Pager<UserListInfo> assistantUsers(AssistantUserListParam param) {
+		if (null != param.getPage())
+			PageHelper.startPage(param.getPage(), param.getPageSize());
+		return new Pager<UserListInfo>(hasanManager.assistantUsers(param));
 	}
 }

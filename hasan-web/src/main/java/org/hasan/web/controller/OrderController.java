@@ -6,6 +6,7 @@ import javax.validation.Valid;
 import org.gatlin.core.bean.model.message.Response;
 import org.gatlin.dao.bean.model.Query;
 import org.gatlin.soa.bean.param.SoaSidParam;
+import org.hasan.bean.param.AssistantOrdersParam;
 import org.hasan.bean.param.EvaluateParam;
 import org.hasan.bean.param.OrderMakeParam;
 import org.hasan.bean.param.OrdersParam;
@@ -64,6 +65,13 @@ public class OrderController {
 	@RequestMapping("list/all")
 	public Object listAll(@RequestBody @Valid OrdersParam param) {
 		return orderService.orders(param.query());
+	}
+	
+	// 客服订单列表
+	@ResponseBody
+	@RequestMapping("assistant")
+	public Object assistantOrders(@RequestBody @Valid AssistantOrdersParam param) {
+		return orderService.assistantOrders(param);
 	}
 	
 	@ResponseBody

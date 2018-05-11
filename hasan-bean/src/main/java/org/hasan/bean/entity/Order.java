@@ -19,6 +19,7 @@ public class Order implements Entity<String> {
 	private int state;
 	private BigDecimal price;
 	private String recipients;
+	private BigDecimal expressFee;
 	private String recipientsAddr;
 	private String recipientsMobile;
 	private int deliverStart;
@@ -68,6 +69,14 @@ public class Order implements Entity<String> {
 
 	public String getRecipients() {
 		return recipients;
+	}
+	
+	public BigDecimal getExpressFee() {
+		return expressFee;
+	}
+	
+	public void setExpressFee(BigDecimal expressFee) {
+		this.expressFee = expressFee;
 	}
 
 	public void setRecipients(String recipients) {
