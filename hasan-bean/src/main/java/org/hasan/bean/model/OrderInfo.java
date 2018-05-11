@@ -17,6 +17,7 @@ public class OrderInfo implements Serializable {
 	private OrderState state;
 	private BigDecimal price;
 	private String recipients;
+	private BigDecimal expressFee;
 	private String recipientsAddr;
 	private String recipientsMobile;
 	private int deliverStart;
@@ -31,6 +32,7 @@ public class OrderInfo implements Serializable {
 		this.id = order.getId();
 		this.uid = order.getUid();
 		this.ip = order.getIp();
+		this.expressFee = order.getExpressFee();
 		this.state = OrderState.match(order.getState());
 		this.price = order.getPrice();
 		this.recipients = order.getRecipients();
@@ -87,6 +89,14 @@ public class OrderInfo implements Serializable {
 
 	public void setRecipients(String recipients) {
 		this.recipients = recipients;
+	}
+	
+	public BigDecimal getExpressFee() {
+		return expressFee;
+	}
+	
+	public void setExpressFee(BigDecimal expressFee) {
+		this.expressFee = expressFee;
 	}
 
 	public String getRecipientsAddr() {

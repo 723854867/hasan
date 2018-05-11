@@ -11,6 +11,7 @@ import org.gatlin.core.util.Assert;
 import org.gatlin.dao.bean.model.Query;
 import org.gatlin.soa.account.bean.param.RechargeParam;
 import org.gatlin.soa.bean.param.SoaSidParam;
+import org.gatlin.soa.config.api.ConfigService;
 import org.gatlin.soa.resource.api.ResourceService;
 import org.gatlin.soa.resource.bean.model.ResourceInfo;
 import org.gatlin.soa.user.api.GeoService;
@@ -21,12 +22,14 @@ import org.gatlin.util.IDWorker;
 import org.gatlin.util.lang.StringUtil;
 import org.hasan.bean.EntityGenerator;
 import org.hasan.bean.HasanCode;
+import org.hasan.bean.HasanConsts;
 import org.hasan.bean.entity.CfgGoods;
 import org.hasan.bean.entity.Order;
 import org.hasan.bean.entity.OrderGoods;
 import org.hasan.bean.entity.UserCustom;
 import org.hasan.bean.entity.UserEvaluation;
 import org.hasan.bean.enums.HasanResourceType;
+import org.hasan.bean.enums.MemberType;
 import org.hasan.bean.enums.OrderState;
 import org.hasan.bean.param.AssistantOrdersParam;
 import org.hasan.bean.param.EvaluateParam;
@@ -50,8 +53,9 @@ public class OrderManager {
 	@Resource
 	private OrderGoodsDao orderGoodsDao;
 	@Resource
+	private ConfigService configService;
+	@Resource
 	private ResourceService resourceService;
-	
 	
 	// 下订单
 	@Transactional
@@ -79,8 +83,13 @@ public class OrderManager {
 		Query query = new Query().eq("id", param.getGoodsId()).forUpdate();
 		Order order = orderDao.queryUnique(query);
 		Assert.notNull(HasanCode.ORDER_NOT_EXIST, order);
+		Assert.isTrue(CoreCode.FORBID, order.getUid() == param.getUser().getId());
 		OrderState state = OrderState.match(order.getState());
 		Assert.isTrue(HasanCode.ORDER_STATE_ERR, state == OrderState.INIT);
+		UserCustom custom = hasanManager.userCustom(order.getUid());
+		MemberType type = MemberType.match(custom.getMemberType());
+		if (type == MemberType.ORIGINAL) 
+			order.setExpressFee(configService.config(HasanConsts.EXPRESS_FEE));
 		order.setState(OrderState.PAYING.mark());
 		order.setUpdated(DateUtil.current());
 		orderDao.update(order);

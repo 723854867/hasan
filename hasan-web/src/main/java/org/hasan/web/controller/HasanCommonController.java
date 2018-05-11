@@ -16,6 +16,7 @@ import org.gatlin.soa.resource.bean.enums.ResourceType;
 import org.gatlin.soa.resource.bean.model.ResourceInfo;
 import org.gatlin.soa.user.api.UserService;
 import org.gatlin.soa.user.bean.param.RegisterParam;
+import org.hasan.bean.entity.UserCustom;
 import org.hasan.bean.model.Wallet;
 import org.hasan.bean.param.AssistantAllocateParam;
 import org.hasan.bean.param.AssistantUserListParam;
@@ -76,8 +77,9 @@ public class HasanCommonController {
 		Query query = new Query().eq("cfg_id", ResourceType.AVATAR.mark()).eq("owner", user.getId());
 		ResourceInfo resource = resourceService.resource(query);
 		query = new Query().eq("uid", user.getId()).eq("type", UserAccountType.BASIC.mark());
+		UserCustom custom = hasanManager.userCustom(user.getId());
 		UserAccount account = accountService.account(query);
-		return new Wallet(user, resource, account, hasanManager.userCustom(user.getId()));
+		return new Wallet(user, resource, account, custom);
 	}
 	
 	@ResponseBody

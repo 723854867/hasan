@@ -1,6 +1,9 @@
 package org.hasan.bean;
 
+import java.math.BigDecimal;
+
 import org.gatlin.core.bean.model.option.IntegerOption;
+import org.gatlin.core.bean.model.option.ObjectOption;
 import org.gatlin.core.bean.model.option.StrOption;
 
 public interface HasanConsts {
@@ -11,4 +14,6 @@ public interface HasanConsts {
 	final IntegerOption ORDER_ADVANCE_MINUTES				= new IntegerOption("order.advance.minutes", 30);
 	// 默认显示评价数
 	final IntegerOption DEFAULT_EVALUATION_NUM				= new IntegerOption("default.evaluation.num", 3);
+	// 
+	final ObjectOption<BigDecimal> EXPRESS_FEE				= new ObjectOption<BigDecimal>("express.fee", BigDecimal.valueOf(15));
 }

@@ -1,5 +1,6 @@
 package org.hasan.manager;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -101,15 +102,21 @@ public class HasanManager {
 	
 	@Transactional
 	public UserCustom userCustom(long uid) {
+		UserAccount account = accountService.account(new Query().eq("uid", uid).forUpdate());
 		Query query = new Query().eq("uid", uid).forUpdate();
 		UserCustom custom = userCustomDao.queryUnique(query);
-		if (custom.getMemberExpiry() <= System.currentTimeMillis()) {
-			custom.setMemberType(MemberType.ORIGINAL.mark());
-			custom.setUpdated(DateUtil.current());
-			userCustomDao.update(custom);
-			UserAccount account = accountService.account(new Query().eq("uid", uid));
-			LogUserAccount log = AccountUtil.log(uid, account.getUsable().negate(), HasanBizType.MEMBER_EXPIRY.mark(), custom.getMemberType());
-			accountService.process(log);
+		// 会员到期或者余额为0都会变成普通会员
+		if (custom.getMemberExpiry() <= System.currentTimeMillis() 
+				|| account.getUsable().compareTo(BigDecimal.ZERO) == 0) {
+			if (custom.getMemberType() != MemberType.ORIGINAL.mark()) {
+				custom.setMemberType(MemberType.ORIGINAL.mark());
+				custom.setUpdated(DateUtil.current());
+				userCustomDao.update(custom);
+			}
+			if (account.getUsable().compareTo(BigDecimal.ZERO) > 0) {
+				LogUserAccount log = AccountUtil.log(uid, account.getUsable().negate(), HasanBizType.MEMBER_EXPIRY.mark(), custom.getMemberType());
+				accountService.process(log);
+			}
 		}
 		return custom;
 	}

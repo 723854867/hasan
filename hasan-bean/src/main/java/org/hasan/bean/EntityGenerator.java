@@ -98,6 +98,7 @@ public class EntityGenerator {
 		instance.setIp(param.meta().getIp());
 		instance.setState(OrderState.INIT.mark());
 		instance.setPrice(price);
+		instance.setExpressFee(BigDecimal.ZERO);
 		instance.setRecipients(address.getContacts());
 		instance.setRecipients(address.getProvince() + address.getCity() + address.getCounty() + address.getDetail());
 		instance.setRecipientsMobile(address.getContactsMobile());
