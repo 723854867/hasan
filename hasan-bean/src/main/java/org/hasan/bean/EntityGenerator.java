@@ -21,11 +21,13 @@ import org.hasan.bean.entity.CfgMember;
 import org.hasan.bean.entity.CfgScheduler;
 import org.hasan.bean.entity.Order;
 import org.hasan.bean.entity.OrderGoods;
+import org.hasan.bean.entity.UserAssistant;
 import org.hasan.bean.entity.UserCustom;
 import org.hasan.bean.entity.UserEvaluation;
 import org.hasan.bean.enums.GoodsState;
 import org.hasan.bean.enums.MemberType;
 import org.hasan.bean.enums.OrderState;
+import org.hasan.bean.param.AssistantAllocateParam;
 import org.hasan.bean.param.CookbookStepAddParam;
 import org.hasan.bean.param.EvaluateParam;
 import org.hasan.bean.param.GoodsAddParam;
@@ -180,6 +182,14 @@ public class EntityGenerator {
 		int time = DateUtil.current();
 		instance.setCreated(time);
 		instance.setUpdated(time);
+		return instance;
+	}
+	
+	public static final UserAssistant newUserAssistant(AssistantAllocateParam param) {
+		UserAssistant instance = new UserAssistant();
+		instance.setUid(param.getId());
+		instance.setAssistant(param.getAssistant());
+		instance.setCreated(DateUtil.current());
 		return instance;
 	}
 }

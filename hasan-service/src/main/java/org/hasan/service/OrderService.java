@@ -12,6 +12,7 @@ import org.hasan.bean.HasanCode;
 import org.hasan.bean.entity.Order;
 import org.hasan.bean.entity.OrderGoods;
 import org.hasan.bean.model.OrderDetail;
+import org.hasan.bean.param.AssistantOrdersParam;
 import org.hasan.bean.param.EvaluateParam;
 import org.hasan.bean.param.OrderMakeParam;
 import org.hasan.manager.OrderManager;
@@ -56,5 +57,11 @@ public class OrderService {
 		if (null != query.getPage())
 			PageHelper.startPage(query.getPage(), query.getPageSize());
 		return new Pager<Order>(orderManager.orders(query));
+	}
+	
+	public Pager<Order> assistantOrders(AssistantOrdersParam param) {
+		if (null != param.getPage())
+			PageHelper.startPage(param.getPage(), param.getPageSize());
+		return new Pager<Order>(orderManager.assistantOrders(param));
 	}
 }

@@ -28,6 +28,7 @@ import org.hasan.bean.entity.UserCustom;
 import org.hasan.bean.entity.UserEvaluation;
 import org.hasan.bean.enums.HasanResourceType;
 import org.hasan.bean.enums.OrderState;
+import org.hasan.bean.param.AssistantOrdersParam;
 import org.hasan.bean.param.EvaluateParam;
 import org.hasan.bean.param.OrderMakeParam;
 import org.hasan.mybatis.dao.OrderDao;
@@ -163,5 +164,9 @@ public class OrderManager {
 	
 	public List<OrderGoods> orderGoodses(Query query) {
 		return orderGoodsDao.queryList(query);
+	}
+	
+	public List<Order> assistantOrders(AssistantOrdersParam param) {
+		return orderDao.assistantList(param);
 	}
 }

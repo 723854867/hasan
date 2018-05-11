@@ -9,6 +9,7 @@ import org.gatlin.soa.account.api.AccountService;
 import org.gatlin.soa.account.bean.entity.UserAccount;
 import org.gatlin.soa.account.bean.enums.UserAccountType;
 import org.gatlin.soa.bean.User;
+import org.gatlin.soa.bean.param.SoaLidParam;
 import org.gatlin.soa.bean.param.SoaParam;
 import org.gatlin.soa.resource.api.ResourceService;
 import org.gatlin.soa.resource.bean.enums.ResourceType;
@@ -16,6 +17,8 @@ import org.gatlin.soa.resource.bean.model.ResourceInfo;
 import org.gatlin.soa.user.api.UserService;
 import org.gatlin.soa.user.bean.param.RegisterParam;
 import org.hasan.bean.model.Wallet;
+import org.hasan.bean.param.AssistantAllocateParam;
+import org.hasan.bean.param.AssistantUserListParam;
 import org.hasan.bean.param.MemberAddParam;
 import org.hasan.bean.param.MemberModifyParam;
 import org.hasan.bean.param.MembersParam;
@@ -75,5 +78,28 @@ public class HasanCommonController {
 		query = new Query().eq("uid", user.getId()).eq("type", UserAccountType.BASIC.mark());
 		UserAccount account = accountService.account(query);
 		return new Wallet(user, resource, account, hasanManager.userCustom(user.getId()));
+	}
+	
+	@ResponseBody
+	@RequestMapping("assistant/allocate")
+	public Object assistantAllocate(@RequestBody @Valid AssistantAllocateParam param) {
+		commonService.assistantAllocate(param);
+		return Response.ok();
+	}
+	
+	@ResponseBody
+	@RequestMapping("assistant/delete")
+	public Object assistantDelete(@RequestBody @Valid SoaLidParam param) {
+		commonService.assistantDelete(param);
+		return Response.ok();
+	}
+	
+	// 客服用户列表
+	@ResponseBody
+	@RequestMapping("assistant/users")
+	public Object assistantUsers(@RequestBody @Valid AssistantUserListParam param) {
+		if (null == param.getAssistant())
+			param.setAssistant(param.getUser().getId());
+		return commonService.assistantUsers(param);
 	}
 }

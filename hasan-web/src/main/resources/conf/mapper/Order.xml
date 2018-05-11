@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.hasan.mybatis.dao.OrderDao" >
+
+	<select id="assistantList" parameterType="org.hasan.bean.param.AssistantOrdersParam" resultType="org.hasan.bean.entity.Order">
+		SELECT 
+			* 
+		FROM
+			(SELECT 
+				* 
+			FROM
+				(SELECT b.* FROM user_assistant WHERE assistant=#{assistant}) a 
+			LEFT JOIN 
+				`order` b ON a.uid=b.uid) c
+		<where>
+			<if test="null != id">
+				`id`=#{id}
+			</if>
+			<if test="null != uid">
+				AND `uid`=#{uid}
+			</if>
+			<if test="null != state">
+				AND `state`=#{state}
+			</if>
+			<if test="null != deliverStop">
+				<![CDATA[ AND `deliver_stop`<=#{deliverStop} ]]>     
+			</if>
+			<if test="null != deliverStart">
+				<![CDATA[ AND `deliver_start`>=#{deliverStart} ]]>     
+			</if>
+			<if test="null != timeStop">
+				<![CDATA[ AND `created`<=#{timeStop} ]]>     
+			</if>
+			<if test="null != timeStart">
+				<![CDATA[ AND `created`>=#{timeStart} ]]>     
+			</if>
+		</where>
+		ORDER BY `created` DESC
+	</select>
+</mapper>
