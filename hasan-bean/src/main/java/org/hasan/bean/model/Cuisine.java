@@ -10,10 +10,10 @@ public class Cuisine implements Serializable {
 	private static final long serialVersionUID = 4253969090943162055L;
 
 	@NotEmpty
-	@Size(min = 2, max = 20)
+	@Size(min = 1, max = 20)
 	private String name;
 	@NotEmpty
-	@Size(min = 2, max = 20)
+	@Size(min = 1, max = 20)
 	private String dosage;
 	
 	public String getName() {
