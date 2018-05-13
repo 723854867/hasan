@@ -26,6 +26,7 @@ public class GoodsInfo implements Serializable {
 	private BigDecimal generalPrice;
 	private BigDecimal originalPrice;
 	private Map<HasanResourceType, List<ResourceInfo>> resources;
+	private int cookbookId;
 	private int created;
 	
 	public GoodsInfo() {}
@@ -47,6 +48,7 @@ public class GoodsInfo implements Serializable {
 		this.originalPrice = goods.getOriginalPrice();
 		this.created = goods.getCreated();
 		this.resources = resources;
+		this.cookbookId = goods.getCookbookId();
 	}
 
 	public int getId() {
@@ -143,5 +145,13 @@ public class GoodsInfo implements Serializable {
 
 	public void setResources(Map<HasanResourceType, List<ResourceInfo>> resources) {
 		this.resources = resources;
+	}
+	
+	public void setCookbookId(int cookbookId) {
+		this.cookbookId = cookbookId;
+	}
+	
+	public int getCookbookId() {
+		return cookbookId;
 	}
 }
