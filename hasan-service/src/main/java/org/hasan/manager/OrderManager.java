@@ -13,7 +13,6 @@ import org.gatlin.soa.account.bean.param.RechargeParam;
 import org.gatlin.soa.bean.param.SoaSidParam;
 import org.gatlin.soa.config.api.ConfigService;
 import org.gatlin.soa.resource.api.ResourceService;
-import org.gatlin.soa.resource.bean.model.ResourceInfo;
 import org.gatlin.soa.user.api.GeoService;
 import org.gatlin.soa.user.bean.UserCode;
 import org.gatlin.soa.user.bean.entity.UserAddress;
@@ -24,12 +23,11 @@ import org.hasan.bean.EntityGenerator;
 import org.hasan.bean.HasanCode;
 import org.hasan.bean.HasanConsts;
 import org.hasan.bean.entity.CfgGoods;
+import org.hasan.bean.entity.CfgGoodsPrice;
 import org.hasan.bean.entity.Order;
 import org.hasan.bean.entity.OrderGoods;
 import org.hasan.bean.entity.UserCustom;
 import org.hasan.bean.entity.UserEvaluation;
-import org.hasan.bean.enums.HasanResourceType;
-import org.hasan.bean.enums.MemberType;
 import org.hasan.bean.enums.OrderState;
 import org.hasan.bean.param.AssistantOrdersParam;
 import org.hasan.bean.param.EvaluateParam;
@@ -65,9 +63,8 @@ public class OrderManager {
 		Map<Integer, CfgGoods> goods = goodsManager.buy(param.getGoods());
 		UserCustom custom = hasanManager.userCustom(param.getUser().getId());
 		String orderId = IDWorker.INSTANCE.nextSid();
-		Query query = new Query().in("owner", goods.keySet()).eq("cfg_id", HasanResourceType.GOODS_ICON.mark());
-		List<ResourceInfo> resources = resourceService.resources(query).getList();
-		List<OrderGoods> list = EntityGenerator.newOrderGoods(orderId, param.getGoods(), goods, resources, custom);
+		Map<Integer, CfgGoodsPrice> prices = goodsManager.goodsPrice(param.getGoods().keySet(), custom.getMemberId());
+		List<OrderGoods> list = EntityGenerator.newOrderGoods(orderId, param.getGoods(), goods, prices);
 		BigDecimal price = BigDecimal.ZERO;
 		for (OrderGoods temp : list)
 			price = price.add(temp.getUnitPrice().multiply(BigDecimal.valueOf(temp.getGoodsNum())));
@@ -87,8 +84,7 @@ public class OrderManager {
 		OrderState state = OrderState.match(order.getState());
 		Assert.isTrue(HasanCode.ORDER_STATE_ERR, state == OrderState.INIT);
 		UserCustom custom = hasanManager.userCustom(order.getUid());
-		MemberType type = MemberType.match(custom.getMemberType());
-		if (type == MemberType.ORIGINAL) 
+		if (custom.getMemberId() == 0) 
 			order.setExpressFee(configService.config(HasanConsts.EXPRESS_FEE));
 		order.setState(OrderState.PAYING.mark());
 		order.setUpdated(DateUtil.current());

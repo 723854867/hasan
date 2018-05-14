@@ -14,6 +14,6 @@ public interface HasanConsts {
 	final IntegerOption ORDER_ADVANCE_MINUTES				= new IntegerOption("order.advance.minutes", 30);
 	// 默认显示评价数
 	final IntegerOption DEFAULT_EVALUATION_NUM				= new IntegerOption("default.evaluation.num", 3);
-	// 
+	// 默认快递费
 	final ObjectOption<BigDecimal> EXPRESS_FEE				= new ObjectOption<BigDecimal>("express.fee", BigDecimal.valueOf(15));
 }

@@ -21,19 +21,17 @@ import org.gatlin.util.bean.enums.TimeUnit;
 import org.gatlin.util.lang.StringUtil;
 import org.hasan.bean.EntityGenerator;
 import org.hasan.bean.HasanCode;
-import org.hasan.bean.HasanConsts;
 import org.hasan.bean.entity.CfgMember;
 import org.hasan.bean.entity.UserAssistant;
 import org.hasan.bean.entity.UserCustom;
 import org.hasan.bean.enums.HasanBizType;
-import org.hasan.bean.enums.MemberType;
 import org.hasan.bean.param.AssistantAllocateParam;
 import org.hasan.bean.param.AssistantUserListParam;
 import org.hasan.bean.param.MemberAddParam;
 import org.hasan.bean.param.MemberModifyParam;
 import org.hasan.mybatis.dao.CfgMemberDao;
-import org.hasan.mybatis.dao.UserCustomDao;
 import org.hasan.mybatis.dao.UserAssistantDao;
+import org.hasan.mybatis.dao.UserCustomDao;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -53,8 +51,7 @@ public class HasanManager {
 	private UserAssistantDao userAssistantDao;
 	
 	public void register(long uid) {
-		String memberTitle = configService.config(HasanConsts.DEFAULT_MEMBER_TITLE);
-		UserCustom custom = EntityGenerator.newUserCustom(uid, memberTitle);
+		UserCustom custom = EntityGenerator.newUserCustom(uid);
 		userCustomDao.insert(custom);
 	}
 	
@@ -77,8 +74,6 @@ public class HasanManager {
 			member.setPrice(param.getPrice());
 		if (StringUtil.hasText(param.getName()))
 			member.setName(param.getName());
-		if (null != param.getMemberType())
-			member.setMemberType(param.getMemberType().mark());
 		member.setUpdated(DateUtil.current());
 		cfgMemberDao.update(member);
 	}
@@ -89,8 +84,7 @@ public class HasanManager {
 		CfgMember member = member(Integer.valueOf(recharge.getGoodsId()));
 		Query query = new Query().eq("uid", recharge.getRechargee()).forUpdate();
 		UserCustom custom = userCustomDao.queryUnique(query);
-		custom.setMemberType(member.getMemberType());
-		custom.setMemberTitle(member.getName());
+		custom.setMemberId(member.getId());
 		custom.setUpdated(DateUtil.current());
 		TimeUnit unit = TimeUnit.match(member.getTimeUnit());
 		long duration = unit.millis() * member.getExpiry();
@@ -106,17 +100,17 @@ public class HasanManager {
 		Query query = new Query().eq("uid", uid).forUpdate();
 		UserCustom custom = userCustomDao.queryUnique(query);
 		// 会员到期或者余额为0都会变成普通会员
-		if (custom.getMemberExpiry() <= System.currentTimeMillis() 
-				|| account.getUsable().compareTo(BigDecimal.ZERO) == 0) {
-			if (custom.getMemberType() != MemberType.ORIGINAL.mark()) {
-				custom.setMemberType(MemberType.ORIGINAL.mark());
-				custom.setUpdated(DateUtil.current());
-				userCustomDao.update(custom);
-			}
+		if (0 != custom.getMemberId() &&
+				(custom.getMemberExpiry() <= System.currentTimeMillis() 
+				|| account.getUsable().compareTo(BigDecimal.ZERO) == 0)) {
 			if (account.getUsable().compareTo(BigDecimal.ZERO) > 0) {
-				LogUserAccount log = AccountUtil.log(uid, account.getUsable().negate(), HasanBizType.MEMBER_EXPIRY.mark(), custom.getMemberType());
+				LogUserAccount log = AccountUtil.log(uid, account.getUsable().negate(), HasanBizType.MEMBER_EXPIRY.mark(), custom.getMemberId());
 				accountService.process(log);
 			}
+			custom.setMemberId(0);
+			custom.setMemberExpiry(0);
+			custom.setUpdated(DateUtil.current());
+			userCustomDao.update(custom);
 		}
 		return custom;
 	}

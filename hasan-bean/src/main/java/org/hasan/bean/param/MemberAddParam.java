@@ -9,7 +9,6 @@ import javax.validation.constraints.NotNull;
 
 import org.gatlin.soa.bean.param.SoaParam;
 import org.gatlin.util.bean.enums.TimeUnit;
-import org.hasan.bean.enums.MemberType;
 
 public class MemberAddParam extends SoaParam {
 
@@ -25,8 +24,6 @@ public class MemberAddParam extends SoaParam {
 	private BigDecimal price;
 	@NotNull
 	private TimeUnit timeUnit;
-	@NotNull
-	private MemberType memberType;
 	
 	public String getName() {
 		return name;
@@ -66,13 +63,5 @@ public class MemberAddParam extends SoaParam {
 
 	public void setTimeUnit(TimeUnit timeUnit) {
 		this.timeUnit = timeUnit;
-	}
-	
-	public MemberType getMemberType() {
-		return memberType;
-	}
-	
-	public void setMemberType(MemberType memberType) {
-		this.memberType = memberType;
 	}
 }

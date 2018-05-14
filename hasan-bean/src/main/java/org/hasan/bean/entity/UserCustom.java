@@ -10,9 +10,8 @@ public class UserCustom implements Entity<Long> {
 
 	@Id
 	private long uid;
-	private int memberType;
+	private int memberId;
 	private long memberExpiry;
-	private String memberTitle;
 	private int created;
 	private int updated;
 
@@ -23,13 +22,13 @@ public class UserCustom implements Entity<Long> {
 	public void setUid(long uid) {
 		this.uid = uid;
 	}
-
-	public int getMemberType() {
-		return memberType;
+	
+	public int getMemberId() {
+		return memberId;
 	}
-
-	public void setMemberType(int memberType) {
-		this.memberType = memberType;
+	
+	public void setMemberId(int memberId) {
+		this.memberId = memberId;
 	}
 
 	public long getMemberExpiry() {
@@ -40,14 +39,6 @@ public class UserCustom implements Entity<Long> {
 		this.memberExpiry = memberExpiry;
 	}
 	
-	public String getMemberTitle() {
-		return memberTitle;
-	}
-	
-	public void setMemberTitle(String memberTitle) {
-		this.memberTitle = memberTitle;
-	}
-
 	public int getCreated() {
 		return created;
 	}

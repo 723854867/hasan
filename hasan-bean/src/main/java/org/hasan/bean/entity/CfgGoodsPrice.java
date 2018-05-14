@@ -7,17 +7,15 @@ import javax.persistence.Id;
 
 import org.gatlin.core.bean.Entity;
 
-public class CfgMember implements Entity<Integer> {
+public class CfgGoodsPrice implements Entity<Integer> {
 
-	private static final long serialVersionUID = 2559795863023962405L;
+	private static final long serialVersionUID = 661757568335860945L;
 
 	@Id
 	@GeneratedValue
 	private int id;
-	private int expiry;
-	private String name;
-	private boolean sale;
-	private int timeUnit;
+	private int goodsId;
+	private int memberId;
 	private BigDecimal price;
 	private int created;
 	private int updated;
@@ -30,36 +28,20 @@ public class CfgMember implements Entity<Integer> {
 		this.id = id;
 	}
 
-	public int getExpiry() {
-		return expiry;
+	public int getGoodsId() {
+		return goodsId;
 	}
 
-	public void setExpiry(int expiry) {
-		this.expiry = expiry;
-	}
-	
-	public String getName() {
-		return name;
-	}
-	
-	public void setName(String name) {
-		this.name = name;
+	public void setGoodsId(int goodsId) {
+		this.goodsId = goodsId;
 	}
 
-	public boolean isSale() {
-		return sale;
+	public int getMemberId() {
+		return memberId;
 	}
 
-	public void setSale(boolean sale) {
-		this.sale = sale;
-	}
-
-	public int getTimeUnit() {
-		return timeUnit;
-	}
-
-	public void setTimeUnit(int timeUnit) {
-		this.timeUnit = timeUnit;
+	public void setMemberId(int memberId) {
+		this.memberId = memberId;
 	}
 
 	public BigDecimal getPrice() {

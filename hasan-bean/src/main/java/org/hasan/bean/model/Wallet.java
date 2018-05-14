@@ -7,7 +7,6 @@ import org.gatlin.soa.account.bean.entity.UserAccount;
 import org.gatlin.soa.bean.User;
 import org.gatlin.soa.resource.bean.model.ResourceInfo;
 import org.hasan.bean.entity.UserCustom;
-import org.hasan.bean.enums.MemberType;
 
 public class Wallet implements Serializable {
 
@@ -18,18 +17,18 @@ public class Wallet implements Serializable {
 	private BigDecimal usable;
 	private long memberExpiry;
 	private String memberTitle;
-	private MemberType memberType;
+	private int memberId;
 	
 	public Wallet() {}
 	
-	public Wallet(User user, ResourceInfo avatar, UserAccount account, UserCustom custom) {
+	public Wallet(User user, ResourceInfo avatar, UserAccount account, UserCustom custom, String memberTitle) {
 		this.uid = user.getId();
 		if (null != avatar)
 			this.avatar = avatar.getUrl();
 		this.usable = account.getUsable();
-		this.memberTitle = custom.getMemberTitle();
+		this.memberId = custom.getMemberId();
+		this.memberTitle = memberTitle;
 		this.memberExpiry = custom.getMemberExpiry();
-		this.memberType = MemberType.match(custom.getMemberType());
 	}
 	
 	public long getUid() {
@@ -72,11 +71,11 @@ public class Wallet implements Serializable {
 		this.memberTitle = memberTitle;
 	}
 	
-	public MemberType getMemberType() {
-		return memberType;
+	public int getMemberId() {
+		return memberId;
 	}
 	
-	public void setMemberType(MemberType memberType) {
-		this.memberType = memberType;
+	public void setMemberId(int memberId) {
+		this.memberId = memberId;
 	}
 }

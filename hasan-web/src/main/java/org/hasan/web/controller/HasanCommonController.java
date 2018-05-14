@@ -11,11 +11,14 @@ import org.gatlin.soa.account.bean.enums.UserAccountType;
 import org.gatlin.soa.bean.User;
 import org.gatlin.soa.bean.param.SoaLidParam;
 import org.gatlin.soa.bean.param.SoaParam;
+import org.gatlin.soa.config.api.ConfigService;
 import org.gatlin.soa.resource.api.ResourceService;
 import org.gatlin.soa.resource.bean.enums.ResourceType;
 import org.gatlin.soa.resource.bean.model.ResourceInfo;
 import org.gatlin.soa.user.api.UserService;
 import org.gatlin.soa.user.bean.param.RegisterParam;
+import org.hasan.bean.HasanConsts;
+import org.hasan.bean.entity.CfgMember;
 import org.hasan.bean.entity.UserCustom;
 import org.hasan.bean.model.Wallet;
 import org.hasan.bean.param.AssistantAllocateParam;
@@ -40,6 +43,8 @@ public class HasanCommonController {
 	private HasanManager hasanManager;
 	@Resource
 	private CommonService commonService;
+	@Resource
+	private ConfigService configService;
 	@Resource
 	private AccountService accountService;
 	@Resource
@@ -79,7 +84,9 @@ public class HasanCommonController {
 		query = new Query().eq("uid", user.getId()).eq("type", UserAccountType.BASIC.mark());
 		UserCustom custom = hasanManager.userCustom(user.getId());
 		UserAccount account = accountService.account(query);
-		return new Wallet(user, resource, account, custom);
+		CfgMember member = 0 != custom.getMemberId() ? hasanManager.member(custom.getMemberId()) : null;
+		String memberTitle = null == member ? configService.config(HasanConsts.DEFAULT_MEMBER_TITLE) : member.getName();
+		return new Wallet(user, resource, account, custom, memberTitle);
 	}
 	
 	@ResponseBody

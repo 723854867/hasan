@@ -1,8 +1,5 @@
 package org.hasan.bean.entity;
 
-import java.math.BigDecimal;
-
-import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
@@ -22,10 +19,6 @@ public class CfgGoods implements Entity<Integer> {
 	private int priority;
 	private int inventory;
 	private int cookbookId;
-	@Column(name = "VIP_price")
-	private BigDecimal VIPPrice;
-	private BigDecimal generalPrice;
-	private BigDecimal originalPrice;
 	private int created;
 	private int updated;
 
@@ -92,31 +85,7 @@ public class CfgGoods implements Entity<Integer> {
 	public void setCookbookId(int cookbookId) {
 		this.cookbookId = cookbookId;
 	}
-
-	public BigDecimal getVIPPrice() {
-		return VIPPrice;
-	}
 	
-	public void setVIPPrice(BigDecimal vIPPrice) {
-		VIPPrice = vIPPrice;
-	}
-	
-	public BigDecimal getGeneralPrice() {
-		return generalPrice;
-	}
-	
-	public void setGeneralPrice(BigDecimal generalPrice) {
-		this.generalPrice = generalPrice;
-	}
-	
-	public BigDecimal getOriginalPrice() {
-		return originalPrice;
-	}
-	
-	public void setOriginalPrice(BigDecimal originalPrice) {
-		this.originalPrice = originalPrice;
-	}
-
 	public int getCreated() {
 		return created;
 	}

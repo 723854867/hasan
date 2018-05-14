@@ -1,5 +1,6 @@
 package org.hasan.service;
 
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -8,9 +9,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.Resource;
+
 import org.gatlin.core.bean.info.Pager;
 import org.gatlin.core.util.Assert;
 import org.gatlin.dao.bean.model.Query;
+import org.gatlin.soa.bean.param.SoaIdParam;
+import org.gatlin.soa.bean.param.SoaQuotaLIdParam;
 import org.gatlin.soa.config.api.ConfigService;
 import org.gatlin.soa.resource.api.ResourceService;
 import org.gatlin.soa.resource.bean.enums.ResourceType;
@@ -25,15 +30,20 @@ import org.hasan.bean.HasanCode;
 import org.hasan.bean.HasanConsts;
 import org.hasan.bean.entity.CfgCookbook;
 import org.hasan.bean.entity.CfgGoods;
+import org.hasan.bean.entity.CfgGoodsPrice;
+import org.hasan.bean.entity.CfgMember;
 import org.hasan.bean.entity.UserEvaluation;
 import org.hasan.bean.enums.HasanResourceType;
 import org.hasan.bean.model.EvaluationInfo;
 import org.hasan.bean.model.GoodsDetail;
 import org.hasan.bean.model.GoodsInfo;
+import org.hasan.bean.model.GoodsPriceInfo;
 import org.hasan.bean.param.GoodsAddParam;
 import org.hasan.bean.param.GoodsModifyParam;
+import org.hasan.bean.param.GoodsPriceAddParam;
 import org.hasan.manager.CookbookManager;
 import org.hasan.manager.GoodsManager;
+import org.hasan.manager.HasanManager;
 import org.hasan.mybatis.dao.CfgGoodsDao;
 import org.springframework.stereotype.Service;
 
@@ -42,23 +52,25 @@ import com.github.pagehelper.PageHelper;
 @Service
 public class GoodsService {
 	
-	@javax.annotation.Resource
+	@Resource
 	private UserService userService;
-	@javax.annotation.Resource
+	@Resource
 	private CfgGoodsDao cfgGoodsDao;
-	@javax.annotation.Resource
+	@Resource
+	private HasanManager hasanManager;
+	@Resource
 	private GoodsManager goodsManager;
-	@javax.annotation.Resource
+	@Resource
 	private ConfigService configService;
-	@javax.annotation.Resource
+	@Resource
 	private ResourceService resourceService;
-	@javax.annotation.Resource
+	@Resource
 	private CookbookManager cookbookManager;
 	
 	public GoodsDetail goodsDetail(int id) {
-		GoodsDetail detail = null;
 		CfgGoods goods = cfgGoodsDao.getByKey(id);
 		Assert.notNull(HasanCode.GOODS_NOT_EXIST, goods);
+		GoodsDetail detail = new GoodsDetail(goods);
 		// 获取商品本身资源
 		Query query = new Query().eq("owner", id).in("cfg_id", HasanResourceType.goodsResourceTypes());
 		List<ResourceInfo> resources = resourceService.resources(query).getList();
@@ -66,8 +78,8 @@ public class GoodsService {
 		query = new Query().eq("owner", goods.getCookbookId()).eq("cfg_id", HasanResourceType.COOKBOOK_ICON.mark());
 		ResourceInfo cookbook = resourceService.resource(query);
 		resources.add(cookbook);
+		Map<HasanResourceType, List<ResourceInfo>> map = new HashMap<HasanResourceType, List<ResourceInfo>>();
 		if (!CollectionUtil.isEmpty(resources)) {
-			Map<HasanResourceType, List<ResourceInfo>> map = new HashMap<HasanResourceType, List<ResourceInfo>>();
 			for (ResourceInfo resource : resources) {
 				HasanResourceType type = HasanResourceType.match(resource.getCfgId());
 				List<ResourceInfo> list = map.get(type);
@@ -77,9 +89,27 @@ public class GoodsService {
 				}
 				list.add(resource);
 			}
-			detail = new GoodsDetail(goods, map);
-		} else
-			detail = new GoodsDetail(goods);
+		} 
+		detail.setResources(map);
+		
+		// 设置价格
+		List<CfgGoodsPrice> prices = goodsManager.goodsPrices(goods.getId());
+		List<CfgMember> members = hasanManager.members(new Query());
+		List<GoodsPriceInfo> priceInfos = new ArrayList<GoodsPriceInfo>();
+		for (CfgGoodsPrice price : prices) {
+			Iterator<CfgMember> itr = members.iterator();
+			while (itr.hasNext()) {
+				CfgMember member = itr.next();
+				if (member.getId() == price.getMemberId()) {
+					itr.remove();
+					priceInfos.add(new GoodsPriceInfo(price, member));
+					break;
+				}
+			}
+		}
+		detail.setPrices(priceInfos);
+		
+		// 设置评价
 		int num = configService.config(HasanConsts.DEFAULT_EVALUATION_NUM);
 		query = new Query().eq("goods_id", goods.getId()).orderByDesc("created").limit(num);
 		detail.setEvaluations(evaluations(query).getList());
@@ -99,25 +129,19 @@ public class GoodsService {
 		return Pager.<GoodsInfo, CfgGoods>convert(goods, () -> {
 			List<GoodsInfo> infos = new ArrayList<GoodsInfo>();
 			for (CfgGoods cfgGoods : goods) {
-				if (null != resources) {
+				ResourceInfo icon = null;
+				if (!CollectionUtil.isEmpty(resources)) {
 					Iterator<ResourceInfo> iterator = resources.iterator();
-					Map<HasanResourceType, List<ResourceInfo>> map = new HashMap<HasanResourceType, List<ResourceInfo>>();
 					while (iterator.hasNext()) {
 						ResourceInfo info = iterator.next();
 						if (info.getOwner() == cfgGoods.getId()) {
+							icon = info;
 							iterator.remove();
-							HasanResourceType type = HasanResourceType.match(info.getCfgId());
-							List<ResourceInfo> list = map.get(type);
-							if (null == list) {
-								list = new ArrayList<ResourceInfo>();
-								map.put(type, list);
-							}
-							list.add(info);
+							break;
 						}
 					}
-					infos.add(new GoodsInfo(cfgGoods, map));
-				} else 
-					infos.add(new GoodsInfo(cfgGoods));
+				}
+				infos.add(new GoodsInfo(cfgGoods, icon));
 			}
 			return infos;
 		});
@@ -179,10 +203,20 @@ public class GoodsService {
 		goods.setInventory(param.getInventory());
 		goods.setPriority(param.getPriority());
 		goods.setState(param.getState().mark());
-		goods.setVIPPrice(param.getVIPPrice());
-		goods.setGeneralPrice(param.getGeneralPrice());
-		goods.setOriginalPrice(param.getOriginalPrice());
 		goods.setUpdated(DateUtil.current());
 		goodsManager.update(goods);
+	}
+	
+	public long priceAdd(GoodsPriceAddParam param) { 
+		return goodsManager.priceAdd(param);
+	}
+	
+	public void priceModify(SoaQuotaLIdParam param) {
+		param.setQuota(param.getQuota().setScale(2, RoundingMode.UP));
+		goodsManager.priceModify(param);
+	}
+	
+	public void priceDelete(SoaIdParam param) { 
+		goodsManager.priceDelete(param);
 	}
 }

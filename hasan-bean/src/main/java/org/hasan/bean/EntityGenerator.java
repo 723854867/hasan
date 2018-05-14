@@ -2,21 +2,19 @@ package org.hasan.bean;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.gatlin.core.bean.exceptions.CodeException;
-import org.gatlin.soa.resource.bean.model.ResourceInfo;
+import org.gatlin.core.util.Assert;
 import org.gatlin.soa.user.bean.entity.UserAddress;
 import org.gatlin.util.DateUtil;
 import org.gatlin.util.IDWorker;
-import org.gatlin.util.lang.CollectionUtil;
 import org.gatlin.util.lang.StringUtil;
 import org.hasan.bean.entity.CfgCookbook;
 import org.hasan.bean.entity.CfgCookbookStep;
 import org.hasan.bean.entity.CfgGoods;
+import org.hasan.bean.entity.CfgGoodsPrice;
 import org.hasan.bean.entity.CfgMember;
 import org.hasan.bean.entity.CfgScheduler;
 import org.hasan.bean.entity.Order;
@@ -25,23 +23,22 @@ import org.hasan.bean.entity.UserAssistant;
 import org.hasan.bean.entity.UserCustom;
 import org.hasan.bean.entity.UserEvaluation;
 import org.hasan.bean.enums.GoodsState;
-import org.hasan.bean.enums.MemberType;
 import org.hasan.bean.enums.OrderState;
 import org.hasan.bean.param.AssistantAllocateParam;
 import org.hasan.bean.param.CookbookStepAddParam;
 import org.hasan.bean.param.EvaluateParam;
 import org.hasan.bean.param.GoodsAddParam;
+import org.hasan.bean.param.GoodsPriceAddParam;
 import org.hasan.bean.param.MemberAddParam;
 import org.hasan.bean.param.OrderMakeParam;
 import org.hasan.bean.param.SchedulerAddParam;
 
 public class EntityGenerator {
 	
-	public static final UserCustom newUserCustom(long uid, String memberTitle) {
+	public static final UserCustom newUserCustom(long uid) {
 		UserCustom instance = new UserCustom();
 		instance.setUid(uid);
-		instance.setMemberTitle(memberTitle);
-		instance.setMemberType(MemberType.ORIGINAL.mark());
+		instance.setMemberId(2);
 		int time = DateUtil.current();
 		instance.setCreated(time);
 		instance.setUpdated(time);
@@ -55,10 +52,7 @@ public class EntityGenerator {
 		instance.setInventory(param.getInventory());
 		instance.setPriority(param.getPriority());
 		instance.setState(GoodsState.SALE.mark());
-		instance.setVIPPrice(param.getVIPPrice());
 		instance.setCookbookId(param.getCookbookId());
-		instance.setGeneralPrice(param.getGeneralPrice());
-		instance.setOriginalPrice(param.getOriginalPrice());
 		int time = DateUtil.current();
 		instance.setCreated(time);
 		instance.setUpdated(time);
@@ -83,7 +77,6 @@ public class EntityGenerator {
 		instance.setSale(param.isSale());
 		instance.setPrice(param.getPrice());
 		instance.setExpiry(param.getExpiry());
-		instance.setMemberType(param.getMemberType().mark());
 		instance.setTimeUnit(param.getTimeUnit().mark());
 		int time = DateUtil.current();
 		instance.setCreated(time);
@@ -94,58 +87,36 @@ public class EntityGenerator {
 	public static final Order newOrder(String orderId, OrderMakeParam param, BigDecimal price, UserAddress address) {
 		Order instance = new Order();
 		instance.setId(orderId);
-		instance.setUid(param.getUser().getId());
-		instance.setIp(param.meta().getIp());
-		instance.setState(OrderState.INIT.mark());
 		instance.setPrice(price);
+		instance.setIp(param.meta().getIp());
+		instance.setUid(param.getUser().getId());
+		instance.setState(OrderState.INIT.mark());
 		instance.setExpressFee(BigDecimal.ZERO);
 		instance.setRecipients(address.getContacts());
-		instance.setRecipients(address.getProvince() + address.getCity() + address.getCounty() + address.getDetail());
+		instance.setDeliverStop(param.getDeliverStop());
+		instance.setDeliverStart(param.getDeliverStart());
 		instance.setRecipientsMobile(address.getContactsMobile());
+		instance.setRecipients(address.getProvince() + address.getCity() + address.getCounty() + address.getDetail());
 		int time = DateUtil.current();
 		instance.setCreated(time);
 		instance.setUpdated(time);
 		return instance;
 	}
 	
-	public static final List<OrderGoods> newOrderGoods(String orderId, Map<Integer, Integer> buys, Map<Integer, CfgGoods> goods, List<ResourceInfo> resources, UserCustom custom) {
+	public static final List<OrderGoods> newOrderGoods(String orderId, Map<Integer, Integer> buys, Map<Integer, CfgGoods> goods, Map<Integer, CfgGoodsPrice> prices) {
 		List<OrderGoods> list = new ArrayList<OrderGoods>();
 		for (Entry<Integer, Integer> entry : buys.entrySet()) {
 			CfgGoods temp = goods.get(entry.getKey());
-			ResourceInfo resource = null;
-			if (!CollectionUtil.isEmpty(resources)) {
-				Iterator<ResourceInfo> itr = resources.iterator();
-				while (itr.hasNext()) {
-					ResourceInfo rtemp = itr.next();
-					if (rtemp.getOwner() == temp.getId()) {
-						itr.remove();
-						resource = rtemp;
-						break;
-					}
-				}
-			}
 			OrderGoods instance = new OrderGoods();
 			instance.setOrderId(orderId);
 			instance.setGoodsId(temp.getId());
 			instance.setGoodsName(temp.getName());
 			instance.setGoodsDesc(temp.getDesc());
 			instance.setGoodsNum(entry.getValue());
+			CfgGoodsPrice price = prices.get(temp.getId());
+			Assert.notNull(HasanCode.GOODS_PRICE_NOT_EXIST, price);
+			instance.setUnitPrice(price.getPrice());
 			instance.setEvaluationId(StringUtil.EMPTY);
-			instance.setIcon(null == resource ? StringUtil.EMPTY : resource.getUrl());
-			MemberType memberType = MemberType.match(custom.getMemberType());
-			switch (memberType) {
-			case ORIGINAL:
-				instance.setUnitPrice(temp.getOriginalPrice());
-				break;
-			case GENERAL:
-				instance.setUnitPrice(temp.getGeneralPrice());
-				break;
-			case VIP:
-				instance.setUnitPrice(temp.getVIPPrice());
-				break;
-			default:
-				throw new CodeException();
-			}
 			instance.setCreated(DateUtil.current());
 			list.add(instance);
 		}
@@ -191,6 +162,17 @@ public class EntityGenerator {
 		instance.setUid(param.getId());
 		instance.setAssistant(param.getAssistant());
 		instance.setCreated(DateUtil.current());
+		return instance;
+	}
+	
+	public static final CfgGoodsPrice newCfgGoodsPrice(GoodsPriceAddParam param) {
+		CfgGoodsPrice instance = new CfgGoodsPrice();
+		instance.setGoodsId(param.getId());
+		instance.setMemberId(param.getMemberId());
+		instance.setPrice(param.getPrice());
+		int time = DateUtil.current();
+		instance.setCreated(time);
+		instance.setUpdated(time);
 		return instance;
 	}
 }

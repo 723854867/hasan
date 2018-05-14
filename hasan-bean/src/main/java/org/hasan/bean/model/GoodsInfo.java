@@ -1,15 +1,10 @@
 package org.hasan.bean.model;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import org.gatlin.soa.resource.bean.model.ResourceInfo;
 import org.hasan.bean.entity.CfgGoods;
 import org.hasan.bean.enums.GoodsState;
-import org.hasan.bean.enums.HasanResourceType;
 
 public class GoodsInfo implements Serializable {
 
@@ -18,37 +13,21 @@ public class GoodsInfo implements Serializable {
 	private int id;
 	private int sold;
 	private String name;
-	private String desc;
-	private int priority;
+	private int created;
 	private int inventory;
 	private GoodsState state;
-	private BigDecimal VIPPrice;
-	private BigDecimal generalPrice;
-	private BigDecimal originalPrice;
-	private Map<HasanResourceType, List<ResourceInfo>> resources;
-	private int cookbookId;
-	private int created;
+	private ResourceInfo icon;
 	
 	public GoodsInfo() {}
 	
-	public GoodsInfo(CfgGoods goods) {
-		this(goods, new HashMap<HasanResourceType, List<ResourceInfo>>());
-	}
-	
-	public GoodsInfo(CfgGoods goods, Map<HasanResourceType, List<ResourceInfo>> resources) {
+	public GoodsInfo(CfgGoods goods, ResourceInfo icon) {
+		this.icon = icon;
 		this.id = goods.getId();
 		this.sold = goods.getSold();
 		this.name = goods.getName();
-		this.desc = goods.getDesc();
-		this.priority = goods.getPriority();
+		this.created = goods.getCreated();
 		this.inventory = goods.getInventory();
 		this.state = GoodsState.match(goods.getState());
-		this.VIPPrice = goods.getVIPPrice();
-		this.generalPrice = goods.getGeneralPrice();
-		this.originalPrice = goods.getOriginalPrice();
-		this.created = goods.getCreated();
-		this.resources = resources;
-		this.cookbookId = goods.getCookbookId();
 	}
 
 	public int getId() {
@@ -75,20 +54,12 @@ public class GoodsInfo implements Serializable {
 		this.name = name;
 	}
 
-	public String getDesc() {
-		return desc;
+	public int getCreated() {
+		return created;
 	}
 
-	public void setDesc(String desc) {
-		this.desc = desc;
-	}
-
-	public int getPriority() {
-		return priority;
-	}
-
-	public void setPriority(int priority) {
-		this.priority = priority;
+	public void setCreated(int created) {
+		this.created = created;
 	}
 
 	public int getInventory() {
@@ -98,60 +69,20 @@ public class GoodsInfo implements Serializable {
 	public void setInventory(int inventory) {
 		this.inventory = inventory;
 	}
-	
+
 	public GoodsState getState() {
 		return state;
 	}
-	
+
 	public void setState(GoodsState state) {
 		this.state = state;
 	}
 
-	public BigDecimal getVIPPrice() {
-		return VIPPrice;
+	public ResourceInfo getIcon() {
+		return icon;
 	}
 
-	public void setVIPPrice(BigDecimal vIPPrice) {
-		VIPPrice = vIPPrice;
-	}
-
-	public BigDecimal getGeneralPrice() {
-		return generalPrice;
-	}
-
-	public void setGeneralPrice(BigDecimal generalPrice) {
-		this.generalPrice = generalPrice;
-	}
-
-	public BigDecimal getOriginalPrice() {
-		return originalPrice;
-	}
-
-	public void setOriginalPrice(BigDecimal originalPrice) {
-		this.originalPrice = originalPrice;
-	}
-
-	public int getCreated() {
-		return created;
-	}
-
-	public void setCreated(int created) {
-		this.created = created;
-	}
-
-	public Map<HasanResourceType, List<ResourceInfo>> getResources() {
-		return resources;
-	}
-
-	public void setResources(Map<HasanResourceType, List<ResourceInfo>> resources) {
-		this.resources = resources;
-	}
-	
-	public void setCookbookId(int cookbookId) {
-		this.cookbookId = cookbookId;
-	}
-	
-	public int getCookbookId() {
-		return cookbookId;
+	public void setIcon(ResourceInfo icon) {
+		this.icon = icon;
 	}
 }
