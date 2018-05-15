@@ -37,7 +37,7 @@ public class EntityGenerator {
 	public static final UserCustom newUserCustom(long uid) {
 		UserCustom instance = new UserCustom();
 		instance.setUid(uid);
-		instance.setMemberId(2);
+		instance.setMemberId(0);
 		int time = DateUtil.current();
 		instance.setCreated(time);
 		instance.setUpdated(time);
