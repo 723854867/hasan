@@ -136,6 +136,8 @@ public class GoodsService {
 		if (null != query.getPage())
 			PageHelper.startPage(query.getPage(), query.getPageSize());
 		List<UserEvaluation> evaluations = goodsManager.evaluations(query);
+		if (CollectionUtil.isEmpty(evaluations))
+			return Pager.empty();
 		Set<Long> set = new HashSet<>();
 		evaluations.forEach(item -> set.add(item.getUid()));
 		query = new Query().in("uid", set).eq("type", UsernameType.MOBILE.mark());

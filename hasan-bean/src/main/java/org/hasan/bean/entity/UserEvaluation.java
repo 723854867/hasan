@@ -12,7 +12,7 @@ public class UserEvaluation implements Entity<String> {
 	private String id;
 	private long uid;
 	private int type;
-	private int goddsId;
+	private int goodsId;
 	private String content;
 	private long orderGoodsId;
 	private int created;
@@ -41,12 +41,12 @@ public class UserEvaluation implements Entity<String> {
 		this.type = type;
 	}
 
-	public int getGoddsId() {
-		return goddsId;
+	public int getGoodsId() {
+		return goodsId;
 	}
-
-	public void setGoddsId(int goddsId) {
-		this.goddsId = goddsId;
+	
+	public void setGoodsId(int goodsId) {
+		this.goodsId = goodsId;
 	}
 
 	public String getContent() {

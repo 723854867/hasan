@@ -127,7 +127,7 @@ public class EntityGenerator {
 		instance.setId(IDWorker.INSTANCE.nextSid());
 		instance.setContent(param.getContent());
 		instance.setType(param.getType().mark());
-		instance.setGoddsId(og.getGoodsId());
+		instance.setGoodsId(og.getGoodsId());
 		instance.setOrderGoodsId(og.getId());
 		instance.setUid(param.getUser().getId());
 		instance.setCreated(DateUtil.current());
