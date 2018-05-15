@@ -28,7 +28,6 @@ import org.hasan.bean.param.AssistantAllocateParam;
 import org.hasan.bean.param.CookbookStepAddParam;
 import org.hasan.bean.param.EvaluateParam;
 import org.hasan.bean.param.GoodsAddParam;
-import org.hasan.bean.param.GoodsPriceAddParam;
 import org.hasan.bean.param.MemberAddParam;
 import org.hasan.bean.param.OrderMakeParam;
 import org.hasan.bean.param.SchedulerAddParam;
@@ -165,11 +164,11 @@ public class EntityGenerator {
 		return instance;
 	}
 	
-	public static final CfgGoodsPrice newCfgGoodsPrice(GoodsPriceAddParam param) {
+	public static final CfgGoodsPrice newCfgGoodsPrice(int memberId, int goodsId, BigDecimal price) {
 		CfgGoodsPrice instance = new CfgGoodsPrice();
-		instance.setGoodsId(param.getId());
-		instance.setMemberId(param.getMemberId());
-		instance.setPrice(param.getPrice());
+		instance.setGoodsId(goodsId);
+		instance.setMemberId(memberId);
+		instance.setPrice(price);
 		int time = DateUtil.current();
 		instance.setCreated(time);
 		instance.setUpdated(time);

@@ -1,6 +1,5 @@
 package org.hasan.service;
 
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -14,8 +13,6 @@ import javax.annotation.Resource;
 import org.gatlin.core.bean.info.Pager;
 import org.gatlin.core.util.Assert;
 import org.gatlin.dao.bean.model.Query;
-import org.gatlin.soa.bean.param.SoaIdParam;
-import org.gatlin.soa.bean.param.SoaQuotaLIdParam;
 import org.gatlin.soa.config.api.ConfigService;
 import org.gatlin.soa.resource.api.ResourceService;
 import org.gatlin.soa.resource.bean.enums.ResourceType;
@@ -23,9 +20,7 @@ import org.gatlin.soa.resource.bean.model.ResourceInfo;
 import org.gatlin.soa.user.api.UserService;
 import org.gatlin.soa.user.bean.entity.Username;
 import org.gatlin.soa.user.bean.enums.UsernameType;
-import org.gatlin.util.DateUtil;
 import org.gatlin.util.lang.CollectionUtil;
-import org.hasan.bean.EntityGenerator;
 import org.hasan.bean.HasanCode;
 import org.hasan.bean.HasanConsts;
 import org.hasan.bean.entity.CfgCookbook;
@@ -40,7 +35,6 @@ import org.hasan.bean.model.GoodsInfo;
 import org.hasan.bean.model.GoodsPriceInfo;
 import org.hasan.bean.param.GoodsAddParam;
 import org.hasan.bean.param.GoodsModifyParam;
-import org.hasan.bean.param.GoodsPriceAddParam;
 import org.hasan.manager.CookbookManager;
 import org.hasan.manager.GoodsManager;
 import org.hasan.manager.HasanManager;
@@ -94,19 +88,9 @@ public class GoodsService {
 		
 		// 设置价格
 		List<CfgGoodsPrice> prices = goodsManager.goodsPrices(goods.getId());
-		List<CfgMember> members = hasanManager.members(new Query());
+		Map<Integer, CfgMember> members = hasanManager.members();
 		List<GoodsPriceInfo> priceInfos = new ArrayList<GoodsPriceInfo>();
-		for (CfgGoodsPrice price : prices) {
-			Iterator<CfgMember> itr = members.iterator();
-			while (itr.hasNext()) {
-				CfgMember member = itr.next();
-				if (member.getId() == price.getMemberId()) {
-					itr.remove();
-					priceInfos.add(new GoodsPriceInfo(price, member));
-					break;
-				}
-			}
-		}
+		prices.forEach(item -> priceInfos.add(new GoodsPriceInfo(item, members.get(item.getMemberId()))));
 		detail.setPrices(priceInfos);
 		
 		// 设置评价
@@ -185,38 +169,10 @@ public class GoodsService {
 	public int add(GoodsAddParam param) { 
 		CfgCookbook cookbook = cookbookManager.cookbook(param.getCookbookId());
 		Assert.notNull(HasanCode.COOKBOOK_NOT_EXIST, cookbook);
-		CfgGoods goods = EntityGenerator.newCfgGoods(param);
-		goodsManager.insert(goods);
-		return goods.getId();
+		return goodsManager.goodsAdd(param);
 	}
 	
 	public void modify(GoodsModifyParam param) {
-		CfgGoods goods = goodsManager.goods(param.getId());
-		Assert.notNull(HasanCode.GOODS_NOT_EXIST, goods);
-		if (null != param.getCookbookId() && goods.getCookbookId() != param.getCookbookId()) {
-			CfgCookbook cookbook = cookbookManager.cookbook(param.getCookbookId());
-			Assert.notNull(HasanCode.COOKBOOK_NOT_EXIST, cookbook);
-			goods.setCookbookId(param.getCookbookId());
-		}
-		goods.setName(param.getName());
-		goods.setDesc(param.getDesc());
-		goods.setInventory(param.getInventory());
-		goods.setPriority(param.getPriority());
-		goods.setState(param.getState().mark());
-		goods.setUpdated(DateUtil.current());
-		goodsManager.update(goods);
-	}
-	
-	public long priceAdd(GoodsPriceAddParam param) { 
-		return goodsManager.priceAdd(param);
-	}
-	
-	public void priceModify(SoaQuotaLIdParam param) {
-		param.setQuota(param.getQuota().setScale(2, RoundingMode.UP));
-		goodsManager.priceModify(param);
-	}
-	
-	public void priceDelete(SoaIdParam param) { 
-		goodsManager.priceDelete(param);
+		goodsManager.goodsModify(param);
 	}
 }

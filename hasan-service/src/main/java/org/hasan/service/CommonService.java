@@ -1,5 +1,7 @@
 package org.hasan.service;
 
+import java.util.ArrayList;
+
 import javax.annotation.Resource;
 
 import org.gatlin.core.GatlinConfigration;
@@ -75,7 +77,7 @@ public class CommonService {
 	public Pager<CfgMember> members(Query query) {
 		if (null != query.getPage())
 			PageHelper.startPage(query.getPage(), query.getPageSize());
-		return new Pager<CfgMember>(hasanManager.members(query));
+		return new Pager<CfgMember>(new ArrayList<CfgMember>(hasanManager.members().values()));
 	}
 	
 	public void assistantAllocate(AssistantAllocateParam param) {

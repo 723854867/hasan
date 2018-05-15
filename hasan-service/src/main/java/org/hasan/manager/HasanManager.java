@@ -2,6 +2,7 @@ package org.hasan.manager;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -132,8 +133,8 @@ public class HasanManager {
 		return cfgMemberDao.getByKey(id);
 	}
 	
-	public List<CfgMember> members(Query query) {
-		return cfgMemberDao.queryList(query);
+	public Map<Integer, CfgMember> members() {
+		return cfgMemberDao.query(new Query());
 	}
 	
 	public List<UserListInfo> assistantUsers(AssistantUserListParam param) {

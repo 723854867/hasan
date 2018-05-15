@@ -1,5 +1,8 @@
 package org.hasan.bean.param;
 
+import java.math.BigDecimal;
+import java.util.Map;
+
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 
@@ -19,6 +22,8 @@ public class GoodsAddParam extends SoaParam {
 	private int inventory;
 	@Min(1)
 	private int cookbookId;
+	@NotEmpty
+	private Map<Integer, BigDecimal> prices;
 
 	public String getName() {
 		return name;
@@ -58,6 +63,14 @@ public class GoodsAddParam extends SoaParam {
 	
 	public void setCookbookId(int cookbookId) {
 		this.cookbookId = cookbookId;
+	}
+	
+	public Map<Integer, BigDecimal> getPrices() {
+		return prices;
+	}
+	
+	public void setPrices(Map<Integer, BigDecimal> prices) {
+		this.prices = prices;
 	}
 
 	@Override
