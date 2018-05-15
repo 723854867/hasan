@@ -16,7 +16,7 @@ import org.gatlin.soa.user.bean.entity.UserInvitation;
 import org.gatlin.soa.user.bean.model.RegisterModel;
 import org.gatlin.soa.user.bean.model.UserListInfo;
 import org.gatlin.soa.user.bean.param.RegisterParam;
-import org.gatlin.web.util.WebConsts;
+import org.gatlin.web.WebConsts;
 import org.hasan.bean.entity.CfgMember;
 import org.hasan.bean.param.AssistantAllocateParam;
 import org.hasan.bean.param.AssistantUserListParam;

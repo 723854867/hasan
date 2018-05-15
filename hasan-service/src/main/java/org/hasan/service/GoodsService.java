@@ -71,7 +71,8 @@ public class GoodsService {
 		// 获取菜谱资源
 		query = new Query().eq("owner", goods.getCookbookId()).eq("cfg_id", HasanResourceType.COOKBOOK_ICON.mark());
 		ResourceInfo cookbook = resourceService.resource(query);
-		resources.add(cookbook);
+		if (null != cookbook)
+			resources.add(cookbook);
 		Map<HasanResourceType, List<ResourceInfo>> map = new HashMap<HasanResourceType, List<ResourceInfo>>();
 		if (!CollectionUtil.isEmpty(resources)) {
 			for (ResourceInfo resource : resources) {
