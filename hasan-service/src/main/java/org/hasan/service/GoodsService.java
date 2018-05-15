@@ -73,14 +73,13 @@ public class GoodsService {
 		ResourceInfo cookbook = resourceService.resource(query);
 		if (null != cookbook)
 			resources.add(cookbook);
-		Map<HasanResourceType, List<ResourceInfo>> map = new HashMap<HasanResourceType, List<ResourceInfo>>();
+		Map<Integer, List<ResourceInfo>> map = new HashMap<Integer, List<ResourceInfo>>();
 		if (!CollectionUtil.isEmpty(resources)) {
 			for (ResourceInfo resource : resources) {
-				HasanResourceType type = HasanResourceType.match(resource.getCfgId());
-				List<ResourceInfo> list = map.get(type);
+				List<ResourceInfo> list = map.get(resource.getCfgId());
 				if (null == list) {
 					list = new ArrayList<ResourceInfo>();
-					map.put(type, list);
+					map.put(resource.getCfgId(), list);
 				}
 				list.add(resource);
 			}

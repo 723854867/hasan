@@ -11,16 +11,16 @@ public class GoodsPriceInfo implements Serializable {
 	private static final long serialVersionUID = -8581710508034728451L;
 
 	private int id;
+	private String name;
 	private int memberId;
 	private BigDecimal price;
-	private String memberName;
 	
 	public GoodsPriceInfo() {}
 	
 	public GoodsPriceInfo(CfgGoodsPrice price, CfgMember member) {
 		this.id = price.getId();
 		this.price = price.getPrice();
-		this.memberName = member.getName();
+		this.name = member.getName();
 		this.memberId = price.getMemberId();
 	}
 
@@ -48,11 +48,11 @@ public class GoodsPriceInfo implements Serializable {
 		this.price = price;
 	}
 
-	public String getMemberName() {
-		return memberName;
+	public String getName() {
+		return name;
 	}
-
-	public void setMemberName(String memberName) {
-		this.memberName = memberName;
+	
+	public void setName(String name) {
+		this.name = name;
 	}
 }

@@ -5,7 +5,6 @@ import java.util.Map;
 
 import org.gatlin.soa.resource.bean.model.ResourceInfo;
 import org.hasan.bean.entity.CfgGoods;
-import org.hasan.bean.enums.HasanResourceType;
 
 public class GoodsDetail extends GoodsInfo {
 
@@ -16,7 +15,7 @@ public class GoodsDetail extends GoodsInfo {
 	private int cookbookId;
 	private List<GoodsPriceInfo> prices;
 	private List<EvaluationInfo> evaluations;
-	private Map<HasanResourceType, List<ResourceInfo>> resources;
+	private Map<Integer, List<ResourceInfo>> resources;
 	
 	public GoodsDetail() {}
 	
@@ -67,11 +66,11 @@ public class GoodsDetail extends GoodsInfo {
 		this.evaluations = evaluations;
 	}
 	
-	public Map<HasanResourceType, List<ResourceInfo>> getResources() {
+	public Map<Integer, List<ResourceInfo>> getResources() {
 		return resources;
 	}
 	
-	public void setResources(Map<HasanResourceType, List<ResourceInfo>> resources) {
+	public void setResources(Map<Integer, List<ResourceInfo>> resources) {
 		this.resources = resources;
 	}
 }
