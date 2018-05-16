@@ -113,6 +113,10 @@ public class CookbookManager {
 		return cfgCookbookDao.getByKey(cookbookId);
 	}
 	
+	public CfgCookbookStep cookbookStep(int id) {
+		return cfgCookbookStepDao.getByKey(id);
+	}
+	
 	public List<CfgCookbookStep> steps(int cookbookId) {
 		return cfgCookbookStepDao.queryList(new Query().eq("cookbook_id", cookbookId));
 	}
