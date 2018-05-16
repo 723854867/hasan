@@ -1,5 +1,6 @@
 package org.hasan.service;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -8,11 +9,11 @@ import javax.annotation.Resource;
 import org.gatlin.dao.bean.model.Query;
 import org.gatlin.soa.bean.param.SoaIdParam;
 import org.gatlin.soa.config.api.ConfigService;
-import org.gatlin.util.DateUtil;
 import org.gatlin.util.lang.CollectionUtil;
 import org.hasan.bean.HasanConsts;
 import org.hasan.bean.entity.CfgScheduler;
 import org.hasan.bean.enums.SchedulerType;
+import org.hasan.bean.model.TimeRange;
 import org.hasan.bean.param.SchedulerAddParam;
 import org.hasan.bean.param.SchedulerModifyParam;
 import org.hasan.manager.SchedulerManager;
@@ -38,56 +39,50 @@ public class SchedulerService {
 		schedulerManager.delete(param);
 	}
 	
-	public CfgScheduler orderScheduler(Integer schedulerId) {
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTimeInMillis(System.currentTimeMillis());
-		int day = calendar.get(Calendar.DAY_OF_MONTH);
-		int minutes = calendar.get(Calendar.HOUR_OF_DAY) * 60 + calendar.get(Calendar.MINUTE);
-		return null;
+	public List<TimeRange> deliverySchedulers() {
+		int minutes = configService.config(HasanConsts.ORDER_ADVANCE_MINUTES);
+		long start = System.currentTimeMillis() + minutes * 60000;
+		List<TimeRange> packageRanges = schedulers(start, SchedulerType.PACKAGE, 1);
+		if (CollectionUtil.isEmpty(packageRanges))
+			return CollectionUtil.emptyList();
+		TimeRange range = packageRanges.get(0);
+		int maximum = configService.config(HasanConsts.DELIVERY_TIME_MAXIMUM);
+		return schedulers(range.getStop() * 1000l, SchedulerType.DELIVERY, maximum);
 	}
 	
-	public List<CfgScheduler> availableSchedulers() {
-		List<CfgScheduler> schedulers = schedulerManager.schedulers(new Query());
+	public List<TimeRange> schedulers(long start, SchedulerType type, int maximum) {
+		List<CfgScheduler> schedulers = schedulerManager.schedulers(new Query().eq("type", type.mark()).orderByAsc("day", "start"));
 		if (CollectionUtil.isEmpty(schedulers))
 			return CollectionUtil.emptyList();
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTimeInMillis(System.currentTimeMillis());
-		int currentMonth = calendar.get(Calendar.MONTH);
-		int day = calendar.get(Calendar.DAY_OF_MONTH);
-		int minutes = calendar.get(Calendar.HOUR_OF_DAY) * 60 + calendar.get(Calendar.MINUTE);
-		int orderAdvanceTime = Math.max(0, configService.config(HasanConsts.ORDER_ADVANCE_MINUTES));
-		CfgScheduler packageScheduler = null;
-		CfgScheduler first = schedulers.get(0);
-		int iteratorMonth = currentMonth;
-		while (true) {
-			for (CfgScheduler temp : schedulers) {
-				if (iteratorMonth == currentMonth) {
-					
-				} else {
-					
+		calendar.add(Calendar.MONTH, -1);
+		calendar.set(Calendar.SECOND, 0);
+		calendar.set(Calendar.MINUTE, 0);
+		calendar.set(Calendar.HOUR_OF_DAY, 0);
+		calendar.set(Calendar.MILLISECOND, 0);
+		calendar.set(Calendar.DAY_OF_MONTH, 1);
+		List<TimeRange> ranges = new ArrayList<TimeRange>();
+		a : while (true) {
+			calendar.add(Calendar.MONTH, 1);
+			for (CfgScheduler scheduler : schedulers) {
+				int dayMax = calendar.getActualMaximum(Calendar.DATE);
+				if (scheduler.getDay() > dayMax)
+					continue;
+				Calendar temp = Calendar.getInstance();
+				temp.setTimeInMillis(calendar.getTimeInMillis());
+				temp.set(Calendar.DAY_OF_MONTH, scheduler.getDay());
+				temp.add(Calendar.MINUTE, scheduler.getStart());
+				if (temp.getTimeInMillis() >= start) {
+					int rangeStart = (int) (temp.getTimeInMillis() / 1000);
+					int rangeStop = rangeStart + (scheduler.getStop() - scheduler.getStart()) * 60;
+					ranges.add(new TimeRange(rangeStop, rangeStart));
+					if (ranges.size() >= maximum)
+						break a;
 				}
 			}
 		}
-	}
-	
-	private CfgScheduler recentlyPackageScheduler() {
-		Query query = new Query().eq("type", SchedulerType.PACKAGE.mark()).orderByAsc("day", "start");
-		List<CfgScheduler> schedulers = schedulerManager.schedulers(query);
-		if (CollectionUtil.isEmpty(schedulers))
-			return null;
-		int minTimeW = DateUtil.current() + Math.max(0, configService.config(HasanConsts.ORDER_ADVANCE_MINUTES)) * 60;
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTimeInMillis(System.currentTimeMillis());
-		int currentMonth = calendar.get(Calendar.MONTH);
-		int day = calendar.get(Calendar.DAY_OF_MONTH);
-		int minutes = calendar.get(Calendar.HOUR_OF_DAY) * 60 + calendar.get(Calendar.MINUTE);
-		int orderAdvanceTime = Math.max(0, configService.config(HasanConsts.ORDER_ADVANCE_MINUTES));
-		CfgScheduler scheduler = null;
-		while (true) {
-			for (CfgScheduler temp : schedulers) {
-				
-			}
-		}
+		return ranges;
 	}
 	
 	public List<CfgScheduler> schedulers(Query query) {

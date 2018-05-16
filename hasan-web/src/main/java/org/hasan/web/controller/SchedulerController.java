@@ -47,4 +47,10 @@ public class SchedulerController {
 	public Object list(@RequestBody @Valid SoaParam param) {
 		return schedulerService.schedulers(new Query());
 	}
+	
+	@ResponseBody
+	@RequestMapping("ranges/deliver")
+	public Object rangesDeliver(@RequestBody @Valid SoaParam param) {
+		return schedulerService.deliverySchedulers();
+	}
 }
