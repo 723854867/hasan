@@ -118,7 +118,8 @@ public class GoodsService {
 					Iterator<ResourceInfo> iterator = resources.iterator();
 					while (iterator.hasNext()) {
 						ResourceInfo info = iterator.next();
-						if (info.getOwner() == cfgGoods.getId()) {
+						int owner = Integer.valueOf(info.getOwner());
+						if (owner == cfgGoods.getId()) {
 							icon = info;
 							iterator.remove();
 							break;
@@ -157,7 +158,8 @@ public class GoodsService {
 			ResourceInfo avatar = null;
 			if (!CollectionUtil.isEmpty(avatars)) {
 				for (ResourceInfo temp : avatars) {
-					if (temp.getOwner() != item.getUid())
+					long owner = Long.valueOf(temp.getOwner());
+					if (owner != item.getUid())
 						continue;
 					avatar = temp;
 					break;

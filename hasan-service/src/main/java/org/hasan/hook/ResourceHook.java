@@ -24,16 +24,16 @@ public class ResourceHook extends org.gatlin.web.util.hook.ResourceHook {
 	@Override
 	public void verify(CfgResource resource, ResourceUploadParam param) {
 		switch (resource.getType()) {
-		case 3:
-			CfgGoods goods = goodsManager.goods((int) param.getOwner());
+		case 100:
+			CfgGoods goods = goodsManager.goods(Integer.valueOf(param.getOwner()));
 			Assert.notNull(HasanCode.GOODS_NOT_EXIST, goods);
 			break;
-		case 4:
-			CfgCookbook cookbook = cookbookManager.cookbook((int) param.getOwner());
+		case 101:
+			CfgCookbook cookbook = cookbookManager.cookbook(Integer.valueOf(param.getOwner()));
 			Assert.notNull(HasanCode.COOKBOOK_NOT_EXIST, cookbook);
 			break;
-		case 5:
-			CfgCookbookStep step = cookbookManager.cookbookStep((int) param.getOwner());
+		case 102:
+			CfgCookbookStep step = cookbookManager.cookbookStep(Integer.valueOf(param.getOwner()));
 			Assert.notNull(HasanCode.COOKBOOK_STEP_NOT_EXIST, step);
 			break;
 		default:

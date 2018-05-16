@@ -66,7 +66,8 @@ public class CookbookService {
 					Iterator<ResourceInfo> itr = goodsIcons.iterator();
 					while (itr.hasNext()) {
 						ResourceInfo res = itr.next();
-						if (res.getOwner() == item.getId()) {
+						int owner = Integer.valueOf(res.getOwner());
+						if (owner == item.getId()) {
 							resource = res;
 							itr.remove();
 							break;
@@ -90,7 +91,8 @@ public class CookbookService {
 					Iterator<ResourceInfo> iterator = resources.iterator();
 					while (iterator.hasNext()) {
 						ResourceInfo res = iterator.next();
-						if (res.getOwner() == step.getId()) {
+						int owner = Integer.valueOf(res.getOwner());
+						if (owner == step.getId()) {
 							resource = res;
 							iterator.remove();
 							break;
