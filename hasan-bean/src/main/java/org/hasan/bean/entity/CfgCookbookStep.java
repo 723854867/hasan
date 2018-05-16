@@ -3,9 +3,9 @@ package org.hasan.bean.entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
-import org.gatlin.core.bean.Entity;
+import org.gatlin.util.bean.Identifiable;
 
-public class CfgCookbookStep implements Entity<Integer> {
+public class CfgCookbookStep implements Identifiable<Integer> {
 
 	private static final long serialVersionUID = -4346317865708965830L;
 

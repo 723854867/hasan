@@ -5,10 +5,10 @@ import java.math.BigDecimal;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import org.gatlin.core.bean.Entity;
+import org.gatlin.util.bean.Identifiable;
 
 @Table(name="`order`")
-public class Order implements Entity<String> {
+public class Order implements Identifiable<String> {
 
 	private static final long serialVersionUID = 2327138052108096069L;
 

@@ -2,9 +2,9 @@ package org.hasan.bean.entity;
 
 import javax.persistence.Id;
 
-import org.gatlin.core.bean.Entity;
+import org.gatlin.util.bean.Identifiable;
 
-public class UserCustom implements Entity<Long> {
+public class UserCustom implements Identifiable<Long> {
 
 	private static final long serialVersionUID = -3952053635287820560L;
 
