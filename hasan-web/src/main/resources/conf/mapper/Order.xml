@@ -7,10 +7,10 @@
 			* 
 		FROM
 			(SELECT 
-				* 
+				b.* 
 			FROM
-				(SELECT b.* FROM user_assistant WHERE assistant=#{assistant}) a 
-			LEFT JOIN 
+				(SELECT * FROM user_assistant WHERE assistant=#{assistant}) a 
+			INNER JOIN 
 				`order` b ON a.uid=b.uid) c
 		<where>
 			<if test="null != id">
