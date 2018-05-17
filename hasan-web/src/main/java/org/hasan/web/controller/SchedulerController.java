@@ -4,7 +4,6 @@ import javax.annotation.Resource;
 import javax.validation.Valid;
 
 import org.gatlin.core.bean.model.message.Response;
-import org.gatlin.dao.bean.model.Query;
 import org.gatlin.soa.bean.param.SoaIdParam;
 import org.gatlin.soa.bean.param.SoaParam;
 import org.hasan.bean.param.SchedulerAddParam;
@@ -45,7 +44,7 @@ public class SchedulerController {
 	@ResponseBody
 	@RequestMapping("list")
 	public Object list(@RequestBody @Valid SoaParam param) {
-		return schedulerService.schedulers(new Query());
+		return schedulerService.schedulers(param.query());
 	}
 	
 	@ResponseBody
