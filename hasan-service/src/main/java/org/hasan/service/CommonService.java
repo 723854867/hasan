@@ -93,4 +93,10 @@ public class CommonService {
 			PageHelper.startPage(param.getPage(), param.getPageSize());
 		return new Pager<UserListInfo>(hasanManager.assistantUsers(param));
 	}
+	
+	public Pager<UserListInfo> allocatableUsers(AssistantUserListParam param) {
+		if (null != param.getPage())
+			PageHelper.startPage(param.getPage(), param.getPageSize());
+		return new Pager<UserListInfo>(hasanManager.allocatableUsers(param));
+	}
 }

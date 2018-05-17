@@ -139,6 +139,10 @@ public class HasanManager {
 	}
 	
 	public List<UserListInfo> assistantUsers(AssistantUserListParam param) {
-		return userAssistantDao.list(param);
+		return userAssistantDao.assistantUsers(param);
+	}
+	
+	public List<UserListInfo> allocatableUsers(AssistantUserListParam param) {
+		return userAssistantDao.allocatableUsers(param);
 	}
 }

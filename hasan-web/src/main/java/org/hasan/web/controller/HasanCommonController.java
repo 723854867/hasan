@@ -3,7 +3,9 @@ package org.hasan.web.controller;
 import javax.annotation.Resource;
 import javax.validation.Valid;
 
+import org.gatlin.core.CoreCode;
 import org.gatlin.core.bean.model.message.Response;
+import org.gatlin.core.util.Assert;
 import org.gatlin.dao.bean.model.Query;
 import org.gatlin.soa.account.api.AccountService;
 import org.gatlin.soa.account.bean.entity.UserAccount;
@@ -109,6 +111,14 @@ public class HasanCommonController {
 	public Object assistantUsers(@RequestBody @Valid AssistantUserListParam param) {
 		if (null == param.getAssistant())
 			param.setAssistant(param.getUser().getId());
+		return commonService.assistantUsers(param);
+	}
+	
+	// 可分配用户列表
+	@ResponseBody
+	@RequestMapping("allocatable/users")
+	public Object allocatableUsers(@RequestBody @Valid AssistantUserListParam param) {
+		Assert.notNull(CoreCode.PARAM_ERR, param.getAssistant());
 		return commonService.assistantUsers(param);
 	}
 }

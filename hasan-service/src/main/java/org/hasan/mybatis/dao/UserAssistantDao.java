@@ -9,5 +9,7 @@ import org.hasan.bean.param.AssistantUserListParam;
 
 public interface UserAssistantDao extends DBDao<Long, UserAssistant> {
 
-	List<UserListInfo> list(AssistantUserListParam param);
+	List<UserListInfo> assistantUsers(AssistantUserListParam param);
+	
+	List<UserListInfo> allocatableUsers(AssistantUserListParam param);
 }
