@@ -118,7 +118,6 @@ public class HasanCommonController {
 	@ResponseBody
 	@RequestMapping("allocatable/users")
 	public Object allocatableUsers(@RequestBody @Valid AssistantUserListParam param) {
-		Assert.notNull(CoreCode.PARAM_ERR, param.getAssistant());
-		return commonService.assistantUsers(param);
+		return commonService.allocatableUsers(param);
 	}
 }
