@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.gatlin.core.bean.info.Pager;
 import org.gatlin.dao.bean.model.Query;
 import org.gatlin.soa.bean.param.SoaIdParam;
 import org.gatlin.soa.config.api.ConfigService;
@@ -18,6 +19,8 @@ import org.hasan.bean.param.SchedulerAddParam;
 import org.hasan.bean.param.SchedulerModifyParam;
 import org.hasan.manager.SchedulerManager;
 import org.springframework.stereotype.Service;
+
+import com.github.pagehelper.PageHelper;
 
 @Service
 public class SchedulerService {
@@ -85,7 +88,9 @@ public class SchedulerService {
 		return ranges;
 	}
 	
-	public List<CfgScheduler> schedulers(Query query) {
-		return schedulerManager.schedulers(query);
+	public Pager<CfgScheduler> schedulers(Query query) {
+		if (null != query.getPage())
+			PageHelper.startPage(query.getPage(), query.getPageSize());
+		return new Pager<CfgScheduler>(schedulerManager.schedulers(query));
 	}
 }
