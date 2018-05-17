@@ -25,7 +25,7 @@
 	</appender>
 	
 	<appender name="gatlin" class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<File>${logback.path}/rapid.log</File>
+		<File>${logback.path}/gatlin.log</File>
 		<rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
 			<!-- rollover daily -->
 			<fileNamePattern>${logback.path}/%d{yyyy-MM-dd}/rapid-%d{yyyy-MM-dd}-%i.log.gz</fileNamePattern>
