@@ -48,6 +48,8 @@ public class SchedulerManager {
 		List<CfgScheduler> schedulers = cfgSchedulerDao.queryList(query);
 		BitSet bitSet = new BitSet();
 		for (CfgScheduler temp : schedulers) {
+			if (temp.getId() == scheduler.getId())
+				continue;
 			for (int i = temp.getStart(); i <= temp.getStop(); i++)
 				bitSet.set(i);
 		}
