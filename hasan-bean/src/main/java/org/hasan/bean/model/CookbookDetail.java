@@ -3,7 +3,7 @@ package org.hasan.bean.model;
 import java.io.Serializable;
 import java.util.List;
 
-import org.gatlin.soa.resource.bean.model.ResourceInfo;
+import org.gatlin.soa.bean.model.ResourceInfo;
 import org.hasan.bean.entity.CfgCookbook;
 import org.hasan.bean.entity.CfgCookbookStep;
 import org.hasan.bean.entity.CfgGoods;

@@ -2,7 +2,7 @@ package org.hasan.bean.model;
 
 import java.io.Serializable;
 
-import org.gatlin.soa.resource.bean.model.ResourceInfo;
+import org.gatlin.soa.bean.model.ResourceInfo;
 import org.hasan.bean.entity.CfgGoods;
 import org.hasan.bean.enums.GoodsState;
 

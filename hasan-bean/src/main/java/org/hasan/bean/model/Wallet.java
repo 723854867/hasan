@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 
 import org.gatlin.soa.account.bean.entity.UserAccount;
 import org.gatlin.soa.bean.User;
-import org.gatlin.soa.resource.bean.model.ResourceInfo;
+import org.gatlin.soa.bean.model.ResourceInfo;
 import org.hasan.bean.entity.UserCustom;
 
 public class Wallet implements Serializable {
