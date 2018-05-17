@@ -8,6 +8,7 @@ import org.gatlin.soa.bean.param.SoaIdParam;
 import org.gatlin.soa.bean.param.SoaParam;
 import org.hasan.bean.param.SchedulerAddParam;
 import org.hasan.bean.param.SchedulerModifyParam;
+import org.hasan.bean.param.SchedulerSearchParam;
 import org.hasan.service.SchedulerService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -43,7 +44,7 @@ public class SchedulerController {
 	
 	@ResponseBody
 	@RequestMapping("list")
-	public Object list(@RequestBody @Valid SoaParam param) {
+	public Object list(@RequestBody @Valid SchedulerSearchParam param) {
 		return schedulerService.schedulers(param.query());
 	}
 	
