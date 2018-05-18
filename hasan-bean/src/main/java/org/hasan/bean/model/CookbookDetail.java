@@ -84,6 +84,7 @@ public class CookbookDetail implements Serializable {
 		private int id;
 		private String name;
 		private String content;
+		private int priority;
 		private ResourceInfo image;
 
 		public Step() {
@@ -93,6 +94,7 @@ public class CookbookDetail implements Serializable {
 			this.image = resource;
 			this.id = step.getId();
 			this.name = step.getName();
+			this.priority = step.getPriority();
 			this.content = step.getContent();
 		}
 
@@ -118,6 +120,14 @@ public class CookbookDetail implements Serializable {
 
 		public void setContent(String content) {
 			this.content = content;
+		}
+
+		public int getPriority() {
+			return priority;
+		}
+
+		public void setPriority(int priority) {
+			this.priority = priority;
 		}
 
 		public ResourceInfo getImage() {

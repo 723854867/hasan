@@ -49,7 +49,7 @@ public class CookbookService {
 		CfgCookbook cookbook = cookbookManager.cookbook(id);
 		Assert.notNull(HasanCode.COOKBOOK_NOT_EXIST, cookbook);
 		// 获取菜谱轮播图
-		Query query = new Query().eq("cfg_id", HasanResourceType.COOKBOOK_IMAGE.mark()).eq("owner", id);
+		Query query = new Query().in("cfg_id", HasanResourceType.cookbookResourceTypes()).eq("owner", id);
 		List<ResourceInfo> images = resourceService.resources(query).getList();
 		CookbookText text = SerializeUtil.GSON.fromJson(cookbook.getText(), CookbookText.class);
 		List<Goods> goods = new ArrayList<Goods>();
