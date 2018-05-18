@@ -68,7 +68,7 @@ public class OrderManager {
 		BigDecimal price = BigDecimal.ZERO;
 		for (OrderGoods temp : list)
 			price = price.add(temp.getUnitPrice().multiply(BigDecimal.valueOf(temp.getGoodsNum())));
-		Order order = EntityGenerator.newOrder(orderId, param, price, address);
+		Order order = EntityGenerator.newOrder(orderId, param, price, address, configService.geo(address.getCounty(), false));
 		orderDao.insert(order);
 		orderGoodsDao.batchInsert(list);
 		return order;

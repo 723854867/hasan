@@ -51,6 +51,11 @@
 			<artifactId>gatlin-soa-authority-service</artifactId>
 			<version>${gatlin.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.gatlin</groupId>
+			<artifactId>gatlin-soa-alipay-service</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 
 		<dependency>
 			<groupId>redis.clients</groupId>
