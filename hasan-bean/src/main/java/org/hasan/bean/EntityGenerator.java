@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.gatlin.core.util.Assert;
+import org.gatlin.soa.bean.model.Geo;
 import org.gatlin.soa.user.bean.entity.UserAddress;
 import org.gatlin.util.DateUtil;
 import org.gatlin.util.IDWorker;
@@ -83,7 +84,7 @@ public class EntityGenerator {
 		return instance;
 	}
 	
-	public static final Order newOrder(String orderId, OrderMakeParam param, BigDecimal price, UserAddress address) {
+	public static final Order newOrder(String orderId, OrderMakeParam param, BigDecimal price, UserAddress address, Geo geo) {
 		Order instance = new Order();
 		instance.setId(orderId);
 		instance.setPrice(price);
@@ -95,7 +96,7 @@ public class EntityGenerator {
 		instance.setDeliverStop(param.getDeliverStop());
 		instance.setDeliverStart(param.getDeliverStart());
 		instance.setRecipientsMobile(address.getContactsMobile());
-		instance.setRecipients(address.getProvince() + address.getCity() + address.getCounty() + address.getDetail());
+		instance.setRecipients(geo.getProvince() + geo.getCity() + geo.getCounty() + address.getDetail());
 		int time = DateUtil.current();
 		instance.setCreated(time);
 		instance.setUpdated(time);

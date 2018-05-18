@@ -2,7 +2,7 @@ package org.hasan.bean.model;
 
 import java.io.Serializable;
 
-import org.gatlin.soa.resource.bean.model.ResourceInfo;
+import org.gatlin.soa.bean.model.ResourceInfo;
 import org.gatlin.soa.user.bean.entity.Username;
 import org.gatlin.util.lang.StringUtil;
 import org.hasan.bean.entity.UserEvaluation;

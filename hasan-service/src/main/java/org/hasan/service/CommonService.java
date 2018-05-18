@@ -56,9 +56,9 @@ public class CommonService {
 		}
 		RegisterModel model = userService.register(param);
 		hasanManager.register(model.getUid());
-		int accountMod = GatlinConfigration.get(WebConsts.Options.ACCOUNT_MOD);
+		int accountMod = GatlinConfigration.get(WebConsts.Options.ACCOUNT_MOD_USER);
 		if (0 != accountMod)
-			accountService.init(model.getUid(), accountMod);
+			accountService.userCreate(model.getUid(), accountMod);
 		UserInvitation invitation = model.getInvitation();
 		if (null != invitation) {
 			// TODO:处理邀请

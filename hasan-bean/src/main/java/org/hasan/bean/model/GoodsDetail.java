@@ -3,7 +3,7 @@ package org.hasan.bean.model;
 import java.util.List;
 import java.util.Map;
 
-import org.gatlin.soa.resource.bean.model.ResourceInfo;
+import org.gatlin.soa.bean.model.ResourceInfo;
 import org.hasan.bean.entity.CfgGoods;
 
 public class GoodsDetail extends GoodsInfo {
