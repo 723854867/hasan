@@ -85,12 +85,12 @@ public class CookbookDetail implements Serializable {
 		private String name;
 		private String content;
 		private int priority;
-		private ResourceInfo image;
+		private List<ResourceInfo> image;
 
 		public Step() {
 		}
 
-		public Step(CfgCookbookStep step, ResourceInfo resource) {
+		public Step(CfgCookbookStep step, List<ResourceInfo> resource) {
 			this.image = resource;
 			this.id = step.getId();
 			this.name = step.getName();
@@ -130,13 +130,15 @@ public class CookbookDetail implements Serializable {
 			this.priority = priority;
 		}
 
-		public ResourceInfo getImage() {
+		public List<ResourceInfo> getImage() {
 			return image;
 		}
 
-		public void setImage(ResourceInfo image) {
+		public void setImage(List<ResourceInfo> image) {
 			this.image = image;
 		}
+
+		
 	}
 
 	public static class Goods implements Serializable {

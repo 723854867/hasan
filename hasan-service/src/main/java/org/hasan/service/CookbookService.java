@@ -86,16 +86,16 @@ public class CookbookService {
 			query = new Query().eq("cfg_id", HasanResourceType.COOKBOOK_STEP.mark()).in("owner", temp);
 			List<ResourceInfo> resources = resourceService.resources(query).getList();
 			cfgSteps.forEach(step -> {
-				ResourceInfo resource = null;
+				List<ResourceInfo> resource = new ArrayList<>();
 				if (!CollectionUtil.isEmpty(resources)) {
 					Iterator<ResourceInfo> iterator = resources.iterator();
 					while (iterator.hasNext()) {
 						ResourceInfo res = iterator.next();
 						int owner = Integer.valueOf(res.getOwner());
 						if (owner == step.getId()) {
-							resource = res;
+							resource.add(res);
 							iterator.remove();
-							break;
+							//break;
 						}
 					}
 				}
