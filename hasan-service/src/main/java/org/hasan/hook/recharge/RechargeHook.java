@@ -7,7 +7,7 @@ import org.gatlin.core.bean.exceptions.CodeException;
 import org.gatlin.core.util.Assert;
 import org.gatlin.soa.account.bean.entity.Recharge;
 import org.gatlin.soa.account.bean.enums.PlatType;
-import org.gatlin.soa.account.bean.param.RechargeParam;
+import org.gatlin.soa.bean.param.RechargeParam;
 import org.hasan.bean.HasanCode;
 import org.hasan.bean.entity.CfgMember;
 import org.hasan.bean.entity.Order;
@@ -16,7 +16,7 @@ import org.hasan.manager.OrderManager;
 import org.springframework.stereotype.Component;
 
 @Component
-public class RechargeHook extends org.gatlin.web.util.hook.RechargeHook {
+public class RechargeHook extends org.gatlin.web.util.hook.RechargeHook<RechargeParam> {
 	
 	@Resource
 	private HasanManager hasanManager;

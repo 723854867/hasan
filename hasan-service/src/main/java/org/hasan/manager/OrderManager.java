@@ -9,7 +9,7 @@ import javax.annotation.Resource;
 import org.gatlin.core.CoreCode;
 import org.gatlin.core.util.Assert;
 import org.gatlin.dao.bean.model.Query;
-import org.gatlin.soa.account.bean.param.RechargeParam;
+import org.gatlin.soa.bean.param.RechargeParam;
 import org.gatlin.soa.bean.param.SoaSidParam;
 import org.gatlin.soa.config.api.ConfigService;
 import org.gatlin.soa.resource.api.ResourceService;
