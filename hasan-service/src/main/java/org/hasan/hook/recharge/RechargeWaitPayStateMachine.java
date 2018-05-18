@@ -3,7 +3,7 @@ package org.hasan.hook.recharge;
 import javax.annotation.Resource;
 
 import org.gatlin.core.bean.exceptions.CodeException;
-import org.gatlin.soa.account.bean.entity.UserRecharge;
+import org.gatlin.soa.account.bean.entity.Recharge;
 import org.hasan.manager.HasanManager;
 import org.hasan.manager.OrderManager;
 import org.springframework.stereotype.Component;
@@ -17,7 +17,7 @@ public class RechargeWaitPayStateMachine extends org.gatlin.soa.account.istate.R
 	private HasanManager hasanManager;
 
 	@Override
-	protected void rechargeFailure(UserRecharge recharge) {
+	protected void rechargeFailure(Recharge recharge) {
 		switch (recharge.getGoodsType()) {
 		case 100:					// 购买会员失败：什么都不做
 			break;
@@ -30,7 +30,7 @@ public class RechargeWaitPayStateMachine extends org.gatlin.soa.account.istate.R
 	}
 
 	@Override
-	protected void rechargeSuccess(UserRecharge recharge) {
+	protected void rechargeSuccess(Recharge recharge) {
 		switch (recharge.getGoodsType()) {
 		case 100:					// 购买会员成功：
 			hasanManager.memberBuy(recharge);

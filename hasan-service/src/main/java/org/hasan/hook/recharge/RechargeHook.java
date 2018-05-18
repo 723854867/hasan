@@ -5,7 +5,7 @@ import javax.annotation.Resource;
 import org.gatlin.core.CoreCode;
 import org.gatlin.core.bean.exceptions.CodeException;
 import org.gatlin.core.util.Assert;
-import org.gatlin.soa.account.bean.entity.UserRecharge;
+import org.gatlin.soa.account.bean.entity.Recharge;
 import org.gatlin.soa.account.bean.enums.PlatType;
 import org.gatlin.soa.account.bean.param.RechargeParam;
 import org.hasan.bean.HasanCode;
@@ -24,21 +24,21 @@ public class RechargeHook extends org.gatlin.web.util.hook.RechargeHook {
 	private OrderManager orderManager;
 
 	@Override
-	protected UserRecharge verify(RechargeParam param, PlatType plat) {
+	protected Recharge verify(RechargeParam param, PlatType plat) {
 		switch (param.getGoodsType()) {
 		case 100:					// 购买会员
-			rechargeeVerify(param);
+			userRechargeeVerify(param);
 			Assert.isTrue(CoreCode.PARAM_ERR, null == param.getAmount());
 			CfgMember member = hasanManager.member(Integer.valueOf(param.getGoodsId()));
 			Assert.notNull(HasanCode.MEMBER_NOT_EXIST, member);
 			Assert.isTrue(CoreCode.PARAM_ERR, member.isSale());
 			param.setAmount(member.getPrice());
-			return _userRecharge(param, plat);
+			return _recharge(param, plat);
 		case 101:					// 支付订单
 			Assert.isTrue(CoreCode.PARAM_ERR, null == param.getAmount());
 			Assert.isTrue(CoreCode.PARAM_ERR, null == param.getRechargee());
 			Order order = orderManager.pay(param);
-			UserRecharge recharge = _userRecharge(param, plat, order.getExpressFee());
+			Recharge recharge = _recharge(param, plat, order.getExpressFee());
 			// 算上快递费
 			recharge.setFee(order.getExpressFee());
 			recharge.setAmount(recharge.getAmount().add(recharge.getFee()));

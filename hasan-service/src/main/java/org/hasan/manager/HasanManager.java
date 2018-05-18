@@ -10,11 +10,11 @@ import org.gatlin.core.bean.exceptions.CodeException;
 import org.gatlin.core.util.Assert;
 import org.gatlin.dao.bean.model.Query;
 import org.gatlin.soa.account.api.AccountService;
-import org.gatlin.soa.account.bean.AccountUtil;
-import org.gatlin.soa.account.bean.entity.LogUserAccount;
-import org.gatlin.soa.account.bean.entity.UserAccount;
-import org.gatlin.soa.account.bean.entity.UserRecharge;
-import org.gatlin.soa.account.bean.enums.UserAccountType;
+import org.gatlin.soa.account.bean.entity.Account;
+import org.gatlin.soa.account.bean.entity.Recharge;
+import org.gatlin.soa.account.bean.enums.AccountOwnerType;
+import org.gatlin.soa.account.bean.enums.AccountType;
+import org.gatlin.soa.account.bean.model.AccountDetail;
 import org.gatlin.soa.bean.param.SoaLidParam;
 import org.gatlin.soa.config.api.ConfigService;
 import org.gatlin.soa.user.bean.model.UserListInfo;
@@ -82,7 +82,7 @@ public class HasanManager {
 	
 	// 购买会员成功
 	@Transactional
-	public void memberBuy(UserRecharge recharge) {
+	public void memberBuy(Recharge recharge) {
 		CfgMember member = member(Integer.valueOf(recharge.getGoodsId()));
 		Query query = new Query().eq("uid", recharge.getRechargee()).forUpdate();
 		UserCustom custom = userCustomDao.queryUnique(query);
@@ -92,22 +92,25 @@ public class HasanManager {
 		long duration = unit.millis() * member.getExpiry();
 		custom.setMemberExpiry(System.currentTimeMillis() + duration);
 		userCustomDao.update(custom);
-		LogUserAccount log = AccountUtil.log(recharge.getRechargee(), member.getPrice(), HasanBizType.MEMBER_BUY_OK.mark(), recharge.getId());
-		accountService.process(log);
+		AccountDetail detail = AccountDetail.userUsable(recharge.getRechargee()).incr(member.getPrice())
+				.bizId(recharge.getId()).bizType(HasanBizType.MEMBER_BUY_OK.mark());
+		accountService.process(detail);
 	}
 	
 	@Transactional
 	public UserCustom userCustom(long uid) {
-		UserAccount account = accountService.account(new Query().eq("uid", uid).eq("type", UserAccountType.BASIC.mark()).forUpdate());
-		Query query = new Query().eq("uid", uid).forUpdate();
+		Query query = new Query().eq("owner_type", AccountOwnerType.USER.mark()).eq("owner", uid).eq("type", AccountType.BASIC.mark()).forUpdate();
+		Account account = accountService.account(query);
+		query = new Query().eq("uid", uid).forUpdate();
 		UserCustom custom = userCustomDao.queryUnique(query);
 		// 会员到期或者余额为0都会变成普通会员
 		if (0 != custom.getMemberId() &&
 				(custom.getMemberExpiry() <= System.currentTimeMillis() 
 				|| account.getUsable().compareTo(BigDecimal.ZERO) == 0)) {
 			if (account.getUsable().compareTo(BigDecimal.ZERO) > 0) {
-				LogUserAccount log = AccountUtil.log(uid, account.getUsable().negate(), HasanBizType.MEMBER_EXPIRY.mark(), custom.getMemberId());
-				accountService.process(log);
+				AccountDetail detail = AccountDetail.userUsable(uid).decr(account.getUsable())
+						.bizId(custom.getMemberId()).bizType(HasanBizType.MEMBER_EXPIRY.mark());
+				accountService.process(detail);
 			}
 			custom.setMemberId(0);
 			custom.setMemberExpiry(0);

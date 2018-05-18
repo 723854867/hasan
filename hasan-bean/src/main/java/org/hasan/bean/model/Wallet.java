@@ -3,7 +3,7 @@ package org.hasan.bean.model;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-import org.gatlin.soa.account.bean.entity.UserAccount;
+import org.gatlin.soa.account.bean.entity.Account;
 import org.gatlin.soa.bean.User;
 import org.gatlin.soa.bean.model.ResourceInfo;
 import org.hasan.bean.entity.UserCustom;
@@ -21,7 +21,7 @@ public class Wallet implements Serializable {
 	
 	public Wallet() {}
 	
-	public Wallet(User user, ResourceInfo avatar, UserAccount account, UserCustom custom, String memberTitle) {
+	public Wallet(User user, ResourceInfo avatar, Account account, UserCustom custom, String memberTitle) {
 		this.uid = user.getId();
 		if (null != avatar)
 			this.avatar = avatar.getUrl();
