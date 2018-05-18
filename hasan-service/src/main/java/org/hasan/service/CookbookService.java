@@ -49,7 +49,7 @@ public class CookbookService {
 		CfgCookbook cookbook = cookbookManager.cookbook(id);
 		Assert.notNull(HasanCode.COOKBOOK_NOT_EXIST, cookbook);
 		// 获取菜谱轮播图
-		Query query = new Query().eq("cfg_id", HasanResourceType.COOKBOOK_IMAGE.mark()).eq("owner", id);
+		Query query = new Query().in("cfg_id", HasanResourceType.cookbookResourceTypes()).eq("owner", id);
 		List<ResourceInfo> images = resourceService.resources(query).getList();
 		CookbookText text = SerializeUtil.GSON.fromJson(cookbook.getText(), CookbookText.class);
 		List<Goods> goods = new ArrayList<Goods>();
@@ -86,16 +86,16 @@ public class CookbookService {
 			query = new Query().eq("cfg_id", HasanResourceType.COOKBOOK_STEP.mark()).in("owner", temp);
 			List<ResourceInfo> resources = resourceService.resources(query).getList();
 			cfgSteps.forEach(step -> {
-				ResourceInfo resource = null;
+				List<ResourceInfo> resource = new ArrayList<>();
 				if (!CollectionUtil.isEmpty(resources)) {
 					Iterator<ResourceInfo> iterator = resources.iterator();
 					while (iterator.hasNext()) {
 						ResourceInfo res = iterator.next();
 						int owner = Integer.valueOf(res.getOwner());
 						if (owner == step.getId()) {
-							resource = res;
+							resource.add(res);
 							iterator.remove();
-							break;
+							//break;
 						}
 					}
 				}

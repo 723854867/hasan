@@ -41,4 +41,14 @@ public enum HasanResourceType {
 			}
 		};
 	}
+	
+	public static final Set<Integer> cookbookResourceTypes() {
+		return new HashSet<Integer>() {
+			private static final long serialVersionUID = 4048065548774118088L;
+			{
+				add(COOKBOOK_ICON.mark);
+				add(COOKBOOK_IMAGE.mark);
+			}
+		};
+	}
 }
