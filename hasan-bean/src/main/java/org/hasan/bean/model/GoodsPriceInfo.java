@@ -20,7 +20,7 @@ public class GoodsPriceInfo implements Serializable {
 	public GoodsPriceInfo(CfgGoodsPrice price, CfgMember member) {
 		this.id = price.getId();
 		this.price = price.getPrice();
-		this.name = member.getName();
+		this.name = null == member ? "原价" : member.getName();
 		this.memberId = price.getMemberId();
 	}
 

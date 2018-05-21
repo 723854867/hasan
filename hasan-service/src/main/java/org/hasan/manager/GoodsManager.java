@@ -52,6 +52,7 @@ public class GoodsManager {
 		cfgGoodsDao.insert(goods);
 		Map<Integer, CfgMember> members = hasanManager.members();
 		List<CfgGoodsPrice> prices = new ArrayList<CfgGoodsPrice>();
+		prices.add(EntityGenerator.newCfgGoodsPrice(0, goods.getId(), param.getPrices().get(0)));
 		for (CfgMember member : members.values()) {
 			BigDecimal price = param.getPrices().get(member.getId());
 			Assert.isTrue(CoreCode.PARAM_ERR, null != price && price.compareTo(BigDecimal.valueOf(0.01)) >= 0);
@@ -81,6 +82,7 @@ public class GoodsManager {
 		cfgGoodsPriceDao.deleteByGoodsId(goods.getId());
 		Map<Integer, CfgMember> members = hasanManager.members();
 		List<CfgGoodsPrice> prices = new ArrayList<CfgGoodsPrice>();
+		prices.add(EntityGenerator.newCfgGoodsPrice(0, goods.getId(), param.getPrices().get(0)));
 		for (CfgMember member : members.values()) {
 			BigDecimal price = param.getPrices().get(member.getId());
 			Assert.isTrue(CoreCode.PARAM_ERR, null != price && price.compareTo(BigDecimal.valueOf(0.01)) >= 0);
