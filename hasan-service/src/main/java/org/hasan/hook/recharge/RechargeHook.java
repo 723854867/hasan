@@ -1,5 +1,7 @@
 package org.hasan.hook.recharge;
 
+import java.math.BigDecimal;
+
 import javax.annotation.Resource;
 
 import org.gatlin.core.CoreCode;
@@ -16,7 +18,7 @@ import org.hasan.manager.OrderManager;
 import org.springframework.stereotype.Component;
 
 @Component
-public class RechargeHook extends org.gatlin.web.util.hook.RechargeHook<RechargeParam> {
+public class RechargeHook extends org.gatlin.web.util.hook.RechargeHook {
 	
 	@Resource
 	private HasanManager hasanManager;
@@ -27,18 +29,18 @@ public class RechargeHook extends org.gatlin.web.util.hook.RechargeHook<Recharge
 	protected Recharge verify(RechargeParam param, PlatType plat) {
 		switch (param.getGoodsType()) {
 		case 100:					// 购买会员
-			userRechargeeVerify(param);
-			Assert.isTrue(CoreCode.PARAM_ERR, null == param.getAmount());
 			CfgMember member = hasanManager.member(Integer.valueOf(param.getGoodsId()));
 			Assert.notNull(HasanCode.MEMBER_NOT_EXIST, member);
 			Assert.isTrue(CoreCode.PARAM_ERR, member.isSale());
+			param.setFee(BigDecimal.ZERO);
 			param.setAmount(member.getPrice());
 			return _recharge(param, plat);
 		case 101:					// 支付订单
 			Assert.isTrue(CoreCode.PARAM_ERR, null == param.getAmount());
 			Assert.isTrue(CoreCode.PARAM_ERR, null == param.getRechargee());
 			Order order = orderManager.pay(param);
-			Recharge recharge = _recharge(param, plat, order.getExpressFee());
+			param.setFee(order.getExpressFee());
+			Recharge recharge = _recharge(param, plat);
 			// 算上快递费
 			recharge.setFee(order.getExpressFee());
 			recharge.setAmount(recharge.getAmount().add(recharge.getFee()));
