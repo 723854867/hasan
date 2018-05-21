@@ -90,7 +90,10 @@ public class HasanManager {
 		custom.setUpdated(DateUtil.current());
 		TimeUnit unit = TimeUnit.match(member.getTimeUnit());
 		long duration = unit.millis() * member.getExpiry();
-		custom.setMemberExpiry(System.currentTimeMillis() + duration);
+		if (0 == custom.getMemberExpiry())
+			custom.setMemberExpiry(System.currentTimeMillis() + duration);
+		else
+			custom.setMemberExpiry(custom.getMemberExpiry() + duration);
 		userCustomDao.update(custom);
 		AccountDetail detail = AccountDetail.userUsable(recharge.getRechargee()).incr(member.getPrice())
 				.bizId(recharge.getId()).bizType(HasanBizType.MEMBER_BUY_OK.mark());
