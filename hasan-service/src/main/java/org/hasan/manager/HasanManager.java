@@ -12,9 +12,9 @@ import org.gatlin.dao.bean.model.Query;
 import org.gatlin.soa.account.api.AccountService;
 import org.gatlin.soa.account.bean.entity.Account;
 import org.gatlin.soa.account.bean.entity.Recharge;
-import org.gatlin.soa.account.bean.enums.AccountOwnerType;
 import org.gatlin.soa.account.bean.enums.AccountType;
 import org.gatlin.soa.account.bean.model.AccountDetail;
+import org.gatlin.soa.bean.enums.TargetType;
 import org.gatlin.soa.bean.param.SoaLidParam;
 import org.gatlin.soa.config.api.ConfigService;
 import org.gatlin.soa.user.bean.model.UserListInfo;
@@ -90,7 +90,10 @@ public class HasanManager {
 		custom.setUpdated(DateUtil.current());
 		TimeUnit unit = TimeUnit.match(member.getTimeUnit());
 		long duration = unit.millis() * member.getExpiry();
-		custom.setMemberExpiry(System.currentTimeMillis() + duration);
+		if (0 == custom.getMemberExpiry())
+			custom.setMemberExpiry(System.currentTimeMillis() + duration);
+		else
+			custom.setMemberExpiry(custom.getMemberExpiry() + duration);
 		userCustomDao.update(custom);
 		AccountDetail detail = AccountDetail.userUsable(recharge.getRechargee()).incr(member.getPrice())
 				.bizId(recharge.getId()).bizType(HasanBizType.MEMBER_BUY_OK.mark());
@@ -99,7 +102,7 @@ public class HasanManager {
 	
 	@Transactional
 	public UserCustom userCustom(long uid) {
-		Query query = new Query().eq("owner_type", AccountOwnerType.USER.mark()).eq("owner", uid).eq("type", AccountType.BASIC.mark()).forUpdate();
+		Query query = new Query().eq("owner_type", TargetType.USER.mark()).eq("owner", uid).eq("type", AccountType.BASIC.mark()).forUpdate();
 		Account account = accountService.account(query);
 		query = new Query().eq("uid", uid).forUpdate();
 		UserCustom custom = userCustomDao.queryUnique(query);
