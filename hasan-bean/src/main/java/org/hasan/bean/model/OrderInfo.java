@@ -2,9 +2,12 @@ package org.hasan.bean.model;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.hasan.bean.entity.Order;
+import org.hasan.bean.entity.OrderGoods;
 import org.hasan.bean.enums.OrderState;
 
 public class OrderInfo implements Serializable {
@@ -24,11 +27,11 @@ public class OrderInfo implements Serializable {
 	private int deliverStop;
 	private int created;
 	private int count;
-	private Set<String> icons;
+	private Map<Integer, String> icons = new HashMap<>();
 	
 	public OrderInfo() {}
 	
-	public OrderInfo(Order order) {
+	public OrderInfo(Order order,List<GoodsInfo> goods,List<OrderGoods> orderGoods) {
 		this.id = order.getId();
 		this.uid = order.getUid();
 		this.ip = order.getIp();
@@ -41,6 +44,8 @@ public class OrderInfo implements Serializable {
 		this.deliverStart = order.getDeliverStart();
 		this.deliverStop = order.getDeliverStop();
 		this.created = order.getCreated();
+		orderGoods.forEach(item->count=count+item.getGoodsNum());
+		goods.forEach(item -> icons.put(item.getId(), item.getIcon().getUrl()));
 	}
 
 	public String getId() {
@@ -146,12 +151,14 @@ public class OrderInfo implements Serializable {
 	public void setCount(int count) {
 		this.count = count; 
 	}
-	
-	public Set<String> getIcons() {
+
+	public Map<Integer, String> getIcons() {
 		return icons;
 	}
-	
-	public void setIcons(Set<String> icons) {
+
+	public void setIcons(Map<Integer, String> icons) {
 		this.icons = icons;
 	}
+	
+
 }
