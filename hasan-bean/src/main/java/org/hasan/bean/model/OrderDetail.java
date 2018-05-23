@@ -13,9 +13,9 @@ public class OrderDetail extends OrderInfo {
 	
 	public OrderDetail() {}
 	
-	public OrderDetail(Order order, List<OrderGoods> goods) {
-		super(order);
-		this.goods = goods;
+	public OrderDetail(Order order, List<GoodsInfo> goods, List<OrderGoods> orderGoods) {
+		super(order,goods,orderGoods);
+		this.goods = orderGoods;
 	}
 
 	public List<OrderGoods> getGoods() {
