@@ -96,7 +96,7 @@ public class EntityGenerator {
 		instance.setDeliverStop(param.getDeliverStop());
 		instance.setDeliverStart(param.getDeliverStart());
 		instance.setRecipientsMobile(address.getContactsMobile());
-		instance.setRecipients(geo.getProvince() + geo.getCity() + geo.getCounty() + address.getDetail());
+		instance.setRecipientsAddr(geo.getProvince() + geo.getCity() + geo.getCounty() + address.getDetail());
 		int time = DateUtil.current();
 		instance.setCreated(time);
 		instance.setUpdated(time);

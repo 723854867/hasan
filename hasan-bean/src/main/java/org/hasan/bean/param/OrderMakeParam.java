@@ -58,6 +58,6 @@ public class OrderMakeParam extends SoaParam {
 	@Override
 	public void verify() {
 		super.verify();
-		Assert.isTrue(CoreCode.PARAM_ERR, deliverStop>= deliverStart && DateUtil.current() > deliverStart);
+		Assert.isTrue(CoreCode.PARAM_ERR, deliverStop>= deliverStart && DateUtil.current() < deliverStart);
 	}
 }

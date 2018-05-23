@@ -12,8 +12,8 @@ import org.gatlin.dao.bean.model.Query;
 import org.gatlin.soa.account.api.AccountService;
 import org.gatlin.soa.account.bean.entity.Account;
 import org.gatlin.soa.account.bean.entity.Recharge;
-import org.gatlin.soa.account.bean.enums.AccountType;
 import org.gatlin.soa.account.bean.model.AccountDetail;
+import org.gatlin.soa.bean.enums.AccountType;
 import org.gatlin.soa.bean.enums.TargetType;
 import org.gatlin.soa.bean.param.SoaLidParam;
 import org.gatlin.soa.config.api.ConfigService;
@@ -95,8 +95,8 @@ public class HasanManager {
 		else
 			custom.setMemberExpiry(custom.getMemberExpiry() + duration);
 		userCustomDao.update(custom);
-		AccountDetail detail = AccountDetail.userUsable(recharge.getRechargee()).incr(member.getPrice())
-				.bizId(recharge.getId()).bizType(HasanBizType.MEMBER_BUY_OK.mark());
+		AccountDetail detail = new AccountDetail(recharge.getId(), HasanBizType.MEMBER_BUY_OK.mark());
+		detail.userUsableIncre(recharge.getRechargee(), AccountType.BASIC, recharge.getAmount());
 		accountService.process(detail);
 	}
 	
@@ -104,17 +104,20 @@ public class HasanManager {
 	public UserCustom userCustom(long uid) {
 		Query query = new Query().eq("owner_type", TargetType.USER.mark()).eq("owner", uid).eq("type", AccountType.BASIC.mark()).forUpdate();
 		Account account = accountService.account(query);
+		query = new Query().eq("owner_type", TargetType.USER.mark()).eq("owner", uid).eq("type", AccountType.EXP.mark()).forUpdate();
+		Account expAccount = accountService.account(query);
 		query = new Query().eq("uid", uid).forUpdate();
 		UserCustom custom = userCustomDao.queryUnique(query);
 		// 会员到期或者余额为0都会变成普通会员
 		if (0 != custom.getMemberId() &&
 				(custom.getMemberExpiry() <= System.currentTimeMillis() 
 				|| account.getUsable().compareTo(BigDecimal.ZERO) == 0)) {
-			if (account.getUsable().compareTo(BigDecimal.ZERO) > 0) {
-				AccountDetail detail = AccountDetail.userUsable(uid).decr(account.getUsable())
-						.bizId(custom.getMemberId()).bizType(HasanBizType.MEMBER_EXPIRY.mark());
-				accountService.process(detail);
-			}
+			AccountDetail detail = new AccountDetail(custom.getMemberId(), HasanBizType.MEMBER_EXPIRY.mark());
+			if (account.getUsable().compareTo(BigDecimal.ZERO) > 0) 
+				detail.userUsableDecr(uid, AccountType.BASIC, account.getUsable());
+			if (expAccount.getUsable().compareTo(BigDecimal.ZERO) > 0) 
+				detail.userUsableDecr(uid, AccountType.EXP, account.getUsable());
+			accountService.process(detail);
 			custom.setMemberId(0);
 			custom.setMemberExpiry(0);
 			custom.setUpdated(DateUtil.current());

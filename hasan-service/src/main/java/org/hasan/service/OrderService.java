@@ -34,6 +34,11 @@ public class OrderService {
 		return orderManager.make(param);
 	}
 	
+	@Transactional
+	public void payBalance(SoaSidParam param) {
+		
+	}
+	
 	public void deliver(String orderId) {
 		orderManager.deliver(orderId);
 	}

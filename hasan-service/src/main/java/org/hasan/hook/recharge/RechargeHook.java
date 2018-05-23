@@ -8,7 +8,7 @@ import org.gatlin.core.CoreCode;
 import org.gatlin.core.bean.exceptions.CodeException;
 import org.gatlin.core.util.Assert;
 import org.gatlin.soa.account.bean.entity.Recharge;
-import org.gatlin.soa.account.bean.enums.PlatType;
+import org.gatlin.soa.bean.enums.PlatType;
 import org.gatlin.soa.bean.param.RechargeParam;
 import org.hasan.bean.HasanCode;
 import org.hasan.bean.entity.CfgMember;
@@ -37,13 +37,11 @@ public class RechargeHook extends org.gatlin.web.util.hook.RechargeHook {
 			return _recharge(param, plat);
 		case 101:					// 支付订单
 			Assert.isTrue(CoreCode.PARAM_ERR, null == param.getAmount());
-			Assert.isTrue(CoreCode.PARAM_ERR, null == param.getRechargee());
 			Order order = orderManager.pay(param);
-			param.setFee(order.getExpressFee());
 			Recharge recharge = _recharge(param, plat);
 			// 算上快递费
 			recharge.setFee(order.getExpressFee());
-			recharge.setAmount(recharge.getAmount().add(recharge.getFee()));
+			recharge.setAmount(order.getPrice().add(order.getExpressFee()));
 			return recharge;
 		default:
 			throw new CodeException(CoreCode.PARAM_ERR);

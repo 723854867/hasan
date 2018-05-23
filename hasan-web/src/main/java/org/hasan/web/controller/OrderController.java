@@ -29,6 +29,14 @@ public class OrderController {
 		return orderService.make(param);
 	}
 	
+	// 余额支付
+	@ResponseBody
+	@RequestMapping("pay/balance")
+	public Object payBalance(@RequestBody @Valid SoaSidParam param) {
+		orderService.payBalance(param);
+		return Response.ok();
+	}
+	
 	// 发货
 	@ResponseBody
 	@RequestMapping("deliver")
