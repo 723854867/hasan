@@ -15,15 +15,20 @@ import org.gatlin.soa.account.bean.entity.Recharge;
 import org.gatlin.soa.account.bean.model.AccountDetail;
 import org.gatlin.soa.bean.enums.AccountType;
 import org.gatlin.soa.bean.enums.TargetType;
+import org.gatlin.soa.bean.param.SoaIdParam;
 import org.gatlin.soa.bean.param.SoaLidParam;
+import org.gatlin.soa.bean.param.SoaNameIdParam;
+import org.gatlin.soa.bean.param.SoaSidParam;
 import org.gatlin.soa.config.api.ConfigService;
 import org.gatlin.soa.user.bean.model.UserListInfo;
 import org.gatlin.util.DateUtil;
 import org.gatlin.util.bean.enums.TimeUnit;
+import org.gatlin.util.lang.CollectionUtil;
 import org.gatlin.util.lang.StringUtil;
 import org.hasan.bean.EntityGenerator;
 import org.hasan.bean.HasanCode;
 import org.hasan.bean.entity.CfgMember;
+import org.hasan.bean.entity.CfgVerse;
 import org.hasan.bean.entity.UserAssistant;
 import org.hasan.bean.entity.UserCustom;
 import org.hasan.bean.enums.HasanBizType;
@@ -32,6 +37,7 @@ import org.hasan.bean.param.AssistantUserListParam;
 import org.hasan.bean.param.MemberAddParam;
 import org.hasan.bean.param.MemberModifyParam;
 import org.hasan.mybatis.dao.CfgMemberDao;
+import org.hasan.mybatis.dao.CfgVerseDao;
 import org.hasan.mybatis.dao.UserAssistantDao;
 import org.hasan.mybatis.dao.UserCustomDao;
 import org.springframework.dao.DuplicateKeyException;
@@ -41,6 +47,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Component
 public class HasanManager {
 
+	@Resource
+	private CfgVerseDao cfgVerseDao;
 	@Resource
 	private CfgMemberDao cfgMemberDao;
 	@Resource
@@ -96,7 +104,7 @@ public class HasanManager {
 			custom.setMemberExpiry(custom.getMemberExpiry() + duration);
 		userCustomDao.update(custom);
 		AccountDetail detail = new AccountDetail(recharge.getId(), HasanBizType.MEMBER_BUY_OK.mark());
-		detail.userUsableIncre(recharge.getRechargee(), AccountType.BASIC, recharge.getAmount());
+		detail.userUsableIncr(recharge.getRechargee(), AccountType.BASIC, recharge.getAmount());
 		accountService.process(detail);
 	}
 	
@@ -139,8 +147,38 @@ public class HasanManager {
 		userAssistantDao.deleteByKey(param.getId());
 	}
 	
+	public int verseAdd(SoaSidParam param) {
+		CfgVerse verse = EntityGenerator.newCfgVerse(param.getId());
+		cfgVerseDao.insert(verse);
+		return verse.getId();
+	}
+	
+	public void verseModify(SoaNameIdParam param) {
+		CfgVerse verse = cfgVerseDao.getByKey(param.getId());
+		Assert.notNull(HasanCode.ASSISTANT_ALLOCATE_DUPLICATED, verse);
+		verse.setContent(param.getName());
+		verse.setUpdated(DateUtil.current());
+		cfgVerseDao.update(verse);
+	}
+	
+	public void verseDelete(SoaIdParam param) {
+		cfgVerseDao.deleteByKey(param.getId());
+	}
+	
+	public CfgVerse verse() {
+		List<CfgVerse> list = cfgVerseDao.getAllList();
+		if (CollectionUtil.isEmpty(list))
+			return null;
+		int idx = (int) (Math.random() * list.size());
+		return list.get(idx);
+	}
+	
 	public CfgMember member(int id) {
 		return cfgMemberDao.getByKey(id);
+	}
+	
+	public List<CfgVerse> verses(Query query) {
+		return cfgVerseDao.queryList(query);
 	}
 	
 	public Map<Integer, CfgMember> members() {

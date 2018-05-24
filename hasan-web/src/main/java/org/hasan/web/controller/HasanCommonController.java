@@ -10,8 +10,11 @@ import org.gatlin.soa.account.bean.entity.Account;
 import org.gatlin.soa.bean.User;
 import org.gatlin.soa.bean.enums.AccountType;
 import org.gatlin.soa.bean.model.ResourceInfo;
+import org.gatlin.soa.bean.param.SoaIdParam;
 import org.gatlin.soa.bean.param.SoaLidParam;
+import org.gatlin.soa.bean.param.SoaNameIdParam;
 import org.gatlin.soa.bean.param.SoaParam;
+import org.gatlin.soa.bean.param.SoaSidParam;
 import org.gatlin.soa.config.api.ConfigService;
 import org.gatlin.soa.resource.api.ResourceService;
 import org.gatlin.soa.resource.bean.enums.ResourceType;
@@ -26,6 +29,7 @@ import org.hasan.bean.param.AssistantUserListParam;
 import org.hasan.bean.param.MemberAddParam;
 import org.hasan.bean.param.MemberModifyParam;
 import org.hasan.bean.param.MembersParam;
+import org.hasan.bean.param.VersesParam;
 import org.hasan.manager.HasanManager;
 import org.hasan.service.CommonService;
 import org.springframework.stereotype.Controller;
@@ -76,6 +80,12 @@ public class HasanCommonController {
 	}
 
 	@ResponseBody
+	@RequestMapping("member/buy")
+	public Object memberBuy(@RequestBody @Valid SoaIdParam param) {
+		return commonService.memberBuy(param);
+	}
+	
+	@ResponseBody
 	@RequestMapping("wallet")
 	public Object wallet(@RequestBody @Valid SoaParam param) {
 		User user = param.getUser();
@@ -118,4 +128,29 @@ public class HasanCommonController {
 		return commonService.allocatableUsers(param);
 	}
 	
+	@ResponseBody
+	@RequestMapping("verse/add")
+	public Object verseAdd(@RequestBody @Valid SoaSidParam param) {
+		return commonService.verseAdd(param);
+	}
+	
+	@ResponseBody
+	@RequestMapping("verse/modify")
+	public Object verseModify(@RequestBody @Valid SoaNameIdParam param) {
+		commonService.verseModify(param);
+		return Response.ok();
+	}
+	
+	@ResponseBody
+	@RequestMapping("verse/delete")
+	public Object verseDelete(@RequestBody @Valid SoaIdParam param) {
+		commonService.verseDelete(param);
+		return Response.ok();
+	}
+	
+	@ResponseBody
+	@RequestMapping("verses")
+	public Object verses(@RequestBody @Valid VersesParam param) {
+		return commonService.verses(param.query());
+	}
 }
