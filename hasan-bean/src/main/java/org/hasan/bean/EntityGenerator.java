@@ -18,6 +18,7 @@ import org.hasan.bean.entity.CfgGoods;
 import org.hasan.bean.entity.CfgGoodsPrice;
 import org.hasan.bean.entity.CfgMember;
 import org.hasan.bean.entity.CfgScheduler;
+import org.hasan.bean.entity.CfgVerse;
 import org.hasan.bean.entity.Order;
 import org.hasan.bean.entity.OrderGoods;
 import org.hasan.bean.entity.UserAssistant;
@@ -170,6 +171,15 @@ public class EntityGenerator {
 		instance.setGoodsId(goodsId);
 		instance.setMemberId(memberId);
 		instance.setPrice(price);
+		int time = DateUtil.current();
+		instance.setCreated(time);
+		instance.setUpdated(time);
+		return instance;
+	}
+	
+	public static final CfgVerse newCfgVerse(String content) {
+		CfgVerse instance = new CfgVerse();
+		instance.setContent(content);
 		int time = DateUtil.current();
 		instance.setCreated(time);
 		instance.setUpdated(time);

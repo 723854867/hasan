@@ -22,7 +22,7 @@ public class RechargeInitStateMachine extends org.gatlin.soa.account.istate.Rech
 		case 100:					// 购买会员失败：什么都不做
 			break;
 		case 101:					// 订单支付失败
-			orderManager.payNotice(recharge.getGoodsId(), false);
+			orderManager.payNotice(recharge, false);
 			break;
 		default:
 			throw new CodeException();
@@ -36,7 +36,7 @@ public class RechargeInitStateMachine extends org.gatlin.soa.account.istate.Rech
 			hasanManager.memberBuy(recharge);
 			break;
 		case 101:					// 支付订单成功
-			orderManager.payNotice(recharge.getGoodsId(), true);
+			orderManager.payNotice(recharge, true);
 			break;
 		default:
 			throw new CodeException();

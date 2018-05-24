@@ -56,6 +56,11 @@
 			<artifactId>gatlin-soa-alipay-service</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.gatlin</groupId>
+			<artifactId>gatlin-sdk-jisu</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 
 		<dependency>
 			<groupId>redis.clients</groupId>

@@ -4,11 +4,24 @@ import java.util.ArrayList;
 
 import javax.annotation.Resource;
 
+import org.gatlin.core.CoreCode;
 import org.gatlin.core.GatlinConfigration;
 import org.gatlin.core.bean.info.Pager;
+import org.gatlin.core.util.Assert;
 import org.gatlin.dao.bean.model.Query;
+import org.gatlin.sdk.jisu.request.JieQiRequest;
+import org.gatlin.sdk.jisu.result.JieQi;
 import org.gatlin.soa.account.api.AccountService;
+import org.gatlin.soa.account.bean.AccountUtil;
+import org.gatlin.soa.account.bean.entity.Recharge;
+import org.gatlin.soa.alipay.api.AlipayAccountService;
+import org.gatlin.soa.bean.enums.PlatType;
+import org.gatlin.soa.bean.param.SoaIdParam;
 import org.gatlin.soa.bean.param.SoaLidParam;
+import org.gatlin.soa.bean.param.SoaNameIdParam;
+import org.gatlin.soa.bean.param.SoaSidParam;
+import org.gatlin.soa.config.api.ConfigService;
+import org.gatlin.soa.config.bean.entity.CfgGlobal;
 import org.gatlin.soa.courier.api.EmailService;
 import org.gatlin.soa.courier.api.SmsService;
 import org.gatlin.soa.user.api.UserService;
@@ -16,8 +29,12 @@ import org.gatlin.soa.user.bean.entity.UserInvitation;
 import org.gatlin.soa.user.bean.model.RegisterModel;
 import org.gatlin.soa.user.bean.model.UserListInfo;
 import org.gatlin.soa.user.bean.param.RegisterParam;
+import org.gatlin.util.DateUtil;
+import org.gatlin.util.serial.SerializeUtil;
 import org.gatlin.web.WebConsts;
+import org.hasan.bean.HasanCode;
 import org.hasan.bean.entity.CfgMember;
+import org.hasan.bean.entity.CfgVerse;
 import org.hasan.bean.param.AssistantAllocateParam;
 import org.hasan.bean.param.AssistantUserListParam;
 import org.hasan.bean.param.MemberAddParam;
@@ -40,7 +57,11 @@ public class CommonService {
 	@Resource
 	private HasanManager hasanManager;
 	@Resource
+	private ConfigService configService;
+	@Resource
 	private AccountService accountService;
+	@Resource
+	private AlipayAccountService alipayAccountService;
 	
 	@Transactional
 	public long register(RegisterParam param) { 
@@ -74,6 +95,16 @@ public class CommonService {
 		hasanManager.memberModify(param);
 	}
 	
+	@Transactional
+	public String memberBuy(SoaIdParam param) { 
+		CfgMember member = hasanManager.member(param.getId());
+		Assert.notNull(HasanCode.MEMBER_NOT_EXIST, member);
+		Assert.isTrue(CoreCode.PARAM_ERR, member.isSale());
+		int timeout = configService.config(WebConsts.Options.RECHARGE_TIMEOUT);
+		Recharge recharge = AccountUtil.newRecharge(param, PlatType.ALIPAY, 100, member.getId(), member.getPrice(), timeout);
+		return alipayAccountService.recharge(recharge);
+	}
+	
 	public Pager<CfgMember> members(Query query) {
 		if (null != query.getPage())
 			PageHelper.startPage(query.getPage(), query.getPageSize());
@@ -86,6 +117,34 @@ public class CommonService {
 	
 	public void assistantDelete(SoaLidParam param) {
 		hasanManager.assistantDelete(param);
+	}
+	
+	public int verseAdd(SoaSidParam param) {
+		return hasanManager.verseAdd(param);
+	}
+	
+	public void verseModify(SoaNameIdParam param) {
+		hasanManager.verseModify(param);
+	}
+	
+	public void verseDelete(SoaIdParam param) {
+		hasanManager.verseDelete(param);
+	}
+	
+	public Pager<CfgVerse> verses(Query query) {
+		if (null != query.getPage())
+			PageHelper.startPage(query.getPage(), query.getPageSize());
+		return new Pager<CfgVerse>(hasanManager.verses(query));
+	}
+	
+	public void dailyTask() {
+		// 同步节气数据
+		JieQiRequest request = new JieQiRequest();
+		JieQi jieQi = request.sync().getResult();
+		CfgGlobal global = configService.cfgGlobal("jie_qi");
+		global.setValue(SerializeUtil.GSON.toJson(jieQi));
+		global.setUpdated(DateUtil.current());
+		configService.updateConfig(global);
 	}
 	
 	public Pager<UserListInfo> assistantUsers(AssistantUserListParam param) {
