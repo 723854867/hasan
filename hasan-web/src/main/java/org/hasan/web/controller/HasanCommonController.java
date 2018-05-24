@@ -40,7 +40,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 @RequestMapping("common")
 public class HasanCommonController {
-	
+
 	@Resource
 	private UserService userService;
 	@Resource
@@ -59,26 +59,26 @@ public class HasanCommonController {
 	public Object login(@RequestBody @Valid RegisterParam param) {
 		return commonService.register(param);
 	}
-	
+
 	@ResponseBody
 	@RequestMapping("members")
 	public Object members(@RequestBody @Valid MembersParam param) {
 		return commonService.members(param.query());
 	}
-	
+
 	@ResponseBody
 	@RequestMapping("member/add")
 	public Object memberAdd(@RequestBody @Valid MemberAddParam param) {
 		return commonService.memberAdd(param);
 	}
-	
+
 	@ResponseBody
 	@RequestMapping("member/modify")
 	public Object memberModify(@RequestBody @Valid MemberModifyParam param) {
 		commonService.memberModify(param);
 		return Response.ok();
 	}
-	
+
 	@ResponseBody
 	@RequestMapping("member/buy")
 	public Object memberBuy(@RequestBody @Valid SoaIdParam param) {
@@ -97,21 +97,21 @@ public class HasanCommonController {
 		String memberTitle = null == member ? configService.config(HasanConsts.DEFAULT_MEMBER_TITLE) : member.getName();
 		return new Wallet(user, resource, account, custom, memberTitle);
 	}
-	
+
 	@ResponseBody
 	@RequestMapping("assistant/allocate")
 	public Object assistantAllocate(@RequestBody @Valid AssistantAllocateParam param) {
 		commonService.assistantAllocate(param);
 		return Response.ok();
 	}
-	
+
 	@ResponseBody
 	@RequestMapping("assistant/delete")
 	public Object assistantDelete(@RequestBody @Valid SoaLidParam param) {
 		commonService.assistantDelete(param);
 		return Response.ok();
 	}
-	
+
 	// 客服用户列表
 	@ResponseBody
 	@RequestMapping("assistant/users")
@@ -120,7 +120,7 @@ public class HasanCommonController {
 			param.setAssistant(param.getUser().getId());
 		return commonService.assistantUsers(param);
 	}
-	
+
 	// 可分配用户列表
 	@ResponseBody
 	@RequestMapping("allocatable/users")
