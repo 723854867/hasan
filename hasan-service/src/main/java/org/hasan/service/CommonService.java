@@ -9,7 +9,9 @@ import org.gatlin.core.GatlinConfigration;
 import org.gatlin.core.bean.info.Pager;
 import org.gatlin.core.util.Assert;
 import org.gatlin.dao.bean.model.Query;
+import org.gatlin.sdk.jisu.request.CalendarRequest;
 import org.gatlin.sdk.jisu.request.JieQiRequest;
+import org.gatlin.sdk.jisu.result.Calendar;
 import org.gatlin.sdk.jisu.result.JieQi;
 import org.gatlin.soa.account.api.AccountService;
 import org.gatlin.soa.account.bean.AccountUtil;
@@ -31,6 +33,7 @@ import org.gatlin.soa.user.bean.model.UserListInfo;
 import org.gatlin.soa.user.bean.param.RegisterParam;
 import org.gatlin.util.DateUtil;
 import org.gatlin.util.lang.StringUtil;
+import org.gatlin.util.serial.SerializeUtil;
 import org.gatlin.web.WebConsts;
 import org.hasan.bean.HasanCode;
 import org.hasan.bean.entity.CfgMember;
@@ -140,8 +143,10 @@ public class CommonService {
 	
 	public GuideInfo guide() {
 		CfgVerse verse = hasanManager.verse();
-		CfgGlobal jieqi = configService.cfgGlobal("jie_qi");
-		return new GuideInfo(null == jieqi ? null : jieqi.getValue(), verse);
+		CfgGlobal global = configService.cfgGlobal("jie_qi");
+		GuideInfo info = SerializeUtil.GSON.fromJson(global.getValue(), GuideInfo.class);
+		info.setVerse(verse.getContent());
+		return info;
 	}
 	
 	public void dailyTask() {
@@ -150,11 +155,21 @@ public class CommonService {
 		JieQi jieQi = request.sync().getResult();
 		String time = DateUtil.getDate(DateUtil.yyyy_MM_dd);
 		String ntime = DateUtil.convert(jieQi.getNow().getTime(), DateUtil.YYYY_MM_DD_HH_MM_SS, DateUtil.yyyy_MM_dd);
+		GuideInfo info = new GuideInfo();
 		CfgGlobal global = configService.cfgGlobal("jie_qi");
-		if (time.equals(ntime))
-			global.setValue(jieQi.getNow().getName());
-		else
-			global.setValue(StringUtil.EMPTY);
+		CalendarRequest crequest = new CalendarRequest();
+		Calendar calendar = crequest.sync().getResult();
+		info.setYear(calendar.getYear());
+		info.setMonth(calendar.getMonth());
+		info.setDay(calendar.getDay());
+		info.setWeek(calendar.getWeek());
+		info.setLunarday(calendar.getLunarday());
+		info.setLunarmonth(calendar.getLunarmonth());
+		info.setLunaryear(calendar.getLunaryear());
+		info.setShengxiao(calendar.getShengxiao());
+		info.setSuici(calendar.getHuangli().getSuici());
+		info.setJieqi(time.equals(ntime) ? jieQi.getNow().getName() : StringUtil.EMPTY);
+		global.setValue(SerializeUtil.GSON.toJson(info));
 		global.setUpdated(DateUtil.current());
 		configService.updateConfig(global);
 	}

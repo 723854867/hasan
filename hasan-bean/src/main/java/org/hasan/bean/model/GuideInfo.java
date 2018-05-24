@@ -2,32 +2,92 @@ package org.hasan.bean.model;
 
 import java.io.Serializable;
 
-import org.gatlin.util.DateUtil;
-import org.hasan.bean.entity.CfgVerse;
-
 public class GuideInfo implements Serializable {
 
 	private static final long serialVersionUID = -4901204615824683581L;
 
-	private int time;
+	private String year;
+	private String month;
+	private String day;
+	private String week;
+	private String lunaryear;
+	private String lunarmonth;
+	private String lunarday;
+	private String shengxiao;
+	private String[] suici;
 	private String jieqi;
 	private String verse;
-	
-	public GuideInfo() {}
-	
-	public GuideInfo(String jieqi, CfgVerse verse) {
-		this.jieqi = jieqi;
-		this.time = DateUtil.current();
-		if (null != verse)
-			this.verse = verse.getContent();
+
+	public String getYear() {
+		return year;
 	}
 
-	public int getTime() {
-		return time;
+	public void setYear(String year) {
+		this.year = year;
 	}
 
-	public void setTime(int time) {
-		this.time = time;
+	public String getMonth() {
+		return month;
+	}
+
+	public void setMonth(String month) {
+		this.month = month;
+	}
+
+	public String getDay() {
+		return day;
+	}
+
+	public void setDay(String day) {
+		this.day = day;
+	}
+
+	public String getWeek() {
+		return week;
+	}
+
+	public void setWeek(String week) {
+		this.week = week;
+	}
+
+	public String getLunaryear() {
+		return lunaryear;
+	}
+
+	public void setLunaryear(String lunaryear) {
+		this.lunaryear = lunaryear;
+	}
+
+	public String getLunarmonth() {
+		return lunarmonth;
+	}
+
+	public void setLunarmonth(String lunarmonth) {
+		this.lunarmonth = lunarmonth;
+	}
+
+	public String getLunarday() {
+		return lunarday;
+	}
+
+	public void setLunarday(String lunarday) {
+		this.lunarday = lunarday;
+	}
+
+	public String getShengxiao() {
+		return shengxiao;
+	}
+
+	public void setShengxiao(String shengxiao) {
+		this.shengxiao = shengxiao;
+	}
+
+	public String[] getSuici() {
+		return suici;
+	}
+
+	public void setSuici(String[] suici) {
+		this.suici = suici;
 	}
 
 	public String getJieqi() {
