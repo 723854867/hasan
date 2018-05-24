@@ -145,7 +145,12 @@ public class CommonService {
 		CfgVerse verse = hasanManager.verse();
 		CfgGlobal global = configService.cfgGlobal("jie_qi");
 		GuideInfo info = SerializeUtil.GSON.fromJson(global.getValue(), GuideInfo.class);
+		if (null == info)
+			info = new GuideInfo();
 		info.setVerse(verse.getContent());
+		java.util.Calendar calendar = java.util.Calendar.getInstance();
+		calendar.setTimeInMillis(System.currentTimeMillis());
+		info.setHour(calendar.get(java.util.Calendar.HOUR_OF_DAY));
 		return info;
 	}
 	

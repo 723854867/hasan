@@ -17,6 +17,7 @@ public class GuideInfo implements Serializable {
 	private String[] suici;
 	private String jieqi;
 	private String verse;
+	private Integer hour;
 
 	public String getYear() {
 		return year;
@@ -104,5 +105,13 @@ public class GuideInfo implements Serializable {
 
 	public void setVerse(String verse) {
 		this.verse = verse;
+	}
+	
+	public Integer getHour() {
+		return hour;
+	}
+	
+	public void setHour(Integer hour) {
+		this.hour = hour;
 	}
 }
