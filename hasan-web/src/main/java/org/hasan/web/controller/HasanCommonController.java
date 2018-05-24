@@ -153,4 +153,10 @@ public class HasanCommonController {
 	public Object verses(@RequestBody @Valid VersesParam param) {
 		return commonService.verses(param.query());
 	}
+	
+	@ResponseBody
+	@RequestMapping("guide")
+	public Object guid(@RequestBody @Valid SoaParam param) {
+		return commonService.guide();
+	}
 }

@@ -30,11 +30,12 @@ import org.gatlin.soa.user.bean.model.RegisterModel;
 import org.gatlin.soa.user.bean.model.UserListInfo;
 import org.gatlin.soa.user.bean.param.RegisterParam;
 import org.gatlin.util.DateUtil;
-import org.gatlin.util.serial.SerializeUtil;
+import org.gatlin.util.lang.StringUtil;
 import org.gatlin.web.WebConsts;
 import org.hasan.bean.HasanCode;
 import org.hasan.bean.entity.CfgMember;
 import org.hasan.bean.entity.CfgVerse;
+import org.hasan.bean.model.GuideInfo;
 import org.hasan.bean.param.AssistantAllocateParam;
 import org.hasan.bean.param.AssistantUserListParam;
 import org.hasan.bean.param.MemberAddParam;
@@ -137,12 +138,23 @@ public class CommonService {
 		return new Pager<CfgVerse>(hasanManager.verses(query));
 	}
 	
+	public GuideInfo guide() {
+		CfgVerse verse = hasanManager.verse();
+		CfgGlobal jieqi = configService.cfgGlobal("jie_qi");
+		return new GuideInfo(null == jieqi ? null : jieqi.getValue(), verse);
+	}
+	
 	public void dailyTask() {
 		// 同步节气数据
 		JieQiRequest request = new JieQiRequest();
 		JieQi jieQi = request.sync().getResult();
+		String time = DateUtil.getDate(DateUtil.yyyy_MM_dd);
+		String ntime = DateUtil.convert(jieQi.getNow().getTime(), DateUtil.YYYY_MM_DD_HH_MM_SS, DateUtil.yyyy_MM_dd);
 		CfgGlobal global = configService.cfgGlobal("jie_qi");
-		global.setValue(SerializeUtil.GSON.toJson(jieQi));
+		if (time.equals(ntime))
+			global.setValue(jieQi.getNow().getName());
+		else
+			global.setValue(StringUtil.EMPTY);
 		global.setUpdated(DateUtil.current());
 		configService.updateConfig(global);
 	}
