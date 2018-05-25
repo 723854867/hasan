@@ -14,7 +14,7 @@ import org.hasan.manager.GoodsManager;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ResourceHook extends org.gatlin.web.util.hook.ResourceHook {
+public class ResourceHook extends org.gatlin.web.util.validator.ResourceHook {
 	
 	@Resource
 	private GoodsManager goodsManager;

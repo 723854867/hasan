@@ -29,6 +29,11 @@
 		</dependency>
 		<dependency>
 			<groupId>org.gatlin</groupId>
+			<artifactId>gatlin-web-alipay</artifactId>
+			<version>${gatlin.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.gatlin</groupId>
 			<artifactId>gatlin-sdk-chuanglan</artifactId>
 			<version>${gatlin.version}</version>
 		</dependency>

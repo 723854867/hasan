@@ -58,6 +58,11 @@
 		</dependency>
 		<dependency>
 			<groupId>org.gatlin</groupId>
+			<artifactId>gatlin-soa-jpush-service</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.gatlin</groupId>
 			<artifactId>gatlin-sdk-jisu</artifactId>
 			<version>${project.version}</version>
 		</dependency>

@@ -15,7 +15,7 @@ public class Wallet implements Serializable {
 	private long uid;
 	private String avatar;
 	private BigDecimal usable;
-	private long memberExpiry;
+	private int memberExpiry;
 	private String memberTitle;
 	private int memberId;
 	
@@ -28,7 +28,7 @@ public class Wallet implements Serializable {
 		this.usable = account.getUsable();
 		this.memberId = custom.getMemberId();
 		this.memberTitle = memberTitle;
-		this.memberExpiry = custom.getMemberExpiry();
+		this.memberExpiry = (int) (custom.getMemberExpiry() / 1000);
 	}
 	
 	public long getUid() {
@@ -55,11 +55,11 @@ public class Wallet implements Serializable {
 		this.usable = usable;
 	}
 	
-	public long getMemberExpiry() {
+	public int getMemberExpiry() {
 		return memberExpiry;
 	}
 	
-	public void setMemberExpiry(long memberExpiry) {
+	public void setMemberExpiry(int memberExpiry) {
 		this.memberExpiry = memberExpiry;
 	}
 	
