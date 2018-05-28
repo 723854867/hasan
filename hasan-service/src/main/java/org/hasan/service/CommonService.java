@@ -19,6 +19,7 @@ import org.gatlin.soa.account.bean.AccountUtil;
 import org.gatlin.soa.account.bean.entity.Recharge;
 import org.gatlin.soa.alipay.api.AlipayAccountService;
 import org.gatlin.soa.bean.enums.PlatType;
+import org.gatlin.soa.bean.enums.TargetType;
 import org.gatlin.soa.bean.param.SoaIdParam;
 import org.gatlin.soa.bean.param.SoaLidParam;
 import org.gatlin.soa.bean.param.SoaNameIdParam;
@@ -84,7 +85,7 @@ public class CommonService {
 		hasanManager.register(model.getUid());
 		int accountMod = GatlinConfigration.get(WebConsts.Options.ACCOUNT_MOD_USER);
 		if (0 != accountMod)
-			accountService.userCreate(model.getUid(), accountMod);
+			accountService.init(TargetType.USER, model.getUid(), accountMod);
 		UserInvitation invitation = model.getInvitation();
 		if (null != invitation) {
 			// TODO:处理邀请
