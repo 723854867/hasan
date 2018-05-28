@@ -13,6 +13,7 @@ import org.gatlin.sdk.jisu.request.CalendarRequest;
 import org.gatlin.sdk.jisu.request.JieQiRequest;
 import org.gatlin.sdk.jisu.result.Calendar;
 import org.gatlin.sdk.jisu.result.JieQi;
+import org.gatlin.soa.SoaConsts;
 import org.gatlin.soa.account.api.AccountService;
 import org.gatlin.soa.account.bean.AccountUtil;
 import org.gatlin.soa.account.bean.entity.Recharge;
@@ -104,7 +105,7 @@ public class CommonService {
 		CfgMember member = hasanManager.member(param.getId());
 		Assert.notNull(HasanCode.MEMBER_NOT_EXIST, member);
 		Assert.isTrue(CoreCode.PARAM_ERR, member.isSale());
-		int timeout = configService.config(WebConsts.Options.RECHARGE_TIMEOUT);
+		int timeout = configService.config(SoaConsts.RECHARGE_TIMEOUT);
 		Recharge recharge = AccountUtil.newRecharge(param, PlatType.ALIPAY, 100, member.getId(), member.getPrice(), timeout);
 		return alipayAccountService.recharge(recharge);
 	}
