@@ -2,8 +2,8 @@ package org.hasan.bean;
 
 import java.math.BigDecimal;
 
+import org.gatlin.core.bean.model.option.DecimalOption;
 import org.gatlin.core.bean.model.option.IntegerOption;
-import org.gatlin.core.bean.model.option.ObjectOption;
 import org.gatlin.core.bean.model.option.StrOption;
 
 public interface HasanConsts {
@@ -15,7 +15,7 @@ public interface HasanConsts {
 	// 默认显示评价数
 	final IntegerOption DEFAULT_EVALUATION_NUM				= new IntegerOption("default_evaluation_num", 3);
 	// 默认快递费
-	final ObjectOption<BigDecimal> EXPRESS_FEE				= new ObjectOption<BigDecimal>("express_fee", BigDecimal.valueOf(15));
+	final DecimalOption EXPRESS_FEE							= new DecimalOption("express_fee", BigDecimal.valueOf(15));
 	// 配送可预约时间最大显示数
 	final IntegerOption DELIVERY_TIME_MAXIMUM				= new IntegerOption("delivery_time_maximum", 3);
 }
