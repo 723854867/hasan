@@ -15,6 +15,7 @@ import org.gatlin.sdk.jisu.result.Calendar;
 import org.gatlin.sdk.jisu.result.JieQi;
 import org.gatlin.soa.SoaConsts;
 import org.gatlin.soa.account.api.AccountService;
+import org.gatlin.soa.account.bean.AccountConsts;
 import org.gatlin.soa.account.bean.AccountUtil;
 import org.gatlin.soa.account.bean.entity.Recharge;
 import org.gatlin.soa.alipay.api.AlipayAccountService;
@@ -36,7 +37,6 @@ import org.gatlin.soa.user.bean.param.RegisterParam;
 import org.gatlin.util.DateUtil;
 import org.gatlin.util.lang.StringUtil;
 import org.gatlin.util.serial.SerializeUtil;
-import org.gatlin.web.WebConsts;
 import org.hasan.bean.HasanCode;
 import org.hasan.bean.entity.CfgMember;
 import org.hasan.bean.entity.CfgVerse;
@@ -83,7 +83,7 @@ public class CommonService {
 		}
 		RegisterModel model = userService.register(param);
 		hasanManager.register(model.getUid());
-		int accountMod = GatlinConfigration.get(WebConsts.Options.ACCOUNT_MOD_USER);
+		int accountMod = GatlinConfigration.get(AccountConsts.ACCOUNT_MOD_USER);
 		if (0 != accountMod)
 			accountService.init(TargetType.USER, model.getUid(), accountMod);
 		UserInvitation invitation = model.getInvitation();
