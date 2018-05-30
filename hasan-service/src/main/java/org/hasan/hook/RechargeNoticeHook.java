@@ -1,45 +1,47 @@
-package org.hasan.hook.recharge;
+package org.hasan.hook;
 
 import javax.annotation.Resource;
 
-import org.gatlin.core.bean.exceptions.CodeException;
 import org.gatlin.soa.account.bean.entity.Recharge;
+import org.gatlin.soa.account.hook.DefaultRechargeNoticeHook;
 import org.hasan.manager.HasanManager;
 import org.hasan.manager.OrderManager;
 import org.springframework.stereotype.Component;
 
 @Component
-public class RechargeInitStateMachine extends org.gatlin.soa.account.istate.RechargeInitStateMachine {
+public class RechargeNoticeHook extends DefaultRechargeNoticeHook {
 	
 	@Resource
 	private OrderManager orderManager;
 	@Resource
 	private HasanManager hasanManager;
-
+	
 	@Override
-	protected void rechargeFailure(Recharge recharge) {
+	protected void failure(Recharge recharge) {
+		super.failure(recharge);
 		switch (recharge.getGoodsType()) {
-		case 100:					// 购买会员失败：什么都不做
+		case 100:				// 会员购买
 			break;
-		case 101:					// 订单支付失败
+		case 101:				// 订单支付
 			orderManager.payNotice(recharge, false);
 			break;
 		default:
-			throw new CodeException();
+			break;
 		}
 	}
-
+	
 	@Override
-	protected void rechargeSuccess(Recharge recharge) {
+	protected void success(Recharge recharge) {
+		super.success(recharge);
 		switch (recharge.getGoodsType()) {
-		case 100:					// 购买会员成功：
+		case 100:				// 会员购买			
 			hasanManager.memberBuy(recharge);
 			break;
-		case 101:					// 支付订单成功
+		case 101:				// 订单支付
 			orderManager.payNotice(recharge, true);
 			break;
 		default:
-			throw new CodeException();
+			break;
 		}
 	}
 }
