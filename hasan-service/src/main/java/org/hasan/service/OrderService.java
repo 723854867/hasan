@@ -9,6 +9,7 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
+import org.gatlin.core.bean.exceptions.CodeException;
 import org.gatlin.core.bean.info.Pager;
 import org.gatlin.core.util.Assert;
 import org.gatlin.dao.bean.model.Query;
@@ -43,6 +44,8 @@ import org.hasan.bean.param.OrderMakeParam;
 import org.hasan.bean.param.PayPreviewParam;
 import org.hasan.manager.GoodsManager;
 import org.hasan.manager.OrderManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,6 +53,8 @@ import com.github.pagehelper.PageHelper;
 
 @Service
 public class OrderService {
+	
+	private static final Logger logger = LoggerFactory.getLogger(OrderService.class);
 
 	@Resource
 	private OrderManager orderManager;
@@ -127,7 +132,13 @@ public class OrderService {
 		List<Recharge> recharges = accountService.recharges(query).getList();
 		if (CollectionUtil.isEmpty(recharges))
 			return;
-		recharges.forEach(recharge -> accountService.rechargeNotice(recharge.getId(), RechargeState.TIMEOUT));
+		try {
+			recharges.forEach(recharge -> accountService.rechargeNotice(recharge.getId(), RechargeState.TIMEOUT));
+		} catch (CodeException e) {
+			logger.warn("订单支付超时任务业务异常 -{}!", e.code().defaultValue());
+		} catch (Exception e) {
+			logger.error("订单支付超时任务异常！", e);
+		}
 	}
 	
 	public OrderDetail detail(SoaSidParam param) {
