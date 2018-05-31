@@ -24,6 +24,7 @@ import org.gatlin.soa.user.bean.model.UserListInfo;
 import org.gatlin.util.DateUtil;
 import org.gatlin.util.bean.enums.TimeUnit;
 import org.gatlin.util.lang.CollectionUtil;
+import org.gatlin.util.lang.NumberUtil;
 import org.gatlin.util.lang.StringUtil;
 import org.hasan.bean.EntityGenerator;
 import org.hasan.bean.HasanCode;
@@ -108,6 +109,14 @@ public class HasanManager {
 		accountService.process(detail);
 	}
 	
+	/**
+	 * 两种情况会导致会员变为非会员
+	 * 1、时间到期
+	 * 2、用户可用余额为0并且冻结余额为0(如果冻结余额为0则判断是否到期应该在冻结余额解冻的地方)
+	 * 
+	 * @param uid
+	 * @return
+	 */
 	@Transactional
 	public UserCustom userCustom(long uid) {
 		Query query = new Query().eq("owner_type", TargetType.USER.mark()).eq("owner", uid).eq("type", AccountType.BASIC.mark()).forUpdate();
@@ -116,10 +125,8 @@ public class HasanManager {
 		Account expAccount = accountService.account(query);
 		query = new Query().eq("uid", uid).forUpdate();
 		UserCustom custom = userCustomDao.queryUnique(query);
-		// 会员到期或者余额为0都会变成普通会员
-		if (0 != custom.getMemberId() &&
-				(custom.getMemberExpiry() <= System.currentTimeMillis() 
-				|| account.getUsable().compareTo(BigDecimal.ZERO) == 0)) {
+		if ((0 != custom.getMemberId() && custom.getMemberExpiry() <= System.currentTimeMillis())
+				|| (0 != custom.getMemberId() && NumberUtil.isZero(account.getUsable()) && !NumberUtil.isZero(account.getFrozen()))) {
 			AccountDetail detail = new AccountDetail(custom.getMemberId(), HasanBizType.MEMBER_EXPIRY.mark());
 			if (account.getUsable().compareTo(BigDecimal.ZERO) > 0) 
 				detail.userUsableDecr(uid, AccountType.BASIC, account.getUsable());
