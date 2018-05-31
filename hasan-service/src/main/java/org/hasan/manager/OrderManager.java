@@ -1,6 +1,7 @@
 package org.hasan.manager;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -78,14 +79,9 @@ public class OrderManager {
 		Assert.notNull(UserCode.USER_ADDRESS_NOT_EXIST, address);
 		Assert.isTrue(CoreCode.FORBID, address.getUid() == param.getUser().getId());
 		Map<Integer, CfgGoods> goods = goodsManager.buy(param.getGoods());
-		UserCustom custom = hasanManager.userCustom(param.getUser().getId());
 		String orderId = IDWorker.INSTANCE.nextSid();
-		Map<Integer, CfgGoodsPrice> prices = goodsManager.goodsPrice(param.getGoods().keySet(), custom);
-		List<OrderGoods> list = EntityGenerator.newOrderGoods(orderId, param.getGoods(), goods, prices);
-		BigDecimal price = BigDecimal.ZERO;
-		for (OrderGoods temp : list)
-			price = price.add(temp.getUnitPrice().multiply(BigDecimal.valueOf(temp.getGoodsNum())));
-		Order order = EntityGenerator.newOrder(orderId, param, price, address, configService.geo(address.getCounty(), false));
+		List<OrderGoods> list = EntityGenerator.newOrderGoods(orderId, param.getGoods(), goods);
+		Order order = EntityGenerator.newOrder(orderId, param, address, configService.geo(address.getCounty(), false));
 		orderDao.insert(order);
 		orderGoodsDao.batchInsert(list);
 		return order;
@@ -94,14 +90,7 @@ public class OrderManager {
 	public PayPreview payPreview(PayPreviewParam param) {
 		UserCustom custom = null == param.getUser() ? null : hasanManager.userCustom(param.getUser().getId());
 		Map<Integer, CfgGoodsPrice> prices = goodsManager.goodsPrice(param.getGoods().keySet(), custom);
-		BigDecimal price = BigDecimal.ZERO;
-		for (Entry<Integer, Integer> entry : param.getGoods().entrySet()) {
-			CfgGoodsPrice goodsPrice = prices.get(entry.getKey());
-			if (null == goodsPrice)
-				continue;
-			price = price.add(goodsPrice.getPrice().multiply(BigDecimal.valueOf(entry.getValue())));
-		}
-		LogOrderPay pay = _orderPayLog(custom, price);
+		LogOrderPay pay = _orderPayLog(custom, param.getGoods(), prices);
 		return new PayPreview(pay, prices);
 	}
 	
@@ -115,7 +104,21 @@ public class OrderManager {
 		OrderState state = OrderState.match(order.getState());
 		Assert.isTrue(HasanCode.ORDER_STATE_ERR, state == OrderState.INIT);
 		UserCustom custom = hasanManager.userCustom(order.getUid());
-		LogOrderPay log = _orderPayLog(custom, order.getPrice());
+		// 查出该订单的商品并且设置单价
+		query = new Query().eq("order_id", order.getId()).forUpdate();
+		Map<Integer, Integer> goods = new HashMap<Integer, Integer>();
+		List<OrderGoods> orderGoodses = orderGoodsDao.queryList(query);
+		for (OrderGoods orderGoods : orderGoodses) 
+			goods.put(orderGoods.getGoodsId(), orderGoods.getGoodsNum());
+		Map<Integer, CfgGoodsPrice> prices = goodsManager.goodsPrice(goods.keySet(), custom);
+		orderGoodses.forEach(orderGoods -> {
+			orderGoods.setUpdated(DateUtil.current());
+			orderGoods.setUnitPrice(prices.get(orderGoods.getGoodsId()).getPrice());
+		});
+		orderGoodsDao.updateCollection(orderGoodses);
+		// 计算总价和支付详情
+		LogOrderPay log = _orderPayLog(custom, goods, prices);
+		order.setPrice(log.getExpAmount().add(log.getBasicAmount()).add(log.getRechargeAmount()));
 		log.setUid(order.getUid());
 		log.setOrderId(order.getId());
 		log.setId(IDWorker.INSTANCE.nextSid());
@@ -133,7 +136,15 @@ public class OrderManager {
 		return log;
 	}
 	
-	private LogOrderPay _orderPayLog(UserCustom custom, BigDecimal price) {
+	private LogOrderPay _orderPayLog(UserCustom custom, Map<Integer, Integer> goods, Map<Integer, CfgGoodsPrice> prices) {
+		BigDecimal price = BigDecimal.ZERO;
+		for (Entry<Integer, Integer> entry : goods.entrySet()) {
+			CfgGoodsPrice goodsPrice = prices.get(entry.getKey());
+			if (null == goodsPrice)
+				continue;
+			price = price.add(goodsPrice.getPrice().multiply(BigDecimal.valueOf(entry.getValue())));
+		}
+		
 		LogOrderPay log = new LogOrderPay();
 		BigDecimal fee = BigDecimal.ZERO;
 		if (null != custom) {
@@ -155,7 +166,8 @@ public class OrderManager {
 				delt = total.min(account.getUsable());
 				total = total.subtract(delt);
 				log.setBasicAmount(delt);
-			}
+			} else
+				log.setBasicAmount(BigDecimal.ZERO);
 			log.setRechargeAmount(total);
 		} else {
 			fee = configService.config(HasanConsts.EXPRESS_FEE);
@@ -191,16 +203,18 @@ public class OrderManager {
 		order.setState(success ? OrderState.PAID.mark() : OrderState.INIT.mark());
 		order.setUpdated(DateUtil.current());
 		orderDao.update(order);
+		UserCustom custom = hasanManager.userCustom(order.getUid());
 		LogOrderPay log = logOrderPayDao.getByKey(recharge.getId());
+		// 冻结都要解冻，但是如果失败则判断当前是否是会员，如果不是则余额不返还，否则返还
 		AccountDetail detail = new AccountDetail(log.getId(), success ? HasanBizType.ORDER_PAY_SUCCESS.mark() : HasanBizType.ORDER_PAY_FAILURE.mark());
 		if (log.getBasicAmount().compareTo(BigDecimal.ZERO) > 0) {
 			detail.userFrozenDecr(log.getUid(), AccountType.BASIC, log.getBasicAmount());
-			if (!success)
+			if (!success && custom.getMemberId() != 0)
 				detail.userUsableIncr(log.getUid(), AccountType.BASIC, log.getBasicAmount());
 		}
 		if (log.getExpAmount().compareTo(BigDecimal.ZERO) > 0) {
 			detail.userFrozenDecr(log.getUid(), AccountType.EXP, log.getExpAmount());
-			if (!success)
+			if (!success && custom.getMemberId() != 0)				
 				detail.userUsableIncr(log.getUid(), AccountType.EXP, log.getExpAmount());
 		}
 		accountService.process(detail);

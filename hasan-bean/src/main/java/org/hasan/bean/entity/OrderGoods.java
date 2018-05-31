@@ -22,6 +22,7 @@ public class OrderGoods implements Identifiable<Long> {
 	private String evaluationId;
 	private BigDecimal unitPrice;
 	private int created;
+	private int updated;
 
 	public long getId() {
 		return id;
@@ -93,6 +94,14 @@ public class OrderGoods implements Identifiable<Long> {
 
 	public void setCreated(int created) {
 		this.created = created;
+	}
+	
+	public int getUpdated() {
+		return updated;
+	}
+	
+	public void setUpdated(int updated) {
+		this.updated = updated;
 	}
 
 	@Override
