@@ -37,6 +37,7 @@ import org.hasan.bean.model.GoodsInfo;
 import org.hasan.bean.model.OrderDetail;
 import org.hasan.bean.model.OrderInfo;
 import org.hasan.bean.model.OrderPayMethod;
+import org.hasan.bean.model.PayPreview;
 import org.hasan.bean.param.AssistantOrdersParam;
 import org.hasan.bean.param.DeliverParam;
 import org.hasan.bean.param.EvaluateParam;
@@ -53,7 +54,7 @@ import com.github.pagehelper.PageHelper;
 
 @Service
 public class OrderService {
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(OrderService.class);
 
 	@Resource
@@ -70,17 +71,17 @@ public class OrderService {
 	private SchedulerService schedulerService;
 	@Resource
 	private AlipayAccountService alipayAccountService;
-	
+
 	@Transactional
 	public Order make(OrderMakeParam param) {
 		return orderManager.make(param);
 	}
-	
+
 	@Transactional
-	public LogOrderPay payPreview(PayPreviewParam param) {
+	public PayPreview payPreview(PayPreviewParam param) {
 		return orderManager.payPreview(param);
 	}
-	
+
 	@Transactional
 	public OrderPayMethod pay(SoaSidParam param) {
 		OrderPayMethod payMethod = new OrderPayMethod();
@@ -113,34 +114,35 @@ public class OrderService {
 		}
 		return payMethod;
 	}
-	
+
 	public void deliver(DeliverParam param) {
 		orderManager.deliver(param);
 	}
-	
+
 	public void receive(SoaSidParam param) {
 		orderManager.receive(param);
 	}
-	
+
 	public void evaluate(EvaluateParam param) {
 		orderManager.evaluate(param);
 	}
-	
-	@Transactional
-	public void payTimeoutTask() { 
-		Query query = new Query().eq("state", RechargeState.INIT.mark()).lte("expiry", DateUtil.current()).forUpdate();
+
+	public void payTimeoutTask() {
+		Query query = new Query().eq("state", RechargeState.INIT.mark()).eq("goods_type", 101).lte("expiry", DateUtil.current());
 		List<Recharge> recharges = accountService.recharges(query).getList();
 		if (CollectionUtil.isEmpty(recharges))
 			return;
-		try {
-			recharges.forEach(recharge -> accountService.rechargeNotice(recharge.getId(), RechargeState.TIMEOUT));
-		} catch (CodeException e) {
-			logger.warn("订单支付超时任务业务异常 -{}!", e.code().defaultValue());
-		} catch (Exception e) {
-			logger.error("订单支付超时任务异常！", e);
-		}
+		recharges.forEach(recharge -> {
+			try {
+				accountService.rechargeNotice(recharge.getId(), RechargeState.TIMEOUT);
+			} catch (CodeException e) {
+				logger.warn("订单支付超时任务业务异常 -{}!", e.code().defaultValue());
+			} catch (Exception e) {
+				logger.error("订单支付超时任务异常！", e);
+			}
+		});
 	}
-	
+
 	public OrderDetail detail(SoaSidParam param) {
 		Order order = orderManager.order(param.getId());
 		Assert.notNull(HasanCode.ORDER_NOT_EXIST, order);
@@ -148,8 +150,9 @@ public class OrderService {
 		Set<Integer> goodIds = new HashSet<>();
 		orderGoods.forEach(item2 -> goodIds.add(item2.getGoodsId()));
 		List<CfgGoods> goods = goodsManager.goods(new Query().in("id", goodIds));
-		List<ResourceInfo> resources = resourceService.resources(
-				new Query().in("owner", goodIds).eq("cfg_id", HasanResourceType.GOODS_ICON.mark())).getList();
+		List<ResourceInfo> resources = resourceService
+				.resources(new Query().in("owner", goodIds).eq("cfg_id", HasanResourceType.GOODS_ICON.mark()))
+				.getList();
 		List<GoodsInfo> infos = new ArrayList<GoodsInfo>();
 		for (CfgGoods cfgGoods : goods) {
 			ResourceInfo icon = null;
@@ -167,10 +170,10 @@ public class OrderService {
 			}
 			infos.add(new GoodsInfo(cfgGoods, icon));
 		}
-		
-		return new OrderDetail(order, infos,orderGoods);
+
+		return new OrderDetail(order, infos, orderGoods);
 	}
-	
+
 	public Pager<OrderInfo> orders(Query query) {
 		if (null != query.getPage())
 			PageHelper.startPage(query.getPage(), query.getPageSize());
@@ -181,8 +184,9 @@ public class OrderService {
 			Set<Integer> goodIds = new HashSet<>();
 			orderGoods.forEach(item2 -> goodIds.add(item2.getGoodsId()));
 			List<CfgGoods> goods = goodsManager.goods(new Query().in("id", goodIds));
-			List<ResourceInfo> resources = resourceService.resources(
-					new Query().in("owner", goodIds).eq("cfg_id", HasanResourceType.GOODS_ICON.mark())).getList();
+			List<ResourceInfo> resources = resourceService
+					.resources(new Query().in("owner", goodIds).eq("cfg_id", HasanResourceType.GOODS_ICON.mark()))
+					.getList();
 			List<GoodsInfo> infos = new ArrayList<GoodsInfo>();
 			for (CfgGoods cfgGoods : goods) {
 				ResourceInfo icon = null;
@@ -204,7 +208,7 @@ public class OrderService {
 		});
 		return new Pager<OrderInfo>(orderInfos);
 	}
-	
+
 	public Pager<Order> assistantOrders(AssistantOrdersParam param) {
 		if (null != param.getPage())
 			PageHelper.startPage(param.getPage(), param.getPageSize());

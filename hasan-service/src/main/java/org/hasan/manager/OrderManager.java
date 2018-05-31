@@ -37,6 +37,7 @@ import org.hasan.bean.entity.UserCustom;
 import org.hasan.bean.entity.UserEvaluation;
 import org.hasan.bean.enums.HasanBizType;
 import org.hasan.bean.enums.OrderState;
+import org.hasan.bean.model.PayPreview;
 import org.hasan.bean.param.AssistantOrdersParam;
 import org.hasan.bean.param.DeliverParam;
 import org.hasan.bean.param.EvaluateParam;
@@ -90,7 +91,7 @@ public class OrderManager {
 		return order;
 	}
 	
-	public LogOrderPay payPreview(PayPreviewParam param) {
+	public PayPreview payPreview(PayPreviewParam param) {
 		UserCustom custom = null == param.getUser() ? null : hasanManager.userCustom(param.getUser().getId());
 		Map<Integer, CfgGoodsPrice> prices = goodsManager.goodsPrice(param.getGoods().keySet(), custom);
 		BigDecimal price = BigDecimal.ZERO;
@@ -100,7 +101,8 @@ public class OrderManager {
 				continue;
 			price = price.add(goodsPrice.getPrice().multiply(BigDecimal.valueOf(entry.getValue())));
 		}
-		return _orderPayLog(custom, price);
+		LogOrderPay pay = _orderPayLog(custom, price);
+		return new PayPreview(pay, prices);
 	}
 	
 	// 支付订单
