@@ -36,6 +36,7 @@ import org.hasan.bean.model.OrderDetail;
 import org.hasan.bean.model.OrderInfo;
 import org.hasan.bean.model.OrderPayMethod;
 import org.hasan.bean.param.AssistantOrdersParam;
+import org.hasan.bean.param.DeliverParam;
 import org.hasan.bean.param.EvaluateParam;
 import org.hasan.bean.param.OrderMakeParam;
 import org.hasan.manager.GoodsManager;
@@ -99,8 +100,8 @@ public class OrderService {
 		return payMethod;
 	}
 	
-	public void deliver(String orderId) {
-		orderManager.deliver(orderId);
+	public void deliver(DeliverParam param) {
+		orderManager.deliver(param);
 	}
 	
 	public void receive(SoaSidParam param) {

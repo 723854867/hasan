@@ -7,6 +7,7 @@ import org.gatlin.core.bean.model.message.Response;
 import org.gatlin.dao.bean.model.Query;
 import org.gatlin.soa.bean.param.SoaSidParam;
 import org.hasan.bean.param.AssistantOrdersParam;
+import org.hasan.bean.param.DeliverParam;
 import org.hasan.bean.param.EvaluateParam;
 import org.hasan.bean.param.OrderMakeParam;
 import org.hasan.bean.param.OrdersParam;
@@ -38,8 +39,8 @@ public class OrderController {
 	// 发货
 	@ResponseBody
 	@RequestMapping("deliver")
-	public Object deliver(@RequestBody @Valid SoaSidParam param) {
-		orderService.deliver(param.getId());
+	public Object deliver(@RequestBody @Valid DeliverParam param) {
+		orderService.deliver(param);
 		return Response.ok();
 	}
 	

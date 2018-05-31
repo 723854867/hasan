@@ -37,6 +37,7 @@ import org.hasan.bean.entity.UserEvaluation;
 import org.hasan.bean.enums.HasanBizType;
 import org.hasan.bean.enums.OrderState;
 import org.hasan.bean.param.AssistantOrdersParam;
+import org.hasan.bean.param.DeliverParam;
 import org.hasan.bean.param.EvaluateParam;
 import org.hasan.bean.param.OrderMakeParam;
 import org.hasan.mybatis.dao.LogOrderPayDao;
@@ -72,6 +73,7 @@ public class OrderManager {
 	public Order make(OrderMakeParam param) {
 		UserAddress address = geoService.address(param.getAddressId());
 		Assert.notNull(UserCode.USER_ADDRESS_NOT_EXIST, address);
+		Assert.isTrue(CoreCode.FORBID, address.getUid() == param.getUser().getId());
 		Map<Integer, CfgGoods> goods = goodsManager.buy(param.getGoods());
 		UserCustom custom = hasanManager.userCustom(param.getUser().getId());
 		String orderId = IDWorker.INSTANCE.nextSid();
@@ -177,12 +179,13 @@ public class OrderManager {
 	}
 	
 	@Transactional
-	public void deliver(String orderId) {
-		Query query = new Query().eq("id", orderId).forUpdate();
+	public void deliver(DeliverParam param) {
+		Query query = new Query().eq("id", param.getId()).forUpdate();
 		Order order = orderDao.queryUnique(query);
 		Assert.notNull(HasanCode.ORDER_NOT_EXIST, order);
 		OrderState state = OrderState.match(order.getState());
 		Assert.isTrue(HasanCode.ORDER_STATE_ERR, state == OrderState.PAID);
+		order.setExpressNo(param.getExpressNo());
 		order.setState(OrderState.DELIVERED.mark());
 		order.setUpdated(DateUtil.current());
 		orderDao.update(order);

@@ -93,6 +93,7 @@ public class EntityGenerator {
 		instance.setUid(param.getUser().getId());
 		instance.setState(OrderState.INIT.mark());
 		instance.setExpressFee(BigDecimal.ZERO);
+		instance.setExpressNo(StringUtil.EMPTY);
 		instance.setRecipients(address.getContacts());
 		instance.setDeliverStop(param.getDeliverStop());
 		instance.setDeliverStart(param.getDeliverStart());

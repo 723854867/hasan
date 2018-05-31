@@ -19,6 +19,7 @@ public class Order implements Identifiable<String> {
 	private int state;
 	private BigDecimal price;
 	private String recipients;
+	private String expressNo;
 	private BigDecimal expressFee;
 	private String recipientsAddr;
 	private String recipientsMobile;
@@ -71,16 +72,24 @@ public class Order implements Identifiable<String> {
 		return recipients;
 	}
 	
+	public void setRecipients(String recipients) {
+		this.recipients = recipients;
+	}
+	
+	public String getExpressNo() {
+		return expressNo;
+	}
+	
+	public void setExpressNo(String expressNo) {
+		this.expressNo = expressNo;
+	}
+	
 	public BigDecimal getExpressFee() {
 		return expressFee;
 	}
 	
 	public void setExpressFee(BigDecimal expressFee) {
 		this.expressFee = expressFee;
-	}
-
-	public void setRecipients(String recipients) {
-		this.recipients = recipients;
 	}
 
 	public String getRecipientsAddr() {
