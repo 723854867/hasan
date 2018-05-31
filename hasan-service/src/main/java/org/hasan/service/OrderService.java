@@ -13,6 +13,7 @@ import org.gatlin.core.bean.info.Pager;
 import org.gatlin.core.util.Assert;
 import org.gatlin.dao.bean.model.Query;
 import org.gatlin.soa.SoaConsts;
+import org.gatlin.soa.account.api.AccountService;
 import org.gatlin.soa.account.bean.entity.Recharge;
 import org.gatlin.soa.account.bean.enums.RechargeState;
 import org.gatlin.soa.alipay.api.AlipayAccountService;
@@ -39,6 +40,7 @@ import org.hasan.bean.param.AssistantOrdersParam;
 import org.hasan.bean.param.DeliverParam;
 import org.hasan.bean.param.EvaluateParam;
 import org.hasan.bean.param.OrderMakeParam;
+import org.hasan.bean.param.PayPreviewParam;
 import org.hasan.manager.GoodsManager;
 import org.hasan.manager.OrderManager;
 import org.springframework.stereotype.Service;
@@ -56,6 +58,8 @@ public class OrderService {
 	@Resource
 	private ConfigService configService;
 	@Resource
+	private AccountService accountService;
+	@Resource
 	private ResourceService resourceService;
 	@Resource
 	private SchedulerService schedulerService;
@@ -65,6 +69,11 @@ public class OrderService {
 	@Transactional
 	public Order make(OrderMakeParam param) {
 		return orderManager.make(param);
+	}
+	
+	@Transactional
+	public LogOrderPay payPreview(PayPreviewParam param) {
+		return orderManager.payPreview(param);
 	}
 	
 	@Transactional
@@ -110,6 +119,15 @@ public class OrderService {
 	
 	public void evaluate(EvaluateParam param) {
 		orderManager.evaluate(param);
+	}
+	
+	@Transactional
+	public void payTimeoutTask() { 
+		Query query = new Query().eq("state", RechargeState.INIT.mark()).lte("expiry", DateUtil.current()).forUpdate();
+		List<Recharge> recharges = accountService.recharges(query).getList();
+		if (CollectionUtil.isEmpty(recharges))
+			return;
+		recharges.forEach(recharge -> accountService.rechargeNotice(recharge.getId(), RechargeState.TIMEOUT));
 	}
 	
 	public OrderDetail detail(SoaSidParam param) {

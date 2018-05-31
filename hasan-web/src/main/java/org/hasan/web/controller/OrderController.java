@@ -11,6 +11,7 @@ import org.hasan.bean.param.DeliverParam;
 import org.hasan.bean.param.EvaluateParam;
 import org.hasan.bean.param.OrderMakeParam;
 import org.hasan.bean.param.OrdersParam;
+import org.hasan.bean.param.PayPreviewParam;
 import org.hasan.service.OrderService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,6 +29,12 @@ public class OrderController {
 	@RequestMapping("make")
 	public Object make(@RequestBody @Valid OrderMakeParam param) {
 		return orderService.make(param);
+	}
+	
+	@ResponseBody
+	@RequestMapping("pay/preview")
+	public Object payPreview(@RequestBody @Valid PayPreviewParam param) {
+		return orderService.payPreview(param);
 	}
 	
 	@ResponseBody

@@ -3,6 +3,7 @@ package org.hasan.manager;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.annotation.Resource;
 
@@ -40,6 +41,7 @@ import org.hasan.bean.param.AssistantOrdersParam;
 import org.hasan.bean.param.DeliverParam;
 import org.hasan.bean.param.EvaluateParam;
 import org.hasan.bean.param.OrderMakeParam;
+import org.hasan.bean.param.PayPreviewParam;
 import org.hasan.mybatis.dao.LogOrderPayDao;
 import org.hasan.mybatis.dao.OrderDao;
 import org.hasan.mybatis.dao.OrderGoodsDao;
@@ -77,7 +79,7 @@ public class OrderManager {
 		Map<Integer, CfgGoods> goods = goodsManager.buy(param.getGoods());
 		UserCustom custom = hasanManager.userCustom(param.getUser().getId());
 		String orderId = IDWorker.INSTANCE.nextSid();
-		Map<Integer, CfgGoodsPrice> prices = goodsManager.goodsPrice(param.getGoods().keySet(), custom.getMemberId());
+		Map<Integer, CfgGoodsPrice> prices = goodsManager.goodsPrice(param.getGoods().keySet(), custom);
 		List<OrderGoods> list = EntityGenerator.newOrderGoods(orderId, param.getGoods(), goods, prices);
 		BigDecimal price = BigDecimal.ZERO;
 		for (OrderGoods temp : list)
@@ -86,6 +88,19 @@ public class OrderManager {
 		orderDao.insert(order);
 		orderGoodsDao.batchInsert(list);
 		return order;
+	}
+	
+	public LogOrderPay payPreview(PayPreviewParam param) {
+		UserCustom custom = null == param.getUser() ? null : hasanManager.userCustom(param.getUser().getId());
+		Map<Integer, CfgGoodsPrice> prices = goodsManager.goodsPrice(param.getGoods().keySet(), custom);
+		BigDecimal price = BigDecimal.ZERO;
+		for (Entry<Integer, Integer> entry : param.getGoods().entrySet()) {
+			CfgGoodsPrice goodsPrice = prices.get(entry.getKey());
+			if (null == goodsPrice)
+				continue;
+			price = price.add(goodsPrice.getPrice().multiply(BigDecimal.valueOf(entry.getValue())));
+		}
+		return _orderPayLog(custom, price);
 	}
 	
 	// 支付订单
@@ -98,42 +113,54 @@ public class OrderManager {
 		OrderState state = OrderState.match(order.getState());
 		Assert.isTrue(HasanCode.ORDER_STATE_ERR, state == OrderState.INIT);
 		UserCustom custom = hasanManager.userCustom(order.getUid());
-		LogOrderPay log = new LogOrderPay();
+		LogOrderPay log = _orderPayLog(custom, order.getPrice());
 		log.setUid(order.getUid());
 		log.setOrderId(order.getId());
 		log.setId(IDWorker.INSTANCE.nextSid());
-		BigDecimal amount = order.getPrice();
-		BigDecimal fee = BigDecimal.ZERO;
-		if (custom.getMemberId() == 0) 
-			fee = configService.config(HasanConsts.EXPRESS_FEE);
-		log.setExpressFee(fee);
-		BigDecimal total = amount.add(fee);
-		// 先用体验金支付
-		query = new Query().eq("owner_type", TargetType.USER.mark()).eq("owner", order.getUid()).eq("type", AccountType.EXP.mark()).forUpdate();
-		Account account = accountService.account(query);
-		BigDecimal delt = total.min(account.getUsable());
-		total = total.subtract(delt);
-		log.setExpAmount(delt);
-		
-		// 体验金不足再用余额支付
-		if (total.compareTo(BigDecimal.ZERO) > 0) {
-			query = new Query().eq("owner_type", TargetType.USER.mark()).eq("owner", order.getUid()).eq("type", AccountType.BASIC.mark()).forUpdate();
-			account = accountService.account(query);
-			delt = total.min(account.getUsable());
-			total = total.subtract(delt);
-			log.setBasicAmount(delt);
-		}
-		
-		// 最后的部分作为充值支付
-		log.setRechargeAmount(total);
+		log.setCreated(DateUtil.current());
+		log.setUpdated(log.getCreated());
 		_orderPay(log);
 		if (log.getRechargeAmount().compareTo(BigDecimal.ZERO) > 0)
 			order.setState(OrderState.PAYING.mark());
 		else
 			order.setState(OrderState.PAID.mark());
+		order.setExpressFee(log.getExpressFee());
 		order.setUpdated(DateUtil.current());
 		orderDao.update(order);
 		logOrderPayDao.insert(log);
+		return log;
+	}
+	
+	private LogOrderPay _orderPayLog(UserCustom custom, BigDecimal price) {
+		LogOrderPay log = new LogOrderPay();
+		BigDecimal fee = BigDecimal.ZERO;
+		if (null != custom) {
+			if (custom.getMemberId() == 0) 
+				fee = configService.config(HasanConsts.EXPRESS_FEE);
+			log.setExpressFee(fee);
+			BigDecimal total = price.add(fee);
+			// 先用体验金支付
+			Query query = new Query().eq("owner_type", TargetType.USER.mark()).eq("owner", custom.getUid()).eq("type", AccountType.EXP.mark()).forUpdate();
+			Account account = accountService.account(query);
+			BigDecimal delt = total.min(account.getUsable());
+			total = total.subtract(delt);
+			log.setExpAmount(delt);
+			
+			// 体验金不足再用余额支付
+			if (total.compareTo(BigDecimal.ZERO) > 0) {
+				query = new Query().eq("owner_type", TargetType.USER.mark()).eq("owner", custom.getUid()).eq("type", AccountType.BASIC.mark()).forUpdate();
+				account = accountService.account(query);
+				delt = total.min(account.getUsable());
+				total = total.subtract(delt);
+				log.setBasicAmount(delt);
+			}
+			log.setRechargeAmount(total);
+		} else {
+			fee = configService.config(HasanConsts.EXPRESS_FEE);
+			log.setExpressFee(fee);
+			BigDecimal total = price.add(fee);
+			log.setRechargeAmount(total);
+		}
 		return log;
 	}
 	

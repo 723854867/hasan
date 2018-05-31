@@ -16,11 +16,13 @@ import org.gatlin.dao.bean.model.Query;
 import org.gatlin.util.DateUtil;
 import org.hasan.bean.EntityGenerator;
 import org.hasan.bean.HasanCode;
+import org.hasan.bean.HasanConsts;
 import org.hasan.bean.entity.CfgCookbook;
 import org.hasan.bean.entity.CfgGoods;
 import org.hasan.bean.entity.CfgGoodsPrice;
 import org.hasan.bean.entity.CfgMember;
 import org.hasan.bean.entity.OrderGoods;
+import org.hasan.bean.entity.UserCustom;
 import org.hasan.bean.entity.UserEvaluation;
 import org.hasan.bean.enums.GoodsState;
 import org.hasan.bean.param.EvaluateParam;
@@ -132,7 +134,8 @@ public class GoodsManager {
 		return userEvaluationDao.queryList(query);
 	}
 	
-	public Map<Integer, CfgGoodsPrice> goodsPrice(Set<Integer> goodsIds, int memberId) {
+	public Map<Integer, CfgGoodsPrice> goodsPrice(Set<Integer> goodsIds, UserCustom custom) {
+		int memberId = null == custom ? HasanConsts.DEFAULT_MEMBER_ID.defaultValue() : custom.getMemberId();
 		List<CfgGoodsPrice> prices = cfgGoodsPriceDao.queryList(new Query().in("goods_id", goodsIds).eq("member_id", memberId));
 		Map<Integer, CfgGoodsPrice> map = new HashMap<Integer, CfgGoodsPrice>();
 		prices.forEach(item -> map.put(item.getGoodsId(), item));

@@ -10,6 +10,7 @@ public interface HasanConsts {
 
 	// 默认会员名称
 	final StrOption DEFAULT_MEMBER_TITLE					= new StrOption("default_member_title", "普通会员");
+	final IntegerOption DEFAULT_MEMBER_ID					= new IntegerOption("default_member_id", 0);
 	// 订单打包最小时间间隔
 	final IntegerOption ORDER_ADVANCE_MINUTES				= new IntegerOption("order_advance_minutes", 30);
 	// 默认显示评价数
