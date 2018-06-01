@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.gatlin.core.util.Assert;
 import org.gatlin.soa.bean.model.Geo;
 import org.gatlin.soa.user.bean.entity.UserAddress;
 import org.gatlin.util.DateUtil;
@@ -85,10 +84,10 @@ public class EntityGenerator {
 		return instance;
 	}
 	
-	public static final Order newOrder(String orderId, OrderMakeParam param, BigDecimal price, UserAddress address, Geo geo) {
+	public static final Order newOrder(String orderId, OrderMakeParam param, UserAddress address, Geo geo) {
 		Order instance = new Order();
 		instance.setId(orderId);
-		instance.setPrice(price);
+		instance.setPrice(BigDecimal.ZERO);
 		instance.setIp(param.meta().getIp());
 		instance.setUid(param.getUser().getId());
 		instance.setState(OrderState.INIT.mark());
@@ -105,7 +104,7 @@ public class EntityGenerator {
 		return instance;
 	}
 	
-	public static final List<OrderGoods> newOrderGoods(String orderId, Map<Integer, Integer> buys, Map<Integer, CfgGoods> goods, Map<Integer, CfgGoodsPrice> prices) {
+	public static final List<OrderGoods> newOrderGoods(String orderId, Map<Integer, Integer> buys, Map<Integer, CfgGoods> goods) {
 		List<OrderGoods> list = new ArrayList<OrderGoods>();
 		for (Entry<Integer, Integer> entry : buys.entrySet()) {
 			CfgGoods temp = goods.get(entry.getKey());
@@ -115,9 +114,7 @@ public class EntityGenerator {
 			instance.setGoodsName(temp.getName());
 			instance.setGoodsDesc(temp.getDesc());
 			instance.setGoodsNum(entry.getValue());
-			CfgGoodsPrice price = prices.get(temp.getId());
-			Assert.notNull(HasanCode.GOODS_PRICE_NOT_EXIST, price);
-			instance.setUnitPrice(price.getPrice());
+			instance.setUnitPrice(BigDecimal.ZERO);
 			instance.setEvaluationId(StringUtil.EMPTY);
 			instance.setCreated(DateUtil.current());
 			list.add(instance);
