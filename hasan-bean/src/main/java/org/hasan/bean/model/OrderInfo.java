@@ -36,7 +36,7 @@ public class OrderInfo implements Serializable {
 		this.uid = order.getUid();
 		this.ip = order.getIp();
 		this.expressFee = order.getExpressFee();
-		this.state = OrderState.match(order.getState());
+		this.state = order.getState();
 		this.price = order.getPrice();
 		this.recipients = order.getRecipients();
 		this.recipientsAddr = order.getRecipientsAddr();

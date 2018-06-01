@@ -25,9 +25,9 @@ public class GoodsInfo implements Serializable {
 		this.id = goods.getId();
 		this.sold = goods.getSold();
 		this.name = goods.getName();
+		this.state = goods.getState();
 		this.created = goods.getCreated();
 		this.inventory = goods.getInventory();
-		this.state = GoodsState.match(goods.getState());
 	}
 
 	public int getId() {

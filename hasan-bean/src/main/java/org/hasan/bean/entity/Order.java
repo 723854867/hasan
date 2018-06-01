@@ -6,6 +6,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import org.gatlin.util.bean.Identifiable;
+import org.hasan.bean.enums.OrderState;
 
 @Table(name="`order`")
 public class Order implements Identifiable<String> {
@@ -16,7 +17,7 @@ public class Order implements Identifiable<String> {
 	private String id;
 	private long uid;
 	private String ip;
-	private int state;
+	private OrderState state;
 	private BigDecimal price;
 	private String recipients;
 	private String expressNo;
@@ -52,11 +53,11 @@ public class Order implements Identifiable<String> {
 		this.ip = ip;
 	}
 
-	public int getState() {
+	public OrderState getState() {
 		return state;
 	}
-
-	public void setState(int state) {
+	
+	public void setState(OrderState state) {
 		this.state = state;
 	}
 

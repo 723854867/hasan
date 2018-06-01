@@ -101,8 +101,7 @@ public class OrderManager {
 		Order order = orderDao.queryUnique(query);
 		Assert.notNull(HasanCode.ORDER_NOT_EXIST, order);
 		Assert.isTrue(CoreCode.FORBID, order.getUid() == param.getUser().getId());
-		OrderState state = OrderState.match(order.getState());
-		Assert.isTrue(HasanCode.ORDER_STATE_ERR, state == OrderState.INIT);
+		Assert.isTrue(HasanCode.ORDER_STATE_ERR, order.getState() == OrderState.INIT);
 		UserCustom custom = hasanManager.userCustom(order.getUid());
 		// 查出该订单的商品并且设置单价
 		query = new Query().eq("order_id", order.getId()).forUpdate();
@@ -126,9 +125,9 @@ public class OrderManager {
 		log.setUpdated(log.getCreated());
 		_orderPay(log);
 		if (log.getRechargeAmount().compareTo(BigDecimal.ZERO) > 0)
-			order.setState(OrderState.PAYING.mark());
+			order.setState(OrderState.PAYING);
 		else
-			order.setState(OrderState.PAID.mark());
+			order.setState(OrderState.PAID);
 		order.setExpressFee(log.getExpressFee());
 		order.setUpdated(DateUtil.current());
 		orderDao.update(order);
@@ -198,9 +197,8 @@ public class OrderManager {
 		Query query = new Query().eq("id", recharge.getGoodsId()).forUpdate();
 		Order order = orderDao.queryUnique(query);
 		Assert.notNull(HasanCode.ORDER_NOT_EXIST, order);
-		OrderState state = OrderState.match(order.getState());
-		Assert.isTrue(HasanCode.ORDER_STATE_ERR, state == OrderState.PAYING);
-		order.setState(success ? OrderState.PAID.mark() : OrderState.INIT.mark());
+		Assert.isTrue(HasanCode.ORDER_STATE_ERR, order.getState() == OrderState.PAYING);
+		order.setState(success ? OrderState.PAID : OrderState.INIT);
 		order.setUpdated(DateUtil.current());
 		orderDao.update(order);
 		UserCustom custom = hasanManager.userCustom(order.getUid());
@@ -226,10 +224,9 @@ public class OrderManager {
 		Query query = new Query().eq("id", param.getId()).forUpdate();
 		Order order = orderDao.queryUnique(query);
 		Assert.notNull(HasanCode.ORDER_NOT_EXIST, order);
-		OrderState state = OrderState.match(order.getState());
-		Assert.isTrue(HasanCode.ORDER_STATE_ERR, state == OrderState.PAID);
+		Assert.isTrue(HasanCode.ORDER_STATE_ERR, order.getState() == OrderState.PAID);
 		order.setExpressNo(param.getExpressNo());
-		order.setState(OrderState.DELIVERED.mark());
+		order.setState(OrderState.DELIVERED);
 		order.setUpdated(DateUtil.current());
 		orderDao.update(order);
 	}
@@ -240,9 +237,8 @@ public class OrderManager {
 		Order order = orderDao.queryUnique(query);
 		Assert.notNull(HasanCode.ORDER_NOT_EXIST, order);
 		Assert.isTrue(CoreCode.FORBID, order.getUid() == param.getUser().getId());
-		OrderState state = OrderState.match(order.getState());
-		Assert.isTrue(HasanCode.ORDER_STATE_ERR, state == OrderState.DELIVERED);
-		order.setState(OrderState.RECEIVED.mark());
+		Assert.isTrue(HasanCode.ORDER_STATE_ERR, order.getState() == OrderState.DELIVERED);
+		order.setState(OrderState.RECEIVED);
 		order.setUpdated(DateUtil.current());
 		orderDao.update(order);
 	}
@@ -257,8 +253,7 @@ public class OrderManager {
 		Order order = orderDao.queryUnique(query);
 		Assert.notNull(HasanCode.ORDER_NOT_EXIST, order);
 		Assert.isTrue(CoreCode.FORBID, order.getUid() == param.getUser().getId());
-		OrderState state = OrderState.match(order.getState());
-		Assert.isTrue(HasanCode.ORDER_STATE_ERR, state == OrderState.RECEIVED);
+		Assert.isTrue(HasanCode.ORDER_STATE_ERR, order.getState() == OrderState.RECEIVED);
 		UserEvaluation evaluation = goodsManager.evaluate(param, orderGoods);
 		orderGoods.setEvaluationId(evaluation.getId());
 		orderGoodsDao.update(orderGoods);
@@ -270,7 +265,7 @@ public class OrderManager {
 				allEvaluated = false;
 		}
 		if (allEvaluated) {
-			order.setState(OrderState.FINISH.mark());
+			order.setState(OrderState.FINISH);
 			order.setUpdated(DateUtil.current());
 			orderDao.update(order);
 		}

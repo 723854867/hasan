@@ -22,7 +22,6 @@ import org.gatlin.soa.bean.param.SoaSidParam;
 import org.gatlin.soa.config.api.ConfigService;
 import org.gatlin.soa.user.bean.model.UserListInfo;
 import org.gatlin.util.DateUtil;
-import org.gatlin.util.bean.enums.TimeUnit;
 import org.gatlin.util.lang.CollectionUtil;
 import org.gatlin.util.lang.NumberUtil;
 import org.gatlin.util.lang.StringUtil;
@@ -77,7 +76,7 @@ public class HasanManager {
 		Assert.notNull(HasanCode.MEMBER_NOT_EXIST, member);
 		if (null != param.getExpiry()) {
 			member.setExpiry(param.getExpiry());
-			member.setTimeUnit(param.getTimeUnit().mark());
+			member.setTimeUnit(param.getTimeUnit());
 		}
 		if (null != param.getSale())
 			member.setSale(param.getSale());
@@ -97,8 +96,7 @@ public class HasanManager {
 		UserCustom custom = userCustomDao.queryUnique(query);
 		custom.setMemberId(member.getId());
 		custom.setUpdated(DateUtil.current());
-		TimeUnit unit = TimeUnit.match(member.getTimeUnit());
-		long duration = unit.millis() * member.getExpiry();
+		long duration = member.getTimeUnit().millis() * member.getExpiry();
 		if (0 == custom.getMemberExpiry())
 			custom.setMemberExpiry(System.currentTimeMillis() + duration);
 		else

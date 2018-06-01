@@ -1,6 +1,8 @@
 package org.hasan.bean.enums;
 
-public enum GoodsState {
+import org.gatlin.util.bean.IEnum;
+
+public enum GoodsState implements IEnum {
 
 	SALE(1),
 	OFF_SHELVES(2);
@@ -11,15 +13,8 @@ public enum GoodsState {
 		this.mark = mark;
 	}
 	
+	@Override
 	public int mark() {
 		return mark;
-	}
-	
-	public static final GoodsState match(int mark) {
-		for (GoodsState temp : GoodsState.values()) {
-			if (temp.mark == mark)
-				return temp;
-		}
-		return null;
 	}
 }

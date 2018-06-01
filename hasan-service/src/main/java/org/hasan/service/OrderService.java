@@ -25,6 +25,7 @@ import org.gatlin.soa.bean.model.ResourceInfo;
 import org.gatlin.soa.bean.param.SoaSidParam;
 import org.gatlin.soa.config.api.ConfigService;
 import org.gatlin.soa.resource.api.ResourceService;
+import org.gatlin.soa.resource.bean.param.ResourcesParam;
 import org.gatlin.util.DateUtil;
 import org.gatlin.util.lang.CollectionUtil;
 import org.hasan.bean.HasanCode;
@@ -147,12 +148,13 @@ public class OrderService {
 		Order order = orderManager.order(param.getId());
 		Assert.notNull(HasanCode.ORDER_NOT_EXIST, order);
 		List<OrderGoods> orderGoods = orderManager.orderGoodses(new Query().eq("order_id", order.getId()));
-		Set<Integer> goodIds = new HashSet<>();
-		orderGoods.forEach(item2 -> goodIds.add(item2.getGoodsId()));
+		Set<String> goodIds = new HashSet<String>();
+		orderGoods.forEach(item -> goodIds.add(String.valueOf(item.getGoodsId())));
 		List<CfgGoods> goods = goodsManager.goods(new Query().in("id", goodIds));
-		List<ResourceInfo> resources = resourceService
-				.resources(new Query().in("owner", goodIds).eq("cfg_id", HasanResourceType.GOODS_ICON.mark()))
-				.getList();
+		ResourcesParam rp = new ResourcesParam();
+		rp.setOwners(goodIds);
+		rp.addCfgId(HasanResourceType.GOODS_ICON.mark());
+		List<ResourceInfo> resources = resourceService.resources(rp).getList();
 		List<GoodsInfo> infos = new ArrayList<GoodsInfo>();
 		for (CfgGoods cfgGoods : goods) {
 			ResourceInfo icon = null;
@@ -182,12 +184,13 @@ public class OrderService {
 			List<OrderInfo> orderInfos = new ArrayList<>();
 			list.forEach(item -> {
 				List<OrderGoods> orderGoods = orderManager.orderGoodses(new Query().eq("order_id", item.getId()));
-				Set<Integer> goodIds = new HashSet<>();
-				orderGoods.forEach(item2 -> goodIds.add(item2.getGoodsId()));
+				Set<String> goodIds = new HashSet<String>();
+				orderGoods.forEach(item2 -> goodIds.add(String.valueOf(item2.getGoodsId())));
 				List<CfgGoods> goods = goodsManager.goods(new Query().in("id", goodIds));
-				List<ResourceInfo> resources = resourceService
-						.resources(new Query().in("owner", goodIds).eq("cfg_id", HasanResourceType.GOODS_ICON.mark()))
-						.getList();
+				ResourcesParam rp = new ResourcesParam();
+				rp.setOwners(goodIds);
+				rp.addCfgId(HasanResourceType.GOODS_ICON.mark());
+				List<ResourceInfo> resources = resourceService.resources(rp).getList();
 				List<GoodsInfo> infos = new ArrayList<GoodsInfo>();
 				for (CfgGoods cfgGoods : goods) {
 					ResourceInfo icon = null;

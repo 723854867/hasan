@@ -4,6 +4,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 import org.gatlin.util.bean.Identifiable;
+import org.hasan.bean.enums.GoodsState;
 
 public class CfgGoods implements Identifiable<Integer> {
 
@@ -13,12 +14,12 @@ public class CfgGoods implements Identifiable<Integer> {
 	@GeneratedValue
 	private int id;
 	private int sold;
-	private int state;
 	private String name;
 	private String desc;
 	private int priority;
 	private int inventory;
 	private int cookbookId;
+	private GoodsState state;
 	private int created;
 	private int updated;
 
@@ -36,14 +37,6 @@ public class CfgGoods implements Identifiable<Integer> {
 
 	public void setSold(int sold) {
 		this.sold = sold;
-	}
-	
-	public int getState() {
-		return state;
-	}
-
-	public void setState(int state) {
-		this.state = state;
 	}
 	
 	public String getName() {
@@ -84,6 +77,14 @@ public class CfgGoods implements Identifiable<Integer> {
 	
 	public void setCookbookId(int cookbookId) {
 		this.cookbookId = cookbookId;
+	}
+	
+	public GoodsState getState() {
+		return state;
+	}
+	
+	public void setState(GoodsState state) {
+		this.state = state;
 	}
 	
 	public int getCreated() {

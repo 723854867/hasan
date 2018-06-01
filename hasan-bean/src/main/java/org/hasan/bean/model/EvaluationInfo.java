@@ -24,7 +24,7 @@ public class EvaluationInfo implements Serializable {
 	public EvaluationInfo(UserEvaluation evaluation, ResourceInfo avatar, Username username) {
 		this.uid = evaluation.getUid();
 		this.content = evaluation.getContent();
-		this.type = EvaluateType.match(evaluation.getType());
+		this.type = evaluation.getType();
 		this.created = evaluation.getCreated();
 		if (null != avatar)
 			this.avatar = avatar.getUrl();

@@ -1,6 +1,8 @@
 package org.hasan.bean.enums;
 
-public enum SchedulerType {
+import org.gatlin.util.bean.IEnum;
+
+public enum SchedulerType implements IEnum {
 
 	PACKAGE(1),
 	DELIVERY(2);
@@ -11,6 +13,7 @@ public enum SchedulerType {
 		this.mark = mark;
 	}
 	
+	@Override
 	public int mark() {
 		return mark;
 	}

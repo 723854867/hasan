@@ -17,6 +17,7 @@ import org.gatlin.soa.bean.model.ResourceInfo;
 import org.gatlin.soa.config.api.ConfigService;
 import org.gatlin.soa.resource.api.ResourceService;
 import org.gatlin.soa.resource.bean.enums.ResourceType;
+import org.gatlin.soa.resource.bean.param.ResourcesParam;
 import org.gatlin.soa.user.api.UserService;
 import org.gatlin.soa.user.bean.entity.Username;
 import org.gatlin.soa.user.bean.enums.UsernameType;
@@ -66,10 +67,12 @@ public class GoodsService {
 		Assert.notNull(HasanCode.GOODS_NOT_EXIST, goods);
 		GoodsDetail detail = new GoodsDetail(goods);
 		// 获取商品本身资源
-		Query query = new Query().eq("owner", id).in("cfg_id", HasanResourceType.goodsResourceTypes());
-		List<ResourceInfo> resources = resourceService.resources(query).getList();
+		ResourcesParam rp = new ResourcesParam();
+		rp.addOwner(String.valueOf(id));
+		rp.setCfgIds(HasanResourceType.goodsResourceTypes());
+		List<ResourceInfo> resources = resourceService.resources(rp).getList();
 		// 获取菜谱资源
-		query = new Query().eq("owner", goods.getCookbookId()).eq("cfg_id", HasanResourceType.COOKBOOK_ICON.mark());
+		Query query = new Query().eq("owner", goods.getCookbookId()).eq("cfg_id", HasanResourceType.COOKBOOK_ICON.mark());
 		ResourceInfo cookbook = resourceService.resource(query);
 		if (null != cookbook)
 			resources.add(cookbook);
@@ -106,10 +109,12 @@ public class GoodsService {
 		List<CfgGoods> goods = goodsManager.goods(query);
 		if(goods.isEmpty())
 			return Pager.empty();
-		Set<Integer> ids = new HashSet<Integer>();
-		goods.forEach(item -> ids.add(item.getId()));
-		query = new Query().in("owner", ids).eq("cfg_id", HasanResourceType.GOODS_ICON.mark());
-		List<ResourceInfo> resources = resourceService.resources(query).getList();
+		Set<String> ids = new HashSet<String>();
+		goods.forEach(item -> ids.add(String.valueOf(item.getId())));
+		ResourcesParam rp = new ResourcesParam();
+		rp.setOwners(ids);
+		rp.addCfgId(HasanResourceType.GOODS_ICON.mark());
+		List<ResourceInfo> resources = resourceService.resources(rp).getList();
 		return Pager.<GoodsInfo, CfgGoods>convert(goods, () -> {
 			List<GoodsInfo> infos = new ArrayList<GoodsInfo>();
 			for (CfgGoods cfgGoods : goods) {
@@ -138,12 +143,14 @@ public class GoodsService {
 		List<UserEvaluation> evaluations = goodsManager.evaluations(query);
 		if (CollectionUtil.isEmpty(evaluations))
 			return Pager.empty();
-		Set<Long> set = new HashSet<>();
-		evaluations.forEach(item -> set.add(item.getUid()));
+		Set<String> set = new HashSet<String>();
+		evaluations.forEach(item -> set.add(String.valueOf(item.getUid())));
 		query = new Query().in("uid", set).eq("type", UsernameType.MOBILE.mark());
 		List<Username> usernames = userService.usernames(query).getList();
-		query = new Query().in("owner", set).eq("cfg_id", ResourceType.AVATAR.mark());
-		List<ResourceInfo> avatars = resourceService.resources(query).getList();
+		ResourcesParam rp = new ResourcesParam();
+		rp.setOwners(set);
+		rp.addCfgId(ResourceType.AVATAR.mark());
+		List<ResourceInfo> avatars = resourceService.resources(rp).getList();
 		List<EvaluationInfo> list = new ArrayList<EvaluationInfo>();
 		evaluations.forEach(item -> {
 			Username username = null;

@@ -78,7 +78,7 @@ public class GoodsManager {
 		goods.setDesc(param.getDesc());
 		goods.setInventory(param.getInventory());
 		goods.setPriority(param.getPriority());
-		goods.setState(param.getState().mark());
+		goods.setState(param.getState());
 		goods.setUpdated(DateUtil.current());
 		cfgGoodsDao.update(goods);
 		cfgGoodsPriceDao.deleteByGoodsId(goods.getId());
@@ -100,7 +100,7 @@ public class GoodsManager {
 		Assert.isTrue(HasanCode.GOODS_NOT_EXIST, goods.size() == map.size());
 		Map<Integer, CfgGoods> m = new HashMap<Integer, CfgGoods>();
 		goods.forEach(item -> {
-			Assert.isTrue(HasanCode.GOODS_OFF_SHELVES, item.getState() == GoodsState.SALE.mark());
+			Assert.isTrue(HasanCode.GOODS_OFF_SHELVES, item.getState() == GoodsState.SALE);
 			int num = map.get(item.getId());
 			Assert.isTrue(CoreCode.PARAM_ERR, num > 0);
 			Assert.isTrue(HasanCode.GOODS_INVENTORY_LACK, item.getInventory() >= num);

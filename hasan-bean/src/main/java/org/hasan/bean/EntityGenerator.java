@@ -51,7 +51,7 @@ public class EntityGenerator {
 		instance.setDesc(param.getDesc());
 		instance.setInventory(param.getInventory());
 		instance.setPriority(param.getPriority());
-		instance.setState(GoodsState.SALE.mark());
+		instance.setState(GoodsState.SALE);
 		instance.setCookbookId(param.getCookbookId());
 		int time = DateUtil.current();
 		instance.setCreated(time);
@@ -64,7 +64,7 @@ public class EntityGenerator {
 		instance.setDay(param.getDay());
 		instance.setStop(param.getStop());
 		instance.setStart(param.getStart());
-		instance.setType(param.getType().mark());
+		instance.setType(param.getType());
 		int time = DateUtil.current();
 		instance.setCreated(time);
 		instance.setUpdated(time);
@@ -77,7 +77,7 @@ public class EntityGenerator {
 		instance.setSale(param.isSale());
 		instance.setPrice(param.getPrice());
 		instance.setExpiry(param.getExpiry());
-		instance.setTimeUnit(param.getTimeUnit().mark());
+		instance.setTimeUnit(param.getTimeUnit());
 		int time = DateUtil.current();
 		instance.setCreated(time);
 		instance.setUpdated(time);
@@ -90,7 +90,7 @@ public class EntityGenerator {
 		instance.setPrice(BigDecimal.ZERO);
 		instance.setIp(param.meta().getIp());
 		instance.setUid(param.getUser().getId());
-		instance.setState(OrderState.INIT.mark());
+		instance.setState(OrderState.INIT);
 		instance.setExpressFee(BigDecimal.ZERO);
 		instance.setExpressNo(StringUtil.EMPTY);
 		instance.setRecipients(address.getContacts());
@@ -126,7 +126,7 @@ public class EntityGenerator {
 		UserEvaluation instance = new UserEvaluation();
 		instance.setId(IDWorker.INSTANCE.nextSid());
 		instance.setContent(param.getContent());
-		instance.setType(param.getType().mark());
+		instance.setType(param.getType());
 		instance.setGoodsId(og.getGoodsId());
 		instance.setOrderGoodsId(og.getId());
 		instance.setUid(param.getUser().getId());

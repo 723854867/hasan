@@ -14,6 +14,7 @@ import org.gatlin.dao.bean.model.Query;
 import org.gatlin.soa.bean.model.ResourceInfo;
 import org.gatlin.soa.bean.param.SoaIdParam;
 import org.gatlin.soa.resource.api.ResourceService;
+import org.gatlin.soa.resource.bean.param.ResourcesParam;
 import org.gatlin.util.lang.CollectionUtil;
 import org.gatlin.util.serial.SerializeUtil;
 import org.hasan.bean.HasanCode;
@@ -49,17 +50,21 @@ public class CookbookService {
 		CfgCookbook cookbook = cookbookManager.cookbook(id);
 		Assert.notNull(HasanCode.COOKBOOK_NOT_EXIST, cookbook);
 		// 获取菜谱轮播图
-		Query query = new Query().in("cfg_id", HasanResourceType.cookbookResourceTypes()).eq("owner", id);
-		List<ResourceInfo> images = resourceService.resources(query).getList();
+		ResourcesParam rp = new ResourcesParam();
+		rp.addOwner(String.valueOf(id));
+		rp.setCfgIds(HasanResourceType.cookbookResourceTypes());
+		List<ResourceInfo> images = resourceService.resources(rp).getList();
 		CookbookText text = SerializeUtil.GSON.fromJson(cookbook.getText(), CookbookText.class);
 		List<Goods> goods = new ArrayList<Goods>();
 		if (!CollectionUtil.isEmpty(text.getGoods())) {
-			query = new Query().in("id", text.getGoods()).orderByAsc("priority");
+			Query query = new Query().in("id", text.getGoods()).orderByAsc("priority");
 			List<CfgGoods> list = goodsManager.goods(query);
-			Set<Integer> temp = new HashSet<Integer>();
-			list.forEach(item -> temp.add(item.getId()));
-			query = new Query().eq("cfg_id", HasanResourceType.GOODS_ICON.mark()).in("owner", temp);
-			List<ResourceInfo> goodsIcons = resourceService.resources(query).getList();
+			Set<String> temp = new HashSet<String>();
+			list.forEach(item -> temp.add(String.valueOf(item.getId())));
+			rp = new ResourcesParam();
+			rp.setOwners(temp);
+			rp.addCfgId(HasanResourceType.GOODS_ICON.mark());
+			List<ResourceInfo> goodsIcons = resourceService.resources(rp).getList();
 			list.forEach(item -> {
 				ResourceInfo resource = null;
 				if (!CollectionUtil.isEmpty(goodsIcons)) {
@@ -81,10 +86,12 @@ public class CookbookService {
 		List<CfgCookbookStep> cfgSteps = cookbookManager.steps(id);
 		List<Step> steps = new ArrayList<Step>();
 		if (!CollectionUtil.isEmpty(cfgSteps)) {
-			Set<Integer> temp = new HashSet<Integer>();
-			cfgSteps.forEach(item -> temp.add(item.getId()));
-			query = new Query().eq("cfg_id", HasanResourceType.COOKBOOK_STEP.mark()).in("owner", temp);
-			List<ResourceInfo> resources = resourceService.resources(query).getList();
+			Set<String> temp = new HashSet<String>();
+			cfgSteps.forEach(item -> temp.add(String.valueOf(item.getId())));
+			rp = new ResourcesParam();
+			rp.setOwners(temp);
+			rp.addCfgId(HasanResourceType.COOKBOOK_STEP.mark());
+			List<ResourceInfo> resources = resourceService.resources(rp).getList();
 			cfgSteps.forEach(step -> {
 				List<ResourceInfo> resource = new ArrayList<>();
 				if (!CollectionUtil.isEmpty(resources)) {

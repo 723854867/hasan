@@ -6,6 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 import org.gatlin.util.bean.Identifiable;
+import org.gatlin.util.bean.enums.TimeUnit;
 
 public class CfgMember implements Identifiable<Integer> {
 
@@ -17,7 +18,7 @@ public class CfgMember implements Identifiable<Integer> {
 	private int expiry;
 	private String name;
 	private boolean sale;
-	private int timeUnit;
+	private TimeUnit timeUnit;
 	private BigDecimal price;
 	private int created;
 	private int updated;
@@ -54,11 +55,11 @@ public class CfgMember implements Identifiable<Integer> {
 		this.sale = sale;
 	}
 
-	public int getTimeUnit() {
+	public TimeUnit getTimeUnit() {
 		return timeUnit;
 	}
-
-	public void setTimeUnit(int timeUnit) {
+	
+	public void setTimeUnit(TimeUnit timeUnit) {
 		this.timeUnit = timeUnit;
 	}
 

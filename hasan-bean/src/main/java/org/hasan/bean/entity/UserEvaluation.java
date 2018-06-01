@@ -3,6 +3,7 @@ package org.hasan.bean.entity;
 import javax.persistence.Id;
 
 import org.gatlin.util.bean.Identifiable;
+import org.hasan.bean.enums.EvaluateType;
 
 public class UserEvaluation implements Identifiable<String> {
 
@@ -11,9 +12,9 @@ public class UserEvaluation implements Identifiable<String> {
 	@Id
 	private String id;
 	private long uid;
-	private int type;
 	private int goodsId;
 	private String content;
+	private EvaluateType type;
 	private long orderGoodsId;
 	private int created;
 
@@ -33,20 +34,20 @@ public class UserEvaluation implements Identifiable<String> {
 		this.uid = uid;
 	}
 
-	public int getType() {
-		return type;
-	}
-
-	public void setType(int type) {
-		this.type = type;
-	}
-
 	public int getGoodsId() {
 		return goodsId;
 	}
 	
 	public void setGoodsId(int goodsId) {
 		this.goodsId = goodsId;
+	}
+	
+	public EvaluateType getType() {
+		return type;
+	}
+	
+	public void setType(EvaluateType type) {
+		this.type = type;
 	}
 
 	public String getContent() {

@@ -4,6 +4,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 import org.gatlin.util.bean.Identifiable;
+import org.hasan.bean.enums.SchedulerType;
 
 public class CfgScheduler implements Identifiable<Integer> {
 
@@ -13,9 +14,9 @@ public class CfgScheduler implements Identifiable<Integer> {
 	@GeneratedValue
 	private int id;
 	private int day;
-	private int type;
 	private int start;
 	private int stop;
+	private SchedulerType type;
 	private int created;
 	private int updated;
 
@@ -35,14 +36,6 @@ public class CfgScheduler implements Identifiable<Integer> {
 		this.day = day;
 	}
 
-	public int getType() {
-		return type;
-	}
-
-	public void setType(int type) {
-		this.type = type;
-	}
-
 	public int getStart() {
 		return start;
 	}
@@ -57,6 +50,14 @@ public class CfgScheduler implements Identifiable<Integer> {
 
 	public void setStop(int stop) {
 		this.stop = stop;
+	}
+	
+	public SchedulerType getType() {
+		return type;
+	}
+	
+	public void setType(SchedulerType type) {
+		this.type = type;
 	}
 
 	public int getCreated() {
