@@ -1,9 +1,7 @@
 package org.hasan.service;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -70,24 +68,13 @@ public class GoodsService {
 		ResourcesParam rp = new ResourcesParam();
 		rp.addOwner(String.valueOf(id));
 		rp.setCfgIds(HasanResourceType.goodsResourceTypes());
-		List<ResourceInfo> resources = resourceService.resources(rp).getList();
+		Map<Integer, List<ResourceInfo>> resources = resourceService.cfgIdListMap(rp);
 		// 获取菜谱资源
-		Query query = new Query().eq("owner", goods.getCookbookId()).eq("cfg_id", HasanResourceType.COOKBOOK_ICON.mark());
-		ResourceInfo cookbook = resourceService.resource(query);
-		if (null != cookbook)
-			resources.add(cookbook);
-		Map<Integer, List<ResourceInfo>> map = new HashMap<Integer, List<ResourceInfo>>();
-		if (!CollectionUtil.isEmpty(resources)) {
-			for (ResourceInfo resource : resources) {
-				List<ResourceInfo> list = map.get(resource.getCfgId());
-				if (null == list) {
-					list = new ArrayList<ResourceInfo>();
-					map.put(resource.getCfgId(), list);
-				}
-				list.add(resource);
-			}
-		} 
-		detail.setResources(map);
+		rp = new ResourcesParam();
+		rp.addOwner(String.valueOf(goods.getCookbookId()));
+		rp.addCfgId(HasanResourceType.COOKBOOK_ICON.mark());
+		resources.putAll(resourceService.cfgIdListMap(rp));
+		detail.setResources(resources);
 		
 		// 设置价格
 		List<CfgGoodsPrice> prices = goodsManager.goodsPrices(goods.getId());
@@ -98,7 +85,7 @@ public class GoodsService {
 		
 		// 设置评价
 		int num = configService.config(HasanConsts.DEFAULT_EVALUATION_NUM);
-		query = new Query().eq("goods_id", goods.getId()).orderByDesc("created").limit(num);
+		Query query = new Query().eq("goods_id", goods.getId()).orderByDesc("created").limit(num);
 		detail.setEvaluations(evaluations(query).getList());
 		return detail;
 	}
@@ -114,25 +101,11 @@ public class GoodsService {
 		ResourcesParam rp = new ResourcesParam();
 		rp.setOwners(ids);
 		rp.addCfgId(HasanResourceType.GOODS_ICON.mark());
-		List<ResourceInfo> resources = resourceService.resources(rp).getList();
+		Map<String, ResourceInfo> resources = resourceService.ownerMap(rp);
 		return Pager.<GoodsInfo, CfgGoods>convert(goods, () -> {
 			List<GoodsInfo> infos = new ArrayList<GoodsInfo>();
-			for (CfgGoods cfgGoods : goods) {
-				ResourceInfo icon = null;
-				if (!CollectionUtil.isEmpty(resources)) {
-					Iterator<ResourceInfo> iterator = resources.iterator();
-					while (iterator.hasNext()) {
-						ResourceInfo info = iterator.next();
-						int owner = Integer.valueOf(info.getOwner());
-						if (owner == cfgGoods.getId()) {
-							icon = info;
-							iterator.remove();
-							break;
-						}
-					}
-				}
-				infos.add(new GoodsInfo(cfgGoods, icon));
-			}
+			for (CfgGoods cfgGoods : goods) 
+				infos.add(new GoodsInfo(cfgGoods, resources.get(String.valueOf(cfgGoods.getId()))));
 			return infos;
 		});
 	}
@@ -150,7 +123,7 @@ public class GoodsService {
 		ResourcesParam rp = new ResourcesParam();
 		rp.setOwners(set);
 		rp.addCfgId(ResourceType.AVATAR.mark());
-		List<ResourceInfo> avatars = resourceService.resources(rp).getList();
+		Map<String, ResourceInfo> avatars = resourceService.ownerMap(rp);
 		List<EvaluationInfo> list = new ArrayList<EvaluationInfo>();
 		evaluations.forEach(item -> {
 			Username username = null;
@@ -162,16 +135,7 @@ public class GoodsService {
 					break;
 				}
 			}
-			ResourceInfo avatar = null;
-			if (!CollectionUtil.isEmpty(avatars)) {
-				for (ResourceInfo temp : avatars) {
-					long owner = Long.valueOf(temp.getOwner());
-					if (owner != item.getUid())
-						continue;
-					avatar = temp;
-					break;
-				}
-			}
+			ResourceInfo avatar = avatars.get(String.valueOf(item.getUid()));
 			list.add(new EvaluationInfo(item, avatar, username));
 		});
 		return new Pager<EvaluationInfo>(list);

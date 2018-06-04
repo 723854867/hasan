@@ -3,8 +3,8 @@ package org.hasan.service;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Resource;
@@ -154,22 +154,10 @@ public class OrderService {
 		ResourcesParam rp = new ResourcesParam();
 		rp.setOwners(goodIds);
 		rp.addCfgId(HasanResourceType.GOODS_ICON.mark());
-		List<ResourceInfo> resources = resourceService.resources(rp).getList();
+		Map<String, ResourceInfo> map = resourceService.ownerMap(rp);
 		List<GoodsInfo> infos = new ArrayList<GoodsInfo>();
 		for (CfgGoods cfgGoods : goods) {
-			ResourceInfo icon = null;
-			if (!CollectionUtil.isEmpty(resources)) {
-				Iterator<ResourceInfo> iterator = resources.iterator();
-				while (iterator.hasNext()) {
-					ResourceInfo info = iterator.next();
-					int owner = Integer.valueOf(info.getOwner());
-					if (owner == cfgGoods.getId()) {
-						icon = info;
-						iterator.remove();
-						break;
-					}
-				}
-			}
+			ResourceInfo icon = map.get(String.valueOf(cfgGoods.getId()));
 			infos.add(new GoodsInfo(cfgGoods, icon));
 		}
 
@@ -190,22 +178,10 @@ public class OrderService {
 				ResourcesParam rp = new ResourcesParam();
 				rp.setOwners(goodIds);
 				rp.addCfgId(HasanResourceType.GOODS_ICON.mark());
-				List<ResourceInfo> resources = resourceService.resources(rp).getList();
+				Map<String, ResourceInfo> map = resourceService.ownerMap(rp);
 				List<GoodsInfo> infos = new ArrayList<GoodsInfo>();
 				for (CfgGoods cfgGoods : goods) {
-					ResourceInfo icon = null;
-					if (!CollectionUtil.isEmpty(resources)) {
-						Iterator<ResourceInfo> iterator = resources.iterator();
-						while (iterator.hasNext()) {
-							ResourceInfo info = iterator.next();
-							int owner = Integer.valueOf(info.getOwner());
-							if (owner == cfgGoods.getId()) {
-								icon = info;
-								iterator.remove();
-								break;
-							}
-						}
-					}
+					ResourceInfo icon = map.get(String.valueOf(cfgGoods.getId()));
 					infos.add(new GoodsInfo(cfgGoods, icon));
 				}
 				orderInfos.add(new OrderInfo(item, infos, orderGoods));

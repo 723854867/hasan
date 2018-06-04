@@ -2,8 +2,8 @@ package org.hasan.service;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Resource;
@@ -53,7 +53,7 @@ public class CookbookService {
 		ResourcesParam rp = new ResourcesParam();
 		rp.addOwner(String.valueOf(id));
 		rp.setCfgIds(HasanResourceType.cookbookResourceTypes());
-		List<ResourceInfo> images = resourceService.resources(rp).getList();
+		List<ResourceInfo> images = resourceService.list(rp).getList();
 		CookbookText text = SerializeUtil.GSON.fromJson(cookbook.getText(), CookbookText.class);
 		List<Goods> goods = new ArrayList<Goods>();
 		if (!CollectionUtil.isEmpty(text.getGoods())) {
@@ -64,23 +64,8 @@ public class CookbookService {
 			rp = new ResourcesParam();
 			rp.setOwners(temp);
 			rp.addCfgId(HasanResourceType.GOODS_ICON.mark());
-			List<ResourceInfo> goodsIcons = resourceService.resources(rp).getList();
-			list.forEach(item -> {
-				ResourceInfo resource = null;
-				if (!CollectionUtil.isEmpty(goodsIcons)) {
-					Iterator<ResourceInfo> itr = goodsIcons.iterator();
-					while (itr.hasNext()) {
-						ResourceInfo res = itr.next();
-						int owner = Integer.valueOf(res.getOwner());
-						if (owner == item.getId()) {
-							resource = res;
-							itr.remove();
-							break;
-						}
-					}
-				}
-				goods.add(new Goods(item, resource));
-			});
+			Map<String, ResourceInfo> goodsIcons = resourceService.ownerMap(rp);
+			list.forEach(item -> goods.add(new Goods(item, goodsIcons.get(String.valueOf(item.getId())))));
 		}
 		// 获取烹饪步骤
 		List<CfgCookbookStep> cfgSteps = cookbookManager.steps(id);
@@ -91,23 +76,8 @@ public class CookbookService {
 			rp = new ResourcesParam();
 			rp.setOwners(temp);
 			rp.addCfgId(HasanResourceType.COOKBOOK_STEP.mark());
-			List<ResourceInfo> resources = resourceService.resources(rp).getList();
-			cfgSteps.forEach(step -> {
-				List<ResourceInfo> resource = new ArrayList<>();
-				if (!CollectionUtil.isEmpty(resources)) {
-					Iterator<ResourceInfo> iterator = resources.iterator();
-					while (iterator.hasNext()) {
-						ResourceInfo res = iterator.next();
-						int owner = Integer.valueOf(res.getOwner());
-						if (owner == step.getId()) {
-							resource.add(res);
-							iterator.remove();
-							//break;
-						}
-					}
-				}
-				steps.add(new Step(step, resource));
-			});
+			Map<String, List<ResourceInfo>> resources = resourceService.ownerListMap(rp);
+			cfgSteps.forEach(step -> steps.add(new Step(step, resources.get(String.valueOf(step.getId())))));
 		}
 		CookbookDetail detail = new CookbookDetail(cookbook, steps, goods, images);
 		detail.setCuisineGroups(text.getCuisineGroups());
