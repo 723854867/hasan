@@ -2,6 +2,8 @@ package org.hasan.hook;
 
 import javax.annotation.Resource;
 
+import org.gatlin.core.CoreCode;
+import org.gatlin.core.bean.exceptions.CodeException;
 import org.gatlin.core.util.Assert;
 import org.gatlin.soa.resource.bean.entity.CfgResource;
 import org.gatlin.web.bean.param.ResourceUploadParam;
@@ -25,19 +27,22 @@ public class ResourceHook extends org.gatlin.web.util.validator.ResourceHook {
 	public void verify(CfgResource resource, ResourceUploadParam param) {
 		switch (resource.getType()) {
 		case 100:
-			CfgGoods goods = goodsManager.goods(Integer.valueOf(param.getOwner()));
+			int cfgGoodsId = param.owner();
+			CfgGoods goods = goodsManager.goods(cfgGoodsId);
 			Assert.notNull(HasanCode.GOODS_NOT_EXIST, goods);
 			break;
 		case 101:
-			CfgCookbook cookbook = cookbookManager.cookbook(Integer.valueOf(param.getOwner()));
+			int id = param.owner();
+			CfgCookbook cookbook = cookbookManager.cookbook(id);
 			Assert.notNull(HasanCode.COOKBOOK_NOT_EXIST, cookbook);
 			break;
 		case 102:
-			CfgCookbookStep step = cookbookManager.cookbookStep(Integer.valueOf(param.getOwner()));
+			int stepId = param.owner();
+			CfgCookbookStep step = cookbookManager.cookbookStep(stepId);
 			Assert.notNull(HasanCode.COOKBOOK_STEP_NOT_EXIST, step);
 			break;
 		default:
-			break;
+			throw new CodeException(CoreCode.FORBID);
 		}
 	}
 }
