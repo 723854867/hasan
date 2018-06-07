@@ -68,11 +68,10 @@ public class OrderController {
 	@ResponseBody
 	@RequestMapping("list")
 	public Object list(@RequestBody @Valid OrdersParam param) {
-		Query query = param.query().eq("uid", param.getUser().getId());
-		if (null != param.getState())
-			query.eq("state", param.getState().mark());
-		query.orderByDesc("created");
-		return orderService.orders(query);
+		param.query().eq("uid", param.getUser().getId());
+//		if (null != param.getState())
+//			query.eq("state", param.getState().mark());
+		return orderService.orders(param.query());
 	}
 	
 	@ResponseBody
