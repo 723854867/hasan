@@ -184,6 +184,7 @@ public class CommonService {
 				continue;
 			info.setNextJieQi(temp.getName());
 			info.setNextJieQiDay((int) DateUtil.interval(temp.getDay(), DateUtil.yyyyMMdd, TimeUnit.DAY));
+			break;
 		}
 		global.setValue(SerializeUtil.GSON.toJson(info));
 		global.setUpdated(DateUtil.current());
