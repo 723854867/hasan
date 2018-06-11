@@ -1,6 +1,7 @@
 package org.hasan.service;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.annotation.Resource;
 
@@ -9,6 +10,7 @@ import org.gatlin.core.GatlinConfigration;
 import org.gatlin.core.bean.info.Pager;
 import org.gatlin.core.util.Assert;
 import org.gatlin.dao.bean.model.Query;
+import org.gatlin.sdk.jisu.bean.model.JieQiTips;
 import org.gatlin.sdk.jisu.request.CalendarRequest;
 import org.gatlin.sdk.jisu.request.JieQiRequest;
 import org.gatlin.sdk.jisu.result.Calendar;
@@ -35,7 +37,7 @@ import org.gatlin.soa.user.bean.model.RegisterModel;
 import org.gatlin.soa.user.bean.model.UserListInfo;
 import org.gatlin.soa.user.bean.param.RegisterParam;
 import org.gatlin.util.DateUtil;
-import org.gatlin.util.lang.StringUtil;
+import org.gatlin.util.bean.enums.TimeUnit;
 import org.gatlin.util.serial.SerializeUtil;
 import org.hasan.bean.HasanCode;
 import org.hasan.bean.entity.CfgMember;
@@ -160,8 +162,7 @@ public class CommonService {
 		// 同步节气数据
 		JieQiRequest request = new JieQiRequest();
 		JieQi jieQi = request.sync().getResult();
-		String time = DateUtil.getDate(DateUtil.yyyy_MM_dd);
-		String ntime = DateUtil.convert(jieQi.getNow().getTime(), DateUtil.YYYY_MM_DD_HH_MM_SS, DateUtil.yyyy_MM_dd);
+		jieQi.timeConvert();
 		GuideInfo info = new GuideInfo();
 		CfgGlobal global = configService.cfgGlobal("jie_qi");
 		CalendarRequest crequest = new CalendarRequest();
@@ -175,7 +176,15 @@ public class CommonService {
 		info.setLunaryear(calendar.getLunaryear().trim());
 		info.setShengxiao(calendar.getShengxiao().trim());
 		info.setSuici(calendar.getHuangli().getSuici());
-		info.setJieqi(time.equals(ntime) ? jieQi.getNow().getName().trim() : StringUtil.EMPTY);
+		info.setJieqi(jieQi.getNow().getName().trim());
+		info.setJieQiPassDay(Math.abs((int) DateUtil.interval(jieQi.getNow().getDay(), DateUtil.yyyyMMdd, TimeUnit.DAY)));
+		List<JieQiTips> tips = jieQi.getList();
+		for (JieQiTips temp : tips) {
+			if (temp.getDay() <= temp.getDay())
+				continue;
+			info.setNextJieQi(temp.getName());
+			info.setNextJieQiDay((int) DateUtil.interval(temp.getDay(), DateUtil.yyyyMMdd, TimeUnit.DAY));
+		}
 		global.setValue(SerializeUtil.GSON.toJson(info));
 		global.setUpdated(DateUtil.current());
 		configService.updateConfig(global);

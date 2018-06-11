@@ -15,9 +15,12 @@ public class GuideInfo implements Serializable {
 	private String lunarday;
 	private String shengxiao;
 	private String[] suici;
-	private String jieqi;
 	private String verse;
 	private Integer hour;
+	private String jieqi;
+	private int jieQiPassDay;
+	private String nextJieQi;
+	private int nextJieQiDay;
 
 	public String getYear() {
 		return year;
@@ -106,12 +109,36 @@ public class GuideInfo implements Serializable {
 	public void setVerse(String verse) {
 		this.verse = verse;
 	}
-	
+
 	public Integer getHour() {
 		return hour;
 	}
-	
+
 	public void setHour(Integer hour) {
 		this.hour = hour;
+	}
+
+	public int getJieQiPassDay() {
+		return jieQiPassDay;
+	}
+	
+	public void setJieQiPassDay(int jieQiPassDay) {
+		this.jieQiPassDay = jieQiPassDay;
+	}
+
+	public String getNextJieQi() {
+		return nextJieQi;
+	}
+
+	public void setNextJieQi(String nextJieQi) {
+		this.nextJieQi = nextJieQi;
+	}
+
+	public int getNextJieQiDay() {
+		return nextJieQiDay;
+	}
+
+	public void setNextJieQiDay(int nextJieQiDay) {
+		this.nextJieQiDay = nextJieQiDay;
 	}
 }
