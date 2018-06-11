@@ -17,8 +17,6 @@ import org.gatlin.soa.account.bean.model.AccountDetail;
 import org.gatlin.soa.bean.enums.TargetType;
 import org.gatlin.soa.bean.param.SoaIdParam;
 import org.gatlin.soa.bean.param.SoaLidParam;
-import org.gatlin.soa.bean.param.SoaNameIdParam;
-import org.gatlin.soa.bean.param.SoaSidParam;
 import org.gatlin.soa.config.api.ConfigService;
 import org.gatlin.soa.user.bean.model.UserListInfo;
 import org.gatlin.util.DateUtil;
@@ -36,6 +34,7 @@ import org.hasan.bean.param.AssistantAllocateParam;
 import org.hasan.bean.param.AssistantUserListParam;
 import org.hasan.bean.param.MemberAddParam;
 import org.hasan.bean.param.MemberModifyParam;
+import org.hasan.bean.param.VersesParam;
 import org.hasan.mybatis.dao.CfgMemberDao;
 import org.hasan.mybatis.dao.CfgVerseDao;
 import org.hasan.mybatis.dao.UserAssistantDao;
@@ -152,16 +151,17 @@ public class HasanManager {
 		userAssistantDao.deleteByKey(param.getId());
 	}
 	
-	public int verseAdd(SoaSidParam param) {
-		CfgVerse verse = EntityGenerator.newCfgVerse(param.getId());
+	public int verseAdd(VersesParam param) {
+		CfgVerse verse = EntityGenerator.newCfgVerse(param);
 		cfgVerseDao.insert(verse);
 		return verse.getId();
 	}
 	
-	public void verseModify(SoaNameIdParam param) {
+	public void verseModify(VersesParam param) {
 		CfgVerse verse = cfgVerseDao.getByKey(param.getId());
 		Assert.notNull(HasanCode.ASSISTANT_ALLOCATE_DUPLICATED, verse);
-		verse.setContent(param.getName());
+		verse.setContent1(param.getContent1());
+		verse.setContent2(param.getContent2());
 		verse.setUpdated(DateUtil.current());
 		cfgVerseDao.update(verse);
 	}

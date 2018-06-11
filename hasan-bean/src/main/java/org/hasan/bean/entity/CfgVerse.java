@@ -12,7 +12,8 @@ public class CfgVerse implements Identifiable<Integer> {
 	@Id
 	@GeneratedValue
 	private int id;
-	private String content;
+	private String content1;
+	private String content2;
 	private int created;
 	private int updated;
 
@@ -24,12 +25,20 @@ public class CfgVerse implements Identifiable<Integer> {
 		this.id = id;
 	}
 
-	public String getContent() {
-		return content;
+	public String getContent1() {
+		return content1;
 	}
 
-	public void setContent(String content) {
-		this.content = content;
+	public void setContent1(String content1) {
+		this.content1 = content1;
+	}
+
+	public String getContent2() {
+		return content2;
+	}
+
+	public void setContent2(String content2) {
+		this.content2 = content2;
 	}
 
 	public int getCreated() {

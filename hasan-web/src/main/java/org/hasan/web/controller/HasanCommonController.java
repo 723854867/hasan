@@ -130,13 +130,13 @@ public class HasanCommonController {
 	
 	@ResponseBody
 	@RequestMapping("verse/add")
-	public Object verseAdd(@RequestBody @Valid SoaSidParam param) {
+	public Object verseAdd(@RequestBody @Valid VersesParam param) {
 		return commonService.verseAdd(param);
 	}
 	
 	@ResponseBody
 	@RequestMapping("verse/modify")
-	public Object verseModify(@RequestBody @Valid SoaNameIdParam param) {
+	public Object verseModify(@RequestBody @Valid VersesParam param) {
 		commonService.verseModify(param);
 		return Response.ok();
 	}
@@ -150,7 +150,7 @@ public class HasanCommonController {
 	
 	@ResponseBody
 	@RequestMapping("verses")
-	public Object verses(@RequestBody @Valid VersesParam param) {
+	public Object verses(@RequestBody @Valid SoaParam param) {
 		return commonService.verses(param.query());
 	}
 	

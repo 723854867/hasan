@@ -1,14 +1,18 @@
 package org.hasan.bean.param;
 
+import javax.validation.constraints.NotNull;
+
 import org.gatlin.soa.bean.param.SoaParam;
-import org.gatlin.util.lang.StringUtil;
 
 public class VersesParam extends SoaParam {
 
 	private static final long serialVersionUID = -9072043847804254279L;
 	
 	private Integer id;
-	private String content;
+	@NotNull
+	private String content1;
+	@NotNull
+	private String content2;
 
 	public Integer getId() {
 		return id;
@@ -18,21 +22,24 @@ public class VersesParam extends SoaParam {
 		this.id = id;
 	}
 
-	public String getContent() {
-		return content;
+	public String getContent1() {
+		return content1;
 	}
 
-	public void setContent(String content) {
-		this.content = content;
+	public void setContent1(String content1) {
+		this.content1 = content1;
+	}
+
+	public String getContent2() {
+		return content2;
+	}
+
+	public void setContent2(String content2) {
+		this.content2 = content2;
 	}
 
 	@Override
 	public void verify() {
 		super.verify();
-		if (null != id)
-			this.query.eq("id", id);
-		if (StringUtil.hasText(content))
-			this.query.like("content", content);
-		this.query.orderByDesc("created");
 	}
 }

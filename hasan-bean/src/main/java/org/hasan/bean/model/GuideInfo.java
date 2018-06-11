@@ -16,7 +16,8 @@ public class GuideInfo implements Serializable {
 	private String shengxiao;
 	private String[] suici;
 	private String jieqi;
-	private String verse;
+	private String content1;
+	private String content2;
 	private Integer hour;
 
 	public String getYear() {
@@ -98,15 +99,23 @@ public class GuideInfo implements Serializable {
 	public void setJieqi(String jieqi) {
 		this.jieqi = jieqi;
 	}
-
-	public String getVerse() {
-		return verse;
-	}
-
-	public void setVerse(String verse) {
-		this.verse = verse;
-	}
 	
+	public String getContent1() {
+		return content1;
+	}
+
+	public void setContent1(String content1) {
+		this.content1 = content1;
+	}
+
+	public String getContent2() {
+		return content2;
+	}
+
+	public void setContent2(String content2) {
+		this.content2 = content2;
+	}
+
 	public Integer getHour() {
 		return hour;
 	}

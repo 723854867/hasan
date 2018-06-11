@@ -23,8 +23,6 @@ import org.gatlin.soa.bean.enums.PlatType;
 import org.gatlin.soa.bean.enums.TargetType;
 import org.gatlin.soa.bean.param.SoaIdParam;
 import org.gatlin.soa.bean.param.SoaLidParam;
-import org.gatlin.soa.bean.param.SoaNameIdParam;
-import org.gatlin.soa.bean.param.SoaSidParam;
 import org.gatlin.soa.config.api.ConfigService;
 import org.gatlin.soa.config.bean.entity.CfgGlobal;
 import org.gatlin.soa.courier.api.EmailService;
@@ -45,6 +43,7 @@ import org.hasan.bean.param.AssistantAllocateParam;
 import org.hasan.bean.param.AssistantUserListParam;
 import org.hasan.bean.param.MemberAddParam;
 import org.hasan.bean.param.MemberModifyParam;
+import org.hasan.bean.param.VersesParam;
 import org.hasan.manager.HasanManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -125,11 +124,11 @@ public class CommonService {
 		hasanManager.assistantDelete(param);
 	}
 	
-	public int verseAdd(SoaSidParam param) {
+	public int verseAdd(VersesParam param) {
 		return hasanManager.verseAdd(param);
 	}
 	
-	public void verseModify(SoaNameIdParam param) {
+	public void verseModify(VersesParam param) {
 		hasanManager.verseModify(param);
 	}
 	
@@ -149,7 +148,8 @@ public class CommonService {
 		GuideInfo info = SerializeUtil.GSON.fromJson(global.getValue(), GuideInfo.class);
 		if (null == info)
 			info = new GuideInfo();
-		info.setVerse(verse.getContent());
+		info.setContent1(verse.getContent1());
+		info.setContent2(verse.getContent2());
 		java.util.Calendar calendar = java.util.Calendar.getInstance();
 		calendar.setTimeInMillis(System.currentTimeMillis());
 		info.setHour(calendar.get(java.util.Calendar.HOUR_OF_DAY));
