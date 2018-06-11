@@ -32,6 +32,7 @@ import org.hasan.bean.param.GoodsAddParam;
 import org.hasan.bean.param.MemberAddParam;
 import org.hasan.bean.param.OrderMakeParam;
 import org.hasan.bean.param.SchedulerAddParam;
+import org.hasan.bean.param.VersesParam;
 
 public class EntityGenerator {
 	
@@ -175,9 +176,10 @@ public class EntityGenerator {
 		return instance;
 	}
 	
-	public static final CfgVerse newCfgVerse(String content) {
+	public static final CfgVerse newCfgVerse(VersesParam param) {
 		CfgVerse instance = new CfgVerse();
-		instance.setContent(content);
+		instance.setContent1(param.getContent1());
+		instance.setContent2(param.getContent2());
 		int time = DateUtil.current();
 		instance.setCreated(time);
 		instance.setUpdated(time);

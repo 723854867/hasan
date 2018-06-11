@@ -12,9 +12,7 @@ import org.gatlin.soa.bean.User;
 import org.gatlin.soa.bean.model.ResourceInfo;
 import org.gatlin.soa.bean.param.SoaIdParam;
 import org.gatlin.soa.bean.param.SoaLidParam;
-import org.gatlin.soa.bean.param.SoaNameIdParam;
 import org.gatlin.soa.bean.param.SoaParam;
-import org.gatlin.soa.bean.param.SoaSidParam;
 import org.gatlin.soa.config.api.ConfigService;
 import org.gatlin.soa.resource.api.ResourceService;
 import org.gatlin.soa.resource.bean.enums.ResourceType;
@@ -130,13 +128,13 @@ public class HasanCommonController {
 	
 	@ResponseBody
 	@RequestMapping("verse/add")
-	public Object verseAdd(@RequestBody @Valid SoaSidParam param) {
+	public Object verseAdd(@RequestBody @Valid VersesParam param) {
 		return commonService.verseAdd(param);
 	}
 	
 	@ResponseBody
 	@RequestMapping("verse/modify")
-	public Object verseModify(@RequestBody @Valid SoaNameIdParam param) {
+	public Object verseModify(@RequestBody @Valid VersesParam param) {
 		commonService.verseModify(param);
 		return Response.ok();
 	}
@@ -150,7 +148,7 @@ public class HasanCommonController {
 	
 	@ResponseBody
 	@RequestMapping("verses")
-	public Object verses(@RequestBody @Valid VersesParam param) {
+	public Object verses(@RequestBody @Valid SoaParam param) {
 		return commonService.verses(param.query());
 	}
 	
