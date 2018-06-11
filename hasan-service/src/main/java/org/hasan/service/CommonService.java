@@ -180,7 +180,7 @@ public class CommonService {
 		info.setJieQiPassDay(Math.abs((int) DateUtil.interval(jieQi.getNow().getDay(), DateUtil.yyyyMMdd, TimeUnit.DAY)));
 		List<JieQiTips> tips = jieQi.getList();
 		for (JieQiTips temp : tips) {
-			if (temp.getDay() <= temp.getDay())
+			if (temp.getDay() <= Integer.valueOf(DateUtil.getDate(DateUtil.yyyyMMdd)))
 				continue;
 			info.setNextJieQi(temp.getName());
 			info.setNextJieQiDay((int) DateUtil.interval(temp.getDay(), DateUtil.yyyyMMdd, TimeUnit.DAY));
