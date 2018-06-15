@@ -2,6 +2,7 @@ package org.hasan.hook;
 
 import javax.annotation.Resource;
 
+import org.gatlin.core.bean.exceptions.CodeException;
 import org.gatlin.soa.account.bean.entity.Recharge;
 import org.gatlin.soa.account.hook.DefaultRechargeNoticeHook;
 import org.hasan.manager.HasanManager;
@@ -26,7 +27,7 @@ public class RechargeNoticeHook extends DefaultRechargeNoticeHook {
 			orderManager.payNotice(recharge, false);
 			break;
 		default:
-			break;
+			throw new CodeException();
 		}
 	}
 	
@@ -41,7 +42,7 @@ public class RechargeNoticeHook extends DefaultRechargeNoticeHook {
 			orderManager.payNotice(recharge, true);
 			break;
 		default:
-			break;
+			throw new CodeException();
 		}
 	}
 }

@@ -145,35 +145,27 @@ public class OrderManager {
 		}
 		
 		LogOrderPay log = new LogOrderPay();
-		BigDecimal fee = BigDecimal.ZERO;
-		if (null != custom) {
-			if (custom.getMemberId() == 0) 
-				fee = configService.config(HasanConsts.EXPRESS_FEE);
-			log.setExpressFee(fee);
-			BigDecimal total = price.add(fee);
-			// 先用体验金支付
-			Query query = new Query().eq("owner_type", TargetType.USER.mark()).eq("owner", custom.getUid()).eq("type", AccountType.EXP.mark()).forUpdate();
-			Account account = accountService.account(query);
-			BigDecimal delt = total.min(account.getUsable());
-			total = total.subtract(delt);
-			log.setExpAmount(delt);
-			
-			// 体验金不足再用余额支付
-			if (total.compareTo(BigDecimal.ZERO) > 0) {
-				query = new Query().eq("owner_type", TargetType.USER.mark()).eq("owner", custom.getUid()).eq("type", AccountType.BASIC.mark()).forUpdate();
-				account = accountService.account(query);
-				delt = total.min(account.getUsable());
-				total = total.subtract(delt);
-				log.setBasicAmount(delt);
-			} else
-				log.setBasicAmount(BigDecimal.ZERO);
-			log.setRechargeAmount(total);
-		} else {
-			fee = configService.config(HasanConsts.EXPRESS_FEE);
-			log.setExpressFee(fee);
-			BigDecimal total = price.add(fee);
-			log.setRechargeAmount(total);
+		// 先用体验金支付
+		Query query = new Query().eq("owner_type", TargetType.USER.mark()).eq("owner", custom.getUid()).eq("type", AccountType.EXP.mark()).forUpdate();
+		Account account = accountService.account(query);
+		BigDecimal delt = price.min(account.getUsable());
+		price = price.subtract(delt);
+		log.setExpAmount(delt);
+		if (custom.getMemberId() == 0) {
+			log.setExpressFee(configService.config(HasanConsts.EXPRESS_FEE));
+			price = price.add(log.getExpressFee());
 		}
+		
+		// 体验金不足再用余额支付
+		if (price.compareTo(BigDecimal.ZERO) > 0) {
+			query = new Query().eq("owner_type", TargetType.USER.mark()).eq("owner", custom.getUid()).eq("type", AccountType.BASIC.mark()).forUpdate();
+			account = accountService.account(query);
+			delt = price.min(account.getUsable());
+			price = price.subtract(delt);
+			log.setBasicAmount(delt);
+		} else
+			log.setBasicAmount(BigDecimal.ZERO);
+		log.setRechargeAmount(price);
 		return log;
 	}
 	
