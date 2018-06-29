@@ -18,4 +18,5 @@ public interface HasanCode {
 	final Code COOKBOOK_STEP_PRIORITY_DUPLICATED		= new Code("code.hasan.cookbook.step.priority.duplicated", "菜谱序号重复");
 	final Code COOKBOOK_STEP_NOT_EXIST 					= new Code("code.hasan.cookbook.step.not.exist", "菜谱步骤不存在");
 	final Code VERSE_NOT_EXIST		 					= new Code("code.hasan.verse.not.exist", "诗句不存在");
+	final Code MEMBER_COUNT_LIMIT	 					= new Code("code.hasan.member.count.limit", "会员购买次数限制");
 }

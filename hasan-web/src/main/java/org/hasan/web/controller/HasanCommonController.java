@@ -1,8 +1,11 @@
 package org.hasan.web.controller;
 
+import java.util.Iterator;
+
 import javax.annotation.Resource;
 import javax.validation.Valid;
 
+import org.gatlin.core.bean.info.Pager;
 import org.gatlin.core.bean.model.message.Response;
 import org.gatlin.dao.bean.model.Query;
 import org.gatlin.soa.account.api.AccountService;
@@ -18,6 +21,7 @@ import org.gatlin.soa.resource.api.ResourceService;
 import org.gatlin.soa.resource.bean.enums.ResourceType;
 import org.gatlin.soa.user.api.UserService;
 import org.gatlin.soa.user.bean.param.RegisterParam;
+import org.gatlin.util.lang.CollectionUtil;
 import org.hasan.bean.HasanConsts;
 import org.hasan.bean.entity.CfgMember;
 import org.hasan.bean.entity.UserCustom;
@@ -61,7 +65,16 @@ public class HasanCommonController {
 	@ResponseBody
 	@RequestMapping("members")
 	public Object members(@RequestBody @Valid MembersParam param) {
-		return commonService.members(param.query());
+		Pager<CfgMember> pager = commonService.members(param.query());
+		if (null != param.getUser() && !CollectionUtil.isEmpty(pager.getList())) {
+			Iterator<CfgMember> iterator = pager.getList().iterator();
+			while (iterator.hasNext()) {
+				CfgMember member = iterator.next();
+				if (!hasanManager.checkMemberCount(param.getUser().getId(), member))
+					iterator.remove();
+			}
+		}
+		return pager;
 	}
 
 	@ResponseBody

@@ -18,6 +18,7 @@ public class CfgMember implements Identifiable<Integer> {
 	private int expiry;
 	private String name;
 	private boolean sale;
+	private int countLimit;
 	private TimeUnit timeUnit;
 	private BigDecimal price;
 	private int created;
@@ -53,6 +54,14 @@ public class CfgMember implements Identifiable<Integer> {
 
 	public void setSale(boolean sale) {
 		this.sale = sale;
+	}
+	
+	public int getCountLimit() {
+		return countLimit;
+	}
+	
+	public void setCountLimit(int countLimit) {
+		this.countLimit = countLimit;
 	}
 
 	public TimeUnit getTimeUnit() {

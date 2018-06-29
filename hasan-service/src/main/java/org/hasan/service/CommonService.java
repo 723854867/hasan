@@ -107,6 +107,7 @@ public class CommonService {
 		CfgMember member = hasanManager.member(param.getId());
 		Assert.notNull(HasanCode.MEMBER_NOT_EXIST, member);
 		Assert.isTrue(CoreCode.PARAM_ERR, member.isSale());
+		Assert.isTrue(HasanCode.MEMBER_COUNT_LIMIT, hasanManager.checkMemberCount(param.getUser().getId(), member));
 		int timeout = configService.config(SoaConsts.RECHARGE_TIMEOUT);
 		Recharge recharge = AccountUtil.newRecharge(param, PlatType.ALIPAY, 100, member.getId(), member.getPrice(), timeout);
 		return alipayAccountService.recharge(recharge);

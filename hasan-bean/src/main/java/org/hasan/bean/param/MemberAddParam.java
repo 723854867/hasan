@@ -24,6 +24,8 @@ public class MemberAddParam extends SoaParam {
 	private BigDecimal price;
 	@NotNull
 	private TimeUnit timeUnit;
+	@Min(0)
+	private int countLimit;
 	
 	public String getName() {
 		return name;
@@ -63,5 +65,13 @@ public class MemberAddParam extends SoaParam {
 
 	public void setTimeUnit(TimeUnit timeUnit) {
 		this.timeUnit = timeUnit;
+	}
+	
+	public int getCountLimit() {
+		return countLimit;
+	}
+	
+	public void setCountLimit(int countLimit) {
+		this.countLimit = countLimit;
 	}
 }

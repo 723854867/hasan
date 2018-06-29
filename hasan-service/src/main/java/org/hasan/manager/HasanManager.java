@@ -83,13 +83,14 @@ public class HasanManager {
 			member.setPrice(param.getPrice());
 		if (StringUtil.hasText(param.getName()))
 			member.setName(param.getName());
+		member.setCountLimit(param.getCountLimit());
 		member.setUpdated(DateUtil.current());
 		cfgMemberDao.update(member);
 	}
 	
 	// 购买会员成功
 	@Transactional
-	public void memberBuy(Recharge recharge) {
+	public void memberBuy(Recharge recharge, boolean success) {
 		CfgMember member = member(Integer.valueOf(recharge.getGoodsId()));
 		Query query = new Query().eq("uid", recharge.getRechargee()).forUpdate();
 		UserCustom custom = userCustomDao.queryUnique(query);
@@ -176,6 +177,13 @@ public class HasanManager {
 			return null;
 		int idx = (int) (Math.random() * list.size());
 		return list.get(idx);
+	}
+	
+	public boolean checkMemberCount(long uid, CfgMember member) {
+		if (member.getCountLimit() == 0)
+			return true;
+		int buyCount = userCustomDao.memberBuyCount(uid, member.getId());
+		return buyCount < member.getCountLimit();
 	}
 	
 	public CfgMember member(int id) {

@@ -79,6 +79,7 @@ public class EntityGenerator {
 		instance.setPrice(param.getPrice());
 		instance.setExpiry(param.getExpiry());
 		instance.setTimeUnit(param.getTimeUnit());
+		instance.setCountLimit(param.getCountLimit());
 		int time = DateUtil.current();
 		instance.setCreated(time);
 		instance.setUpdated(time);

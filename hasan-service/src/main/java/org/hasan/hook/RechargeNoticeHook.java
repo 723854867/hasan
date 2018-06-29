@@ -22,6 +22,7 @@ public class RechargeNoticeHook extends DefaultRechargeNoticeHook {
 		super.failure(recharge);
 		switch (recharge.getGoodsType()) {
 		case 100:				// 会员购买
+			hasanManager.memberBuy(recharge, false);
 			break;
 		case 101:				// 订单支付
 			orderManager.payNotice(recharge, false);
@@ -36,7 +37,7 @@ public class RechargeNoticeHook extends DefaultRechargeNoticeHook {
 		super.success(recharge);
 		switch (recharge.getGoodsType()) {
 		case 100:				// 会员购买			
-			hasanManager.memberBuy(recharge);
+			hasanManager.memberBuy(recharge, true);
 			break;
 		case 101:				// 订单支付
 			orderManager.payNotice(recharge, true);
