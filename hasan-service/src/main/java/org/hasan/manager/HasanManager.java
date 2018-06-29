@@ -198,6 +198,10 @@ public class HasanManager {
 		return cfgMemberDao.query(new Query());
 	}
 	
+	public List<CfgMember> members(Query query) {
+		return cfgMemberDao.queryList(query);
+	}
+	
 	public List<UserListInfo> assistantUsers(AssistantUserListParam param) {
 		return userAssistantDao.assistantUsers(param);
 	}

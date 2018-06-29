@@ -1,6 +1,5 @@
 package org.hasan.service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -116,7 +115,7 @@ public class CommonService {
 	public Pager<CfgMember> members(Query query) {
 		if (null != query.getPage())
 			PageHelper.startPage(query.getPage(), query.getPageSize());
-		return new Pager<CfgMember>(new ArrayList<CfgMember>(hasanManager.members().values()));
+		return new Pager<CfgMember>(hasanManager.members(query));
 	}
 	
 	public void assistantAllocate(AssistantAllocateParam param) {
