@@ -168,7 +168,6 @@ public class OrderService {
 		if (null != query.getPage())
 			PageHelper.startPage(query.getPage(), query.getPageSize());
 		List<Order> list = orderManager.orders(query);
-		
 		return Pager.<OrderInfo, Order>convert(list, () -> {
 			List<OrderInfo> orderInfos = new ArrayList<>();
 			list.forEach(item -> {

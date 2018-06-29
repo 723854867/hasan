@@ -31,7 +31,7 @@ public class OrderInfo implements Serializable {
 	
 	public OrderInfo() {}
 	
-	public OrderInfo(Order order,List<GoodsInfo> goods,List<OrderGoods> orderGoods) {
+	public OrderInfo(Order order, List<GoodsInfo> goods, List<OrderGoods> orderGoods) {
 		this.id = order.getId();
 		this.uid = order.getUid();
 		this.ip = order.getIp();
@@ -44,8 +44,11 @@ public class OrderInfo implements Serializable {
 		this.deliverStart = order.getDeliverStart();
 		this.deliverStop = order.getDeliverStop();
 		this.created = order.getCreated();
-		orderGoods.forEach(item->count=count+item.getGoodsNum());
-		goods.forEach(item -> icons.put(item.getId(), item.getIcon().getUrl()));
+		orderGoods.forEach(item -> count = count + item.getGoodsNum());
+		goods.forEach(item -> {
+			if (null != item.getIcon())
+				icons.put(item.getId(), item.getIcon().getUrl());
+		});
 	}
 
 	public String getId() {

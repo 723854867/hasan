@@ -21,6 +21,7 @@ import org.gatlin.soa.resource.api.ResourceService;
 import org.gatlin.soa.resource.bean.enums.ResourceType;
 import org.gatlin.soa.user.api.UserService;
 import org.gatlin.soa.user.bean.param.RegisterParam;
+import org.gatlin.util.bean.enums.DeviceType;
 import org.gatlin.util.lang.CollectionUtil;
 import org.hasan.bean.HasanConsts;
 import org.hasan.bean.entity.CfgMember;
@@ -67,11 +68,14 @@ public class HasanCommonController {
 	public Object members(@RequestBody @Valid MembersParam param) {
 		Pager<CfgMember> pager = commonService.members(param.query());
 		if (null != param.getUser() && !CollectionUtil.isEmpty(pager.getList())) {
-			Iterator<CfgMember> iterator = pager.getList().iterator();
-			while (iterator.hasNext()) {
-				CfgMember member = iterator.next();
-				if (!hasanManager.checkMemberCount(param.getUser().getId(), member))
-					iterator.remove();
+			DeviceType type = param.getUser().getDeviceType();
+			if (type != DeviceType.PC) {
+				Iterator<CfgMember> iterator = pager.getList().iterator();
+				while (iterator.hasNext()) {
+					CfgMember member = iterator.next();
+					if (!hasanManager.checkMemberCount(param.getUser().getId(), member))
+						iterator.remove();
+				}
 			}
 		}
 		return pager;

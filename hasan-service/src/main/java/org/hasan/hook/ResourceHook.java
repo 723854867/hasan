@@ -27,17 +27,17 @@ public class ResourceHook extends org.gatlin.web.util.validator.ResourceHook {
 	public void verify(CfgResource resource, ResourceUploadParam param) {
 		switch (resource.getType()) {
 		case 100:
-			int cfgGoodsId = param.owner();
+			int cfgGoodsId = param.intOnwer();
 			CfgGoods goods = goodsManager.goods(cfgGoodsId);
 			Assert.notNull(HasanCode.GOODS_NOT_EXIST, goods);
 			break;
 		case 101:
-			int id = param.owner();
+			int id = param.intOnwer();
 			CfgCookbook cookbook = cookbookManager.cookbook(id);
 			Assert.notNull(HasanCode.COOKBOOK_NOT_EXIST, cookbook);
 			break;
 		case 102:
-			int stepId = param.owner();
+			int stepId = param.intOnwer();
 			CfgCookbookStep step = cookbookManager.cookbookStep(stepId);
 			Assert.notNull(HasanCode.COOKBOOK_STEP_NOT_EXIST, step);
 			break;
