@@ -90,7 +90,7 @@ public class HasanManager {
 	
 	// 购买会员成功
 	@Transactional
-	public void memberBuy(Recharge recharge, boolean success) {
+	public void memberBuy(Recharge recharge) {
 		CfgMember member = member(Integer.valueOf(recharge.getGoodsId()));
 		Query query = new Query().eq("uid", recharge.getRechargee()).forUpdate();
 		UserCustom custom = userCustomDao.queryUnique(query);

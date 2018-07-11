@@ -129,7 +129,10 @@ public class OrderService {
 	}
 
 	public void payTimeoutTask() {
-		Query query = new Query().eq("state", RechargeState.INIT.mark()).eq("goods_type", 101).lte("expiry", DateUtil.current());
+		Set<Integer> set = new HashSet<>();
+		set.add(100);
+		set.add(101);
+		Query query = new Query().eq("state", RechargeState.INIT.mark()).in("goods_type",set).lte("expiry", DateUtil.current());
 		List<Recharge> recharges = accountService.recharges(query).getList();
 		if (CollectionUtil.isEmpty(recharges))
 			return;
