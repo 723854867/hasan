@@ -150,8 +150,10 @@ public class CommonService {
 		GuideInfo info = SerializeUtil.GSON.fromJson(global.getValue(), GuideInfo.class);
 		if (null == info)
 			info = new GuideInfo();
-		info.setContent1(verse.getContent1());
-		info.setContent2(verse.getContent2());
+		if(null != verse) {
+			info.setContent1(verse.getContent1());
+			info.setContent2(verse.getContent2());
+		}
 		java.util.Calendar calendar = java.util.Calendar.getInstance();
 		calendar.setTimeInMillis(System.currentTimeMillis());
 		info.setHour(calendar.get(java.util.Calendar.HOUR_OF_DAY));
